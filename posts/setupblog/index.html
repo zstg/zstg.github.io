@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>SetupBlog :: Stig&#39;s blog</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Blogs are a great way to share your thoughts, ideas, and experiences with the world. They can be used for personal or professional purposes, and there are blogs on just about every topic imaginable.
+Hugo is a popular static site generator that can be used to create blogs, websites, and other types of online content. It is known for its speed, flexibility, and ease of use.
+In this blog post, I will walk you through the steps of creating a blog with Hugo." />
+<meta name="keywords" content="" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://zstg.github.io/posts/setupblog/" />
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  <link rel="stylesheet" href="https://zstg.github.io/styles.css">
+
+
+
+
+
+
+
+  <link rel="shortcut icon" href="https://zstg.github.io/img/theme-colors/blue.png">
+  <link rel="apple-touch-icon" href="https://zstg.github.io/img/theme-colors/blue.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="SetupBlog">
+<meta property="og:description" content="Blogs are a great way to share your thoughts, ideas, and experiences with the world. They can be used for personal or professional purposes, and there are blogs on just about every topic imaginable.
+Hugo is a popular static site generator that can be used to create blogs, websites, and other types of online content. It is known for its speed, flexibility, and ease of use.
+In this blog post, I will walk you through the steps of creating a blog with Hugo." />
+<meta property="og:url" content="https://zstg.github.io/posts/setupblog/" />
+<meta property="og:site_name" content="Stig&#39;s blog" />
+
+  
+    <meta property="og:image" content="https://zstg.github.io/img/favicon/blue.png">
+  
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2023-11-05 21:22:25 &#43;0530 IST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="blue">
+
+
+<div class="container full headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="https://zstg.github.io/">
+  <div class="logo">
+    Terminal
+  </div>
+</a>
+
+    </div>
+    
+    
+  </div>
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://zstg.github.io/posts/setupblog/">SetupBlog</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2023-11-05</time></div>
+
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        
+<p>
+Blogs are a great way to share your thoughts, ideas, and experiences with the world. They can be used for personal or professional purposes, and there are blogs on just about every topic imaginable.</p>
+<p>
+Hugo is a popular static site generator that can be used to create blogs, websites, and other types of online content. It is known for its speed, flexibility, and ease of use.</p>
+<p>
+In this blog post, I will walk you through the steps of creating a blog with Hugo. I will assume that you have some basic knowledge of Git and the command line.</p>
+<div id="outline-container-headline-1" class="outline-2">
+<h2 id="headline-1">
+Install hugo and git
+</h2>
+<div id="outline-text-headline-1" class="outline-text-2">
+<p>I use Arch <strong>BTW</strong>, and so i can install <code>Hugo</code> and <code>Git</code> from the Arch repositories. Instructions vary depending on OS and GNU/Linux distribution.</p>
+<div class="src src-bash">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo pacman -S hugo git</span></span></code></pre></div>
+</div>
+</div>
+</div>
+<div id="outline-container-headline-2" class="outline-2">
+<h2 id="headline-2">
+Repo creation
+</h2>
+<div id="outline-text-headline-2" class="outline-text-2">
+<p>The next step involves creating public repos on GitHub. I&#39;ll be creating 2 repos, one for <a href="https://github.com/zstg/zstg.github.io">GitHub Pages deployment</a> and the other for storing <a href="https://github.com/zstg/blog">the blog itself</a>. For beginners, I recommend creating these repos from the web interface rather than the commandline, but feel free to do it in any way you please.</p>
+<p>
+After the repos are created, clone them to your local machine:</p>
+<div class="src src-bash">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cd ~/Git/ <span style="color:#75715e"># an arbitrary directory where all my Git repos live</span>
+</span></span><span style="display:flex;"><span>git clone https://github.com/zstg/blog.git
+</span></span><span style="display:flex;"><span>cd blog</span></span></code></pre></div>
+</div>
+<p>
+Now it&#39;s time to fire up the website template!</p>
+<div class="src src-bash">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>hugo new site zstgblog <span style="color:#75715e"># choose any name, doesn&#39;t have to be zstgblog ;)</span>
+</span></span><span style="display:flex;"><span>cd zstgblog/</span></span></code></pre></div>
+</div>
+<p>
+I like <a href="https://github.com/panr/hugo-theme-terminal">this</a> particular Hugo theme, so I&#39;m fetching it too…</p>
+<div class="src src-bash">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Note that I&#39;m still inside the zstgblog directory.</span>
+</span></span><span style="display:flex;"><span>git clone --depth <span style="color:#ae81ff">1</span> https://github.com/panr/hugo-theme-terminal themes/terminal</span></span></code></pre></div>
+</div>
+<p>
+Next, add/modify <code class="verbatim">zstgblog/hugo.toml</code> like so: (obviously, replace with the name you&#39;d provided earlier, and modify the details below to your liking)</p>
+<div class="src src-toml">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-toml" data-lang="toml"><span style="display:flex;"><span><span style="color:#a6e22e">baseURL</span> = <span style="color:#e6db74">&#39;https://zstg.github.io/&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">languageCode</span> = <span style="color:#e6db74">&#39;en-us&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">title</span> = <span style="color:#e6db74">&#34;Stig&#39;s blog&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">theme</span> = <span style="color:#e6db74">&#34;terminal&#34;</span>
+</span></span><span style="display:flex;"><span>[<span style="color:#a6e22e">params</span>]
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">themeColor</span> = <span style="color:#e6db74">&#34;blue&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">fullWidthTheme</span> = <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">centerTheme</span> = <span style="color:#66d9ef">true</span></span></span></code></pre></div>
+</div>
+<p>
+Cool. Now we can start creating and uploading posts as we please! Run this (in the same working directory) to create a <a href="https://markdownguide.org">MarkDown</a>, <code>HTML</code> or <a href="https://orgmode.org">Org</a> file, where your blog will be stored.</p>
+<div class="src src-bash">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>hugo new posts/nameOfFile.md</span></span></code></pre></div>
+</div>
+<p>
+Edit <code>content/posts/nameOfFile.md</code> and add a <em>brief</em> intro to your post.</p>
+<p>
+Next, make the GitHub Page repo (<a href="https://github.com/username/username.github.io)">https://github.com/username/username.github.io)</a> a <code>Git submodule</code> of the current repo. This is done to ensure that this repo can be used for GitHub Pages.</p>
+<div class="src src-bash">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Ensure that you&#39;re in the zstgblog directory</span>
+</span></span><span style="display:flex;"><span>git submodule add -b main https://github.com/zstg/zstg.github.io.git public</span></span></code></pre></div>
+</div>
+<p>
+We can now deploy this repo to GitHub and it will automatically be converted to a proper GitHub page powered by Hugo.</p>
+<div class="src src-bash">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># in zstgblog directory</span>
+</span></span><span style="display:flex;"><span>git add .
+</span></span><span style="display:flex;"><span>git commit -am <span style="color:#e6db74">&#34;Add commit message here&#34;</span>
+</span></span><span style="display:flex;"><span>git push</span></span></code></pre></div>
+</div>
+<div id="outline-container-headline-3" class="outline-6">
+<h6 id="headline-3">
+References
+</h6>
+<div id="outline-text-headline-3" class="outline-text-6">
+<p>[1]: <a href="https://www.youtube.com/watch?v=LIFvgrRxdt4">Ref 1</a></p>
+</div>
+</div>
+</div>
+</div>
+
+      </div></div>
+
+  
+
+  
+    
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2023 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
