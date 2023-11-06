@@ -157,7 +157,8 @@ Now it&#39;s time to fire up the website template!</p>
 I like <a href="https://github.com/panr/hugo-theme-terminal">this</a> particular Hugo theme, so I&#39;m fetching it too…</p>
 <div class="src src-bash">
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Note that I&#39;m still inside the zstgblog directory.</span>
-</span></span><span style="display:flex;"><span>git clone --depth <span style="color:#ae81ff">1</span> https://github.com/panr/hugo-theme-terminal themes/terminal</span></span></code></pre></div>
+</span></span><span style="display:flex;"><span>git rm -r --cached themes/terminal
+</span></span><span style="display:flex;"><span>git submodule add https://github.com/panr/hugo-theme-terminal themes/terminal</span></span></code></pre></div>
 </div>
 <p>
 Next, add/modify <code class="verbatim">zstgblog/hugo.toml</code> like so: (obviously, replace with the name you&#39;d provided earlier, and modify the details below to your liking)</p>
