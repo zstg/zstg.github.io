@@ -5,12 +5,11 @@
     <link>https://zstg.github.io/tags/linux/</link>
     <description>Recent content in Linux on Stig&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Mon, 06 Nov 2023 15:49:06 +0530</lastBuildDate><atom:link href="https://zstg.github.io/tags/linux/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language><atom:link href="https://zstg.github.io/tags/linux/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Install nixOS using the minimal iso</title>
+      <title>Install nixOS using the minimal ISO</title>
       <link>https://zstg.github.io/posts/linux/nixos/</link>
-      <pubDate>Mon, 06 Nov 2023 15:49:06 +0530</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://zstg.github.io/posts/linux/nixos/</guid>
       <description>Hey there! Are you ready to dive into the world of NixOS? Get ready to experience a unique Linux distribution that&amp;rsquo;s all about declarative configuration and package management. NixOS brings reproducibility, atomic upgrades and rollbacks, and package isolation to the table. Let&amp;rsquo;s walk through the installation process of NixOS and learn how to partition your disk using the parted command-line tool.
@@ -158,11 +157,11 @@ Wanna try a package before actually installing it onto your system (by adding th
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://zstg.github.io/posts/linux/arch/</guid>
-      <description>Arch Linux Installation Guide Installing Arch is not hard at all, it&amp;rsquo;s quite simple to do. Arch has long been known as a power users distro, and Arch users are usually elitists. Today, we&amp;rsquo;ll break that notion!
+      <description>Installing Arch is not hard at all, it&amp;rsquo;s quite simple to do. Arch has long been known as a power-users&amp;rsquo; distro, and Arch users are usually elitists. Today, we&amp;rsquo;ll break that notion!
 Let&amp;rsquo;s learn how to install Arch manually!
-Step 1: Download the Arch ISO Download the Arch ISO from here. You can also download it from a mirror in your country for faster download speeds.</description>
-      <content>&lt;h1 id=&#34;arch-linux-installation-guide&#34;&gt;Arch Linux Installation Guide&lt;/h1&gt;
-&lt;p&gt;Installing Arch is not hard at all, it&amp;rsquo;s quite simple to do. Arch has long been known as a power users distro, and Arch users are usually elitists. Today, we&amp;rsquo;ll break that notion!&lt;/p&gt;
+Step 1: Download the Arch ISO Download the Arch ISO from here. You can also download it from a mirror in your country for faster download speeds.
+Step 2: Boot into the Arch ISO Create a fresh VM and boot into the Arch ISO that you&amp;rsquo;ve downloaded.</description>
+      <content>&lt;p&gt;Installing Arch is not hard at all, it&amp;rsquo;s quite simple to do. Arch has long been known as a power-users&amp;rsquo; distro, and Arch users are usually elitists. Today, we&amp;rsquo;ll break that notion!&lt;/p&gt;
 &lt;p&gt;Let&amp;rsquo;s learn how to install Arch manually!&lt;/p&gt;
 &lt;h2 id=&#34;step-1-download-the-arch-iso&#34;&gt;Step 1: Download the Arch ISO&lt;/h2&gt;
 &lt;p&gt;Download the Arch ISO from &lt;a href=&#34;https://archlinux.org/download&#34;&gt;here&lt;/a&gt;. You can also download it from a mirror in your country for faster download speeds.&lt;/p&gt;
@@ -220,6 +219,27 @@ Step 1: Download the Arch ISO Download the Arch ISO from here. You can also down
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Uncomment the following line in the &lt;code&gt;/etc/sudoers&lt;/code&gt; file:&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;%wheel ALL&lt;span style=&#34;color:#f92672&#34;&gt;=(&lt;/span&gt;ALL:ALL&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; ALL
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;step-12-install-bootloader&#34;&gt;Step 12: Install Bootloader&lt;/h2&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;Systemd-boot&lt;/th&gt;
+&lt;th&gt;GRUB&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;BIOS&lt;/td&gt;
+&lt;td&gt;N&lt;/td&gt;
+&lt;td&gt;Y&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;UEFI&lt;/td&gt;
+&lt;td&gt;Y&lt;/td&gt;
+&lt;td&gt;Y&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
 &lt;p&gt;Install the bootloader:&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;pacman -S grub efibootmgr os-prober
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Note that os-prober is optional, but can be useful to troubleshoot dual-boot systems. You need not install it inside a VM, or when you&amp;rsquo;re not dual-booting.
@@ -230,26 +250,23 @@ Then install the bootloader to the right place:&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;grub-mkconfig -o /boot/grub/grub.cfg
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Get a networking daemon set up:
 &lt;code&gt;pacman -S networkmanager --noc &amp;amp;&amp;amp; systemctl enable NetworkManager&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;exit&lt;/code&gt; # leave the arch-chroot, work&amp;rsquo;s done now.
-Finally unmount the live USB:
-&lt;code&gt;umount -l /mnt &amp;amp;&amp;amp; exit&lt;/code&gt;
-Shut down the VM:
-&lt;code&gt;shutdown now&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Leave the arch-chroot; installation&amp;rsquo;s almost over.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;exit&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Finally unmount the live USB: &lt;code&gt;umount -l /mnt &amp;amp;&amp;amp; exit&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Shut down the VM: &lt;code&gt;shutdown now&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;The virtual machine has been shut down , eject the ISO file (remove the USB if you&amp;rsquo;re performing the installation on bare metal).
-Next time you boot the VM, login into the tty using the user and passwd.&lt;/p&gt;
-&lt;p&gt;Install video drivers (&lt;em&gt;if&lt;/em&gt; they haven&amp;rsquo;t been installed):
-&lt;code&gt;sudo pacman -S --needed xf86-video-fbdev xorg xorg-xinit --noc&lt;/code&gt;
-Now we install a desktop.
-Choose which DE you need , from &lt;a href=&#34;https://wiki.archlinux.org/title/Desktop_environment&#34;&gt;https://wiki.archlinux.org/title/Desktop_environment&lt;/a&gt;&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;cp /etc/X11/xinit/xinitrc $HOME/.xinitrc
-echo &amp;#34;exec /usr/bin/&amp;lt;DE&amp;gt;-session&amp;#34; &amp;gt;&amp;gt; ~/.xinitrc
-sudo reboot
-startx # to start the display server
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;If you want a display manager such as SDDM, you can set it up as well:&lt;/p&gt;
+When the VM has finished booting up once more, login into the tty by typing your username and password.&lt;/p&gt;
+&lt;p&gt;Next, we&amp;rsquo;re going to install video drivers (&lt;em&gt;if&lt;/em&gt; they haven&amp;rsquo;t been installed):&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;sudo pacman -S --needed xf86-video-fbdev xorg xorg-xinit --noc&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Now we install a desktop.&lt;/p&gt;
+&lt;p&gt;Choose which DE you need from &lt;a href=&#34;https://wiki.archlinux.org/title/Desktop_environment&#34;&gt;this link&lt;/a&gt;.&lt;/p&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;p&gt;If you want a &lt;a href=&#34;https://wiki.archlinux.org/title/Display_manager&#34;&gt;display manager&lt;/a&gt; such as &lt;a href=&#34;https://github.com/sddm/sddm&#34;&gt;SDDM&lt;/a&gt;, you can set it up as well:&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;sudo pacman -S sddm --noconfirm
-sudo systemctl enable sddm
-reboot
-&lt;/code&gt;&lt;/pre&gt;</content>
+sudo systemctl enable sddm # will autostart the service from next boot onwards
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Now that the Arch install &lt;strong&gt;has &lt;em&gt;finished&lt;/em&gt;&lt;/strong&gt;, simply reboot your system using the &lt;code&gt;reboot&lt;/code&gt; command.&lt;/p&gt;
+</content>
     </item>
     
   </channel>

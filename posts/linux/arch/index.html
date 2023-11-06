@@ -6,9 +6,7 @@
   
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Arch Linux Installation Guide Installing Arch is not hard at all, it&amp;rsquo;s quite simple to do. Arch has long been known as a power users distro, and Arch users are usually elitists. Today, we&amp;rsquo;ll break that notion!
-Let&amp;rsquo;s learn how to install Arch manually!
-Step 1: Download the Arch ISO Download the Arch ISO from here. You can also download it from a mirror in your country for faster download speeds." />
+<meta name="description" content="In this blog post, we check out the installation of Archlinux, a distro notoriously hard to install." />
 <meta name="keywords" content="Linux, Arch" />
 
   <meta name="robots" content="noodp" />
@@ -45,9 +43,7 @@ Step 1: Download the Arch ISO Download the Arch ISO from here. You can also down
 <meta property="og:locale" content="en" />
 <meta property="og:type" content="article" />
 <meta property="og:title" content="Installing Arch the fun way">
-<meta property="og:description" content="Arch Linux Installation Guide Installing Arch is not hard at all, it&amp;rsquo;s quite simple to do. Arch has long been known as a power users distro, and Arch users are usually elitists. Today, we&amp;rsquo;ll break that notion!
-Let&amp;rsquo;s learn how to install Arch manually!
-Step 1: Download the Arch ISO Download the Arch ISO from here. You can also download it from a mirror in your country for faster download speeds." />
+<meta property="og:description" content="In this blog post, we check out the installation of Archlinux, a distro notoriously hard to install." />
 <meta property="og:url" content="https://zstg.github.io/posts/linux/arch/" />
 <meta property="og:site_name" content="Stig&#39;s blog" />
 
@@ -116,8 +112,7 @@ Step 1: Download the Arch ISO Download the Arch ISO from here. You can also down
   
 
   <div class="post-content"><div>
-        <h1 id="arch-linux-installation-guide">Arch Linux Installation Guide<a href="#arch-linux-installation-guide" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h1>
-<p>Installing Arch is not hard at all, it&rsquo;s quite simple to do. Arch has long been known as a power users distro, and Arch users are usually elitists. Today, we&rsquo;ll break that notion!</p>
+        <p>Installing Arch is not hard at all, it&rsquo;s quite simple to do. Arch has long been known as a power-users&rsquo; distro, and Arch users are usually elitists. Today, we&rsquo;ll break that notion!</p>
 <p>Let&rsquo;s learn how to install Arch manually!</p>
 <h2 id="step-1-download-the-arch-iso">Step 1: Download the Arch ISO<a href="#step-1-download-the-arch-iso" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
 <p>Download the Arch ISO from <a href="https://archlinux.org/download">here</a>. You can also download it from a mirror in your country for faster download speeds.</p>
@@ -175,6 +170,27 @@ Step 1: Download the Arch ISO Download the Arch ISO from here. You can also down
 </span></span></code></pre></div><p>Uncomment the following line in the <code>/etc/sudoers</code> file:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>%wheel ALL<span style="color:#f92672">=(</span>ALL:ALL<span style="color:#f92672">)</span> ALL
 </span></span></code></pre></div><h2 id="step-12-install-bootloader">Step 12: Install Bootloader<a href="#step-12-install-bootloader" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Systemd-boot</th>
+<th>GRUB</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BIOS</td>
+<td>N</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>UEFI</td>
+<td>Y</td>
+<td>Y</td>
+</tr>
+</tbody>
+</table>
 <p>Install the bootloader:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>pacman -S grub efibootmgr os-prober
 </span></span></code></pre></div><p>Note that os-prober is optional, but can be useful to troubleshoot dual-boot systems. You need not install it inside a VM, or when you&rsquo;re not dual-booting.
@@ -185,26 +201,23 @@ Then install the bootloader to the right place:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>grub-mkconfig -o /boot/grub/grub.cfg
 </span></span></code></pre></div><p>Get a networking daemon set up:
 <code>pacman -S networkmanager --noc &amp;&amp; systemctl enable NetworkManager</code></p>
-<p><code>exit</code> # leave the arch-chroot, work&rsquo;s done now.
-Finally unmount the live USB:
-<code>umount -l /mnt &amp;&amp; exit</code>
-Shut down the VM:
-<code>shutdown now</code></p>
+<p>Leave the arch-chroot; installation&rsquo;s almost over.</p>
+<p><code>exit</code></p>
+<p>Finally unmount the live USB: <code>umount -l /mnt &amp;&amp; exit</code></p>
+<p>Shut down the VM: <code>shutdown now</code></p>
 <p>The virtual machine has been shut down , eject the ISO file (remove the USB if you&rsquo;re performing the installation on bare metal).
-Next time you boot the VM, login into the tty using the user and passwd.</p>
-<p>Install video drivers (<em>if</em> they haven&rsquo;t been installed):
-<code>sudo pacman -S --needed xf86-video-fbdev xorg xorg-xinit --noc</code>
-Now we install a desktop.
-Choose which DE you need , from <a href="https://wiki.archlinux.org/title/Desktop_environment">https://wiki.archlinux.org/title/Desktop_environment</a></p>
-<pre tabindex="0"><code>cp /etc/X11/xinit/xinitrc $HOME/.xinitrc
-echo &#34;exec /usr/bin/&lt;DE&gt;-session&#34; &gt;&gt; ~/.xinitrc
-sudo reboot
-startx # to start the display server
-</code></pre><p>If you want a display manager such as SDDM, you can set it up as well:</p>
+When the VM has finished booting up once more, login into the tty by typing your username and password.</p>
+<p>Next, we&rsquo;re going to install video drivers (<em>if</em> they haven&rsquo;t been installed):</p>
+<p><code>sudo pacman -S --needed xf86-video-fbdev xorg xorg-xinit --noc</code></p>
+<p>Now we install a desktop.</p>
+<p>Choose which DE you need from <a href="https://wiki.archlinux.org/title/Desktop_environment">this link</a>.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>If you want a <a href="https://wiki.archlinux.org/title/Display_manager">display manager</a> such as <a href="https://github.com/sddm/sddm">SDDM</a>, you can set it up as well:</p>
 <pre tabindex="0"><code>sudo pacman -S sddm --noconfirm
-sudo systemctl enable sddm
-reboot
-</code></pre>
+sudo systemctl enable sddm # will autostart the service from next boot onwards
+</code></pre><p>Now that the Arch install <strong>has <em>finished</em></strong>, simply reboot your system using the <code>reboot</code> command.</p>
+
       </div></div>
 
   

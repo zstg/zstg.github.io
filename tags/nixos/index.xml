@@ -5,12 +5,11 @@
     <link>https://zstg.github.io/tags/nixos/</link>
     <description>Recent content in nixOS on Stig&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Mon, 06 Nov 2023 15:49:06 +0530</lastBuildDate><atom:link href="https://zstg.github.io/tags/nixos/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language><atom:link href="https://zstg.github.io/tags/nixos/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Install nixOS using the minimal iso</title>
+      <title>Install nixOS using the minimal ISO</title>
       <link>https://zstg.github.io/posts/linux/nixos/</link>
-      <pubDate>Mon, 06 Nov 2023 15:49:06 +0530</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://zstg.github.io/posts/linux/nixos/</guid>
       <description>Hey there! Are you ready to dive into the world of NixOS? Get ready to experience a unique Linux distribution that&amp;rsquo;s all about declarative configuration and package management. NixOS brings reproducibility, atomic upgrades and rollbacks, and package isolation to the table. Let&amp;rsquo;s walk through the installation process of NixOS and learn how to partition your disk using the parted command-line tool.
