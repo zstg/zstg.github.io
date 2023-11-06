@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Linux on Stig&#39;s blog</title>
-    <link>https://zstg.github.io/tags/linux/</link>
-    <description>Recent content in Linux on Stig&#39;s blog</description>
+    <title>nixOS on Stig&#39;s blog</title>
+    <link>https://zstg.github.io/tags/nixos/</link>
+    <description>Recent content in nixOS on Stig&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 06 Nov 2023 15:49:06 +0530</lastBuildDate><atom:link href="https://zstg.github.io/tags/linux/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 06 Nov 2023 15:49:06 +0530</lastBuildDate><atom:link href="https://zstg.github.io/tags/nixos/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Install nixOS using the minimal iso</title>
       <link>https://zstg.github.io/posts/linux/nixos/</link>
@@ -150,106 +150,6 @@ Don&amp;rsquo;t forget, you&amp;rsquo;re not alone on this journey. NixOS has a 
 &lt;p&gt;Congratulations once again on installing NixOS! You&amp;rsquo;ve taken a step into the world of declarative configuration, powerful package management, and system reproducibility. By following the installation process outlined in this guide, you&amp;rsquo;re well on your way to enjoying the unique features that NixOS brings to the table. Embrace the flexibility, atomic upgrades, and package isolation that NixOS offers, and make your system truly your own. Happy Nix-ing!
 Wanna try a package before actually installing it onto your system (by adding the package to &lt;code&gt;configuration.nix&lt;/code&gt;) ? Use &lt;code&gt;nix-shell -p &amp;lt;package_name&amp;gt;&lt;/code&gt; to install the package in an ephemeral shell.&lt;/p&gt;
 </content>
-    </item>
-    
-    <item>
-      <title>Installing Arch the fun way</title>
-      <link>https://zstg.github.io/posts/linux/arch/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://zstg.github.io/posts/linux/arch/</guid>
-      <description>Arch Linux Installation Guide Installing Arch is not hard at all, it&amp;rsquo;s quite simple to do. Arch has long been known as a power users distro, and Arch users are usually elitists. Today, we&amp;rsquo;ll break that notion!
-Let&amp;rsquo;s learn how to install Arch manually!
-Step 1: Download the Arch ISO Download the Arch ISO from here. You can also download it from a mirror in your country for faster download speeds.</description>
-      <content>&lt;h1 id=&#34;arch-linux-installation-guide&#34;&gt;Arch Linux Installation Guide&lt;/h1&gt;
-&lt;p&gt;Installing Arch is not hard at all, it&amp;rsquo;s quite simple to do. Arch has long been known as a power users distro, and Arch users are usually elitists. Today, we&amp;rsquo;ll break that notion!&lt;/p&gt;
-&lt;p&gt;Let&amp;rsquo;s learn how to install Arch manually!&lt;/p&gt;
-&lt;h2 id=&#34;step-1-download-the-arch-iso&#34;&gt;Step 1: Download the Arch ISO&lt;/h2&gt;
-&lt;p&gt;Download the Arch ISO from &lt;a href=&#34;https://archlinux.org/download&#34;&gt;here&lt;/a&gt;. You can also download it from a mirror in your country for faster download speeds.&lt;/p&gt;
-&lt;h2 id=&#34;step-2-boot-into-the-arch-iso&#34;&gt;Step 2: Boot into the Arch ISO&lt;/h2&gt;
-&lt;p&gt;Create a fresh VM and boot into the Arch ISO that you&amp;rsquo;ve downloaded. Alternatively, you can flash the image to a USB and boot from it. The ISO file will automatically boot into a shell. You can type &lt;code&gt;clear&lt;/code&gt; to clear the screen.&lt;/p&gt;
-&lt;h2 id=&#34;step-3-set-the-time-and-date&#34;&gt;Step 3: Set the Time and Date&lt;/h2&gt;
-&lt;p&gt;Run the following command to set the time and date:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;timedatectl set-ntp true
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;step-4-partition-the-virtual-hard-drive&#34;&gt;Step 4: Partition the Virtual Hard Drive&lt;/h2&gt;
-&lt;p&gt;Partition your virtual hard drive using the following commands:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;parted /dev/sda -- mklabel gpt &lt;span style=&#34;color:#75715e&#34;&gt;# THIS WILL WIPE YOUR DEVICE, don&amp;#39;t do this if you&amp;#39;re dual-booting&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;parted /dev/sda -- mkpart ESP fat32 1MB 512MB &lt;span style=&#34;color:#75715e&#34;&gt;# 512 MB bootloader&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;parted /dev/sda -- mkpart primary ext4 512MB 100% &lt;span style=&#34;color:#75715e&#34;&gt;# rem space for the root filesystem&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;parted /dev/sda -- set &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; esp on &lt;span style=&#34;color:#75715e&#34;&gt;# make the partition bootable&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;step-5-format-the-partitions&#34;&gt;Step 5: Format the Partitions&lt;/h2&gt;
-&lt;p&gt;Format the partitions that you&amp;rsquo;ve created:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;mkfs.fat -F32 /dev/sda1 -n boot
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;mkfs.ext4 /dev/sda2 -L root
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;If you&amp;rsquo;ve created a btrfs filesystem, use the following command instead:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;mkfs.btrfs /dev/sda2 -L root
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;step-6-mount-the-partitions&#34;&gt;Step 6: Mount the Partitions&lt;/h2&gt;
-&lt;p&gt;Mount the partitions to your filesystem:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;mount /dev/sda2 /mnt
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;mkdir -p /mnt/boot/EFI
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;mount /dev/sda1 /mnt/boot/EFI
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;step-7-install-base-arch-stuff&#34;&gt;Step 7: Install Base Arch Stuff&lt;/h2&gt;
-&lt;p&gt;Install the base Arch stuff onto your install. This process can take ≈ 10-15 min depending on your internet connection:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;pacstrap /mnt base linux linux-firmware
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;step-8-set-hostname&#34;&gt;Step 8: Set Hostname&lt;/h2&gt;
-&lt;p&gt;Add a hostname to your VM:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;genfstab -L /mnt &amp;gt;&amp;gt; /mnt/etc/fstab &lt;span style=&#34;color:#75715e&#34;&gt;# use labels to identify em&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;modprobe efivarfs
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;arch-chroot /mnt
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Choose a proper timezone and set the hostname:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;ln -sf /usr/share/zoneinfo/America/Chicago /etc/localtime
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;hwclock --systohc
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;echo Arch-VM &amp;gt; /etc/hostname &lt;span style=&#34;color:#75715e&#34;&gt;# replace with a hostname of your choice, preferably no spaces&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;step-9-configure-etchosts&#34;&gt;Step 9: Configure /etc/hosts&lt;/h2&gt;
-&lt;p&gt;Edit the &lt;code&gt;/etc/hosts&lt;/code&gt; file and add the following:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;127.0.0.1   localhost
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;::1         localhost
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;127.0.1.1   arch.localdomain arch &lt;span style=&#34;color:#75715e&#34;&gt;# REPLACE arch WITH YOUR HOSTNAME!!!&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;step-10-set-root-password&#34;&gt;Step 10: Set Root Password&lt;/h2&gt;
-&lt;p&gt;Set the password for the root user:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;passwd
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;step-11-add-user&#34;&gt;Step 11: Add User&lt;/h2&gt;
-&lt;p&gt;Add a user and set a password for it:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;useradd -m stig &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; passwd stig:
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Add the user to the necessary groups:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;usermod -aG wheel,audio,video,optical,storage stig
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Install sudo and nano:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;pacman -S sudo nano --noconfirm
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Add the user to the wheel group in the &lt;code&gt;/etc/sudoers&lt;/code&gt; file:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;EDITOR&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;nano visudo
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Uncomment the following line in the &lt;code&gt;/etc/sudoers&lt;/code&gt; file:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;%wheel ALL&lt;span style=&#34;color:#f92672&#34;&gt;=(&lt;/span&gt;ALL:ALL&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; ALL
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;step-12-install-bootloader&#34;&gt;Step 12: Install Bootloader&lt;/h2&gt;
-&lt;p&gt;Install the bootloader:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;pacman -S grub efibootmgr os-prober
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Note that os-prober is optional, but can be useful to troubleshoot dual-boot systems. You need not install it inside a VM, or when you&amp;rsquo;re not dual-booting.
-Then install the bootloader to the right place:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;mkdir /mnt/boot/EFI 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;grub-install --target&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;x86_64-efi --bootloader-id&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;grub_uefi --recheck 
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Now we need to generate a grub config file.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;grub-mkconfig -o /boot/grub/grub.cfg
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Get a networking daemon set up:
-&lt;code&gt;pacman -S networkmanager --noc &amp;amp;&amp;amp; systemctl enable NetworkManager&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;exit&lt;/code&gt; # leave the arch-chroot, work&amp;rsquo;s done now.
-Finally unmount the live USB:
-&lt;code&gt;umount -l /mnt &amp;amp;&amp;amp; exit&lt;/code&gt;
-Shut down the VM:
-&lt;code&gt;shutdown now&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;The virtual machine has been shut down , eject the ISO file (remove the USB if you&amp;rsquo;re performing the installation on bare metal).
-Next time you boot the VM, login into the tty using the user and passwd.&lt;/p&gt;
-&lt;p&gt;Install video drivers (&lt;em&gt;if&lt;/em&gt; they haven&amp;rsquo;t been installed):
-&lt;code&gt;sudo pacman -S --needed xf86-video-fbdev xorg xorg-xinit --noc&lt;/code&gt;
-Now we install a desktop.
-Choose which DE you need , from &lt;a href=&#34;https://wiki.archlinux.org/title/Desktop_environment&#34;&gt;https://wiki.archlinux.org/title/Desktop_environment&lt;/a&gt;&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;cp /etc/X11/xinit/xinitrc $HOME/.xinitrc
-echo &amp;#34;exec /usr/bin/&amp;lt;DE&amp;gt;-session&amp;#34; &amp;gt;&amp;gt; ~/.xinitrc
-sudo reboot
-startx # to start the display server
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;If you want a display manager such as SDDM, you can set it up as well:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;sudo pacman -S sddm --noconfirm
-sudo systemctl enable sddm
-reboot
-&lt;/code&gt;&lt;/pre&gt;</content>
     </item>
     
   </channel>

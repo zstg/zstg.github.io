@@ -6,21 +6,11 @@
     <description>Recent content in Tags on Stig&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 05 Nov 2023 21:33:18 +0530</lastBuildDate><atom:link href="https://zstg.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Arch</title>
-      <link>https://zstg.github.io/tags/arch/</link>
-      <pubDate>Sun, 05 Nov 2023 21:33:18 +0530</pubDate>
-      
-      <guid>https://zstg.github.io/tags/arch/</guid>
-      <description></description>
-      <content></content>
-    </item>
-    
+    <lastBuildDate>Mon, 06 Nov 2023 15:49:06 +0530</lastBuildDate><atom:link href="https://zstg.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Linux</title>
       <link>https://zstg.github.io/tags/linux/</link>
-      <pubDate>Sun, 05 Nov 2023 21:33:18 +0530</pubDate>
+      <pubDate>Mon, 06 Nov 2023 15:49:06 +0530</pubDate>
       
       <guid>https://zstg.github.io/tags/linux/</guid>
       <description></description>
@@ -28,9 +18,29 @@
     </item>
     
     <item>
+      <title>nixOS</title>
+      <link>https://zstg.github.io/tags/nixos/</link>
+      <pubDate>Mon, 06 Nov 2023 15:49:06 +0530</pubDate>
+      
+      <guid>https://zstg.github.io/tags/nixos/</guid>
+      <description></description>
+      <content></content>
+    </item>
+    
+    <item>
+      <title>Arch</title>
+      <link>https://zstg.github.io/tags/arch/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://zstg.github.io/tags/arch/</guid>
+      <description></description>
+      <content></content>
+    </item>
+    
+    <item>
       <title>Git</title>
       <link>https://zstg.github.io/tags/git/</link>
-      <pubDate>Sun, 05 Nov 2023 21:22:25 +0530</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://zstg.github.io/tags/git/</guid>
       <description></description>
@@ -40,7 +50,7 @@
     <item>
       <title>Hugo</title>
       <link>https://zstg.github.io/tags/hugo/</link>
-      <pubDate>Sun, 05 Nov 2023 21:22:25 +0530</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://zstg.github.io/tags/hugo/</guid>
       <description></description>

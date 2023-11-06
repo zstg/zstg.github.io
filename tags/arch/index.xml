@@ -5,12 +5,11 @@
     <link>https://zstg.github.io/tags/arch/</link>
     <description>Recent content in Arch on Stig&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Sun, 05 Nov 2023 21:33:18 +0530</lastBuildDate><atom:link href="https://zstg.github.io/tags/arch/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language><atom:link href="https://zstg.github.io/tags/arch/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Installing Arch the fun way</title>
       <link>https://zstg.github.io/posts/linux/arch/</link>
-      <pubDate>Sun, 05 Nov 2023 21:33:18 +0530</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://zstg.github.io/posts/linux/arch/</guid>
       <description>Arch Linux Installation Guide Installing Arch is not hard at all, it&amp;rsquo;s quite simple to do. Arch has long been known as a power users distro, and Arch users are usually elitists. Today, we&amp;rsquo;ll break that notion!

@@ -59,8 +59,6 @@ In this blog post, I will walk you through the steps of creating a blog with Hug
 <meta property="og:image:height" content="627">
 
 
-  <meta property="article:published_time" content="2023-11-05 21:22:25 &#43;0530 IST" />
-
 
 
 
@@ -101,7 +99,7 @@ In this blog post, I will walk you through the steps of creating a blog with Hug
   <h1 class="post-title">
     <a href="https://zstg.github.io/posts/setupblog/">Setup a simple blog using GitHub Pages and Hugo</a>
   </h1>
-  <div class="post-meta"><time class="post-date">2023-11-05</time><span class="post-author">ZeStig</span></div>
+  <div class="post-meta"><span class="post-author">ZeStig</span></div>
 
   
     <span class="post-tags">
@@ -196,9 +194,12 @@ We can now deploy this repo to GitHub and it will automatically be converted to 
 </div>
 <div class="src src-bash">
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># in zstgblog</span>
-</span></span><span style="display:flex;"><span>hugo -t terminal
-</span></span><span style="display:flex;"><span>cd public
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># add, commit, push to main</span></span></span></code></pre></div>
+</span></span><span style="display:flex;"><span>git rm -r --cached public
+</span></span><span style="display:flex;"><span>hugo 
+</span></span><span style="display:flex;"><span>git add .
+</span></span><span style="display:flex;"><span>git add public
+</span></span><span style="display:flex;"><span>git commit -am <span style="color:#e6db74">&#34;Force rebuild&#34;</span>
+</span></span><span style="display:flex;"><span>git push</span></span></code></pre></div>
 </div>
 <div id="outline-container-headline-3" class="outline-6">
 <h6 id="headline-3">

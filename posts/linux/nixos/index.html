@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Install nixOS using the minimal iso :: Stig&#39;s blog</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Hey there! Are you ready to dive into the world of NixOS? Get ready to experience a unique Linux distribution that&amp;rsquo;s all about declarative configuration and package management. NixOS brings reproducibility, atomic upgrades and rollbacks, and package isolation to the table. Let&amp;rsquo;s walk through the installation process of NixOS and learn how to partition your disk using the parted command-line tool.
+What is NixOS? NixOS is an immutable OS." />
+<meta name="keywords" content=", " />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://zstg.github.io/posts/linux/nixos/" />
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  <link rel="stylesheet" href="https://zstg.github.io/styles.css">
+
+
+
+
+
+
+
+  <link rel="shortcut icon" href="https://zstg.github.io/img/theme-colors/blue.png">
+  <link rel="apple-touch-icon" href="https://zstg.github.io/img/theme-colors/blue.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Install nixOS using the minimal iso">
+<meta property="og:description" content="Hey there! Are you ready to dive into the world of NixOS? Get ready to experience a unique Linux distribution that&amp;rsquo;s all about declarative configuration and package management. NixOS brings reproducibility, atomic upgrades and rollbacks, and package isolation to the table. Let&amp;rsquo;s walk through the installation process of NixOS and learn how to partition your disk using the parted command-line tool.
+What is NixOS? NixOS is an immutable OS." />
+<meta property="og:url" content="https://zstg.github.io/posts/linux/nixos/" />
+<meta property="og:site_name" content="Stig&#39;s blog" />
+
+  
+  
+  <meta property="og:image" content="https://zstg.github.io/">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2023-11-06 15:49:06 &#43;0530 IST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="blue">
+
+
+<div class="container full headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="https://zstg.github.io/">
+  <div class="logo">
+    Terminal
+  </div>
+</a>
+
+    </div>
+    
+    
+  </div>
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://zstg.github.io/posts/linux/nixos/">Install nixOS using the minimal iso</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2023-11-06</time><span class="post-author">ZeStig</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://zstg.github.io/tags/linux/">Linux</a>&nbsp;
+      
+      #<a href="https://zstg.github.io/tags/nixos/">nixOS</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <hr>
+<p>Hey there! Are you ready to dive into the world of NixOS? Get ready to experience a unique Linux distribution that&rsquo;s all about declarative configuration and package management. NixOS brings reproducibility, atomic upgrades and rollbacks, and package isolation to the table. Let&rsquo;s walk through the installation process of NixOS and learn how to partition your disk using the <code>parted</code> command-line tool.</p>
+<hr>
+<h2 id="what-is-nixos">What is NixOS?<a href="#what-is-nixos" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p><img src="/nixos.png" alt="NixOS logo">
+NixOS is an immutable OS.</p>
+<p>An immutable system refers to a system where the state or configuration cannot be changed once it is set. In simpler terms, it means that once something is set up or configured in an immutable system, it cannot be modified or altered afterwards. It remains fixed and cannot be changed.</p>
+<p>NixOS is not like a conventional distro with a package manager, and does not support the <a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/4/html/reference_guide/s1-filesystem-fhs">File Hierarchy Standard</a>.</p>
+<p>NixOS is an operating system that follows the concept of immutability. It is built on the Nix package manager, which allows for declarative and reproducible system configurations. In NixOS, the entire operating system, including the kernel, packages, and system settings, is defined in a configuration file. This configuration file specifies exactly how the system should be set up and what packages should be installed.</p>
+<p>The key idea behind NixOS is that the system configuration is treated as a single, atomic entity. Any changes to the system are made by creating a new configuration file rather than modifying the existing one. This ensures that the system remains consistent and predictable, as any changes are applied in a controlled and reproducible manner.</p>
+<hr>
+<h3 id="notes">Notes<a href="#notes" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<ul>
+<li>
+<p>The bootloader is installed to ~/boot/efi~ /boot. I highly recommend not changing this, as it gave me a lot of trouble (I assumed wrongly that the bootloader would be installed to /boot/efi for EFI systems, but this is <em>not</em> the case). This was a huge time loss for me, so kindly note this.</p>
+</li>
+<li>
+<p>If you&rsquo;re planning on backing up your NixOS config file (which i highly recommend you do), don&rsquo;t back up <code>hardware-configuration.nix</code>, this is auto-generated.</p>
+</li>
+<li>
+<p>It&rsquo;s advisable to split up the config into separate files (check out my <a href="https://gitlab.com/zstg/nixos-config/">nixOS dotfiles</a>).</p>
+</li>
+<li>
+<p>NixOS recommends a UEFI+systemd-boot setup (because this works well on relatively modern hardware).</p>
+</li>
+<li>
+<p>Changing bootloader settings is not as easy as modifying other settings, and this needs a reinstall of the bootloader (<code>sudo nixos-rebuild switch --install-bootloader</code>). This is a risky operation, and if done improperly, can render your system completely unbootable.</p>
+</li>
+<li>
+<p>While it is entirely possible to move from <code>systemd-boot</code> to <code>grub</code> (and vice-versa), it is not recommended to switch post-install. Systemd-boot is minimal and offers few customizability options, whereas grub offers tons of customization.</p>
+</li>
+<li>
+<p>The root of the filesystem (namely <code>/</code>), and <code>/nix/store</code>, should be mounted on the same drive. You <em>must not</em> mount <code>/</code> and <code>/nix/store</code> - <code>/nix/store</code> is <em>not meant to be mounted</em> <em>at all</em>. Check <a href="#want-a-sample-configuration">my partitioning layout</a> for an idea.</p>
+</li>
+</ul>
+<hr>
+<h1 id="installing-nixos">Installing NixOS<a href="#installing-nixos" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h1>
+<p>Before we get started, it&rsquo;s worth mentioning that installing NixOS differs a bit from the usual Linux distribution installation process. Instead of a traditional installer, we&rsquo;ll be working with configuration files to set up our system. Let the installation begin!</p>
+<h5 id="create-a-bootable-usb-drive">Create a bootable USB drive:<a href="#create-a-bootable-usb-drive" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
+<p>Head over to the official NixOS website and grab the latest NixOS ISO. Once you have it, use a tool like <code>dd</code> or BalenaEtcher to create a bootable USB drive.</p>
+<h5 id="boot-into-the-nixos-live-environment">Boot into the NixOS live environment:<a href="#boot-into-the-nixos-live-environment" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
+<p>Plug in the USB drive and boot up your computer from it. You should see the NixOS boot menu. Go ahead and select the default option to boot into the live environment.</p>
+<h5 id="partition-your-disk">Partition your disk:<a href="#partition-your-disk" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
+<p>After entering the live environment, open up a terminal and fire up <code>parted</code> by running the command <code>parted /dev/sda</code>. Make sure to replace <code>/dev/sda</code> with the appropriate device name for your system.</p>
+<h5 id="create-partitions">Create partitions:<a href="#create-partitions" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
+<p>It&rsquo;s time to create those partitions! Use <code>parted</code> to create the partitions you need. For example, if you want to create a root partition, try running this in your terminal:</p>
+<p><code>(parted) mkpart primary ext4 1MiB 100GiB</code></p>
+<p>This command creates a primary partition with the ext4 file system, starting from 1MiB and going up to 100GiB. Customize the size and file system to your liking. Repeat this step for any additional partitions you require, like a swap partition or a separate home partition.</p>
+<p><img src="/partitions.png" alt="Partitioning with parted"></p>
+<h5 id="set-partition-flags">Set partition flags:<a href="#set-partition-flags" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
+<p>If you need to set specific flags for certain partitions, like the boot flag for an EFI partition, <code>parted</code> has got you covered. Use the <code>set</code> command to make it happen. Here&rsquo;s an example:</p>
+<p><code>(parted) set 1 boot on</code></p>
+<p>This command sets the boot flag on partition 1.</p>
+<h5 id="quit-parted">Quit parted:<a href="#quit-parted" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
+<p>After you finish partitioning, it&rsquo;s time to say goodbye to <code>parted</code>. Just type <code>quit</code> in the <code>parted</code> prompt, and you&rsquo;ll be on your way.</p>
+<h5 id="format-the-partitions">Format the partitions:<a href="#format-the-partitions" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
+<p>Let&rsquo;s format those partitions you just created with the appropriate file systems. To format the root partition as ext4, run the following command:</p>
+<p><code>mkfs.ext4 /dev/sda1</code></p>
+<p>Feel free to repeat this step for other partitions, if necessary.</p>
+<p>The picture below shows my partitioning layout: (again, note <code>/boot</code> is used even for EFI systems).</p>
+<p><img src="/lsblk.png" alt="lsblk output"></p>
+<p><em>My</em> partitioning layout can be achieved using:</p>
+<pre tabindex="0"><code>parted /dev/sda -- mklabel gpt
+parted /dev/sdb -- mklabel gpt
+
+# Create the partitions
+parted /dev/sda -- mkpart primary 0% 100% # /home
+
+parted /dev/sdb -- mkpart ESP fat32 1MB 1024MB # 512 will do for /boot
+parted /dev/sdb -- set 1 esp on 
+parted /dev/sdb -- mkpart primary 512MB 100% # / 
+
+# Format to resp filesystems
+mkfs.ext4 -L home /dev/sda1
+mkfs.ext4 -L nixos /dev/sdb2
+mkfs.fat -F 32 -n boot /dev/sdb1
+</code></pre><h5 id="mount-the-partitions">Mount the partitions:<a href="#mount-the-partitions" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
+<p>Now, create mount points and mount the partitions to the desired locations. For instance, if you want to mount the root partition to <code>/mnt</code>, use this command:</p>
+<pre tabindex="0"><code>mkdir -p /mnt/boot
+mount /dev/disk/by-label/nixos /mnt
+mount /dev/disk/by-label/boot /mnt/boot
+mount /dev/disk/by-label/home /mnt/home
+</code></pre><p>If you - like me - require separate partitions for <code>/home</code> or any other directories, mount them accordingly.</p>
+<h5 id="generate-nixos-configuration">Generate NixOS configuration:<a href="#generate-nixos-configuration" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
+<p>To generate the initial NixOS configuration, run the following command:</p>
+<p><code>nixos-generate-config --root /mnt</code></p>
+<p>This creates the initial configuration file at <code>/mnt/etc/nixos/configuration.nix</code>.</p>
+<h5 id="edit-the-configuration">Edit the configuration:<a href="#edit-the-configuration" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
+<p>Open up your favorite text editor and customize the configuration file at <code>/mnt/etc/nixos/configuration.nix</code> to your heart&rsquo;s content. This file allows you to specify partitions, file systems, boot options, network configuration, and other system settings. Make it your playground!</p>
+<h5 id="install-nixos">Install NixOS:<a href="#install-nixos" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
+<p>After you&rsquo;re done tweaking the configuration file, save the changes and run the following command to install NixOS:</p>
+<pre><code>`nixos-install`    
+</code></pre>
+<p>This will install NixOS using the configuration file you provided. It&rsquo;s like waving a magic wand!</p>
+<h5 id="reboot-into-nixos">Reboot into NixOS:<a href="#reboot-into-nixos" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
+<p>With the installation process completed successfully, remove the USB drive, take a deep breath, and reboot your computer. You should now see the NixOS boot menu, ready to welcome you into your newly installed NixOS system. Enjoy the ride!</p>
+<h2 id="getting-started-with-nixos">Getting Started with NixOS<a href="#getting-started-with-nixos" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>Congratulations! You&rsquo;ve made it through the installation process and now have a shiny NixOS installation. Let&rsquo;s familiarize ourselves with a few key aspects of NixOS.</p>
+<ul>
+<li>
+<p><em>System Configuration</em>:
+The heart and soul of NixOS lies in its system configuration file, located at <code>/etc/nixos/configuration.nix</code>. This file is where you can work your magic, defining packages, services, users, network settings, and more. After you&rsquo;ve made the necessary changes, run a <code>sudo nixos-rebuild switch</code> to reload the configuration and make it the <em>boot default</em>, or <code>sudo nixos-rebuild test</code> to <strong>try</strong> out the new config once (use a <code>sudo nixos-rebuild switch</code> to make the changes permanent). Make it your playground!</p>
+</li>
+<li>
+<p><em>Package Management</em>:
+NixOS employs the mighty Nix package manager to handle software installations and dependencies. You can use the <code>nix-env</code> command to install packages on a per-user basis or modify the system configuration to install packages globally. The power is in your hands! You can also set up <a href="https://nix-community.github.io/home-manager/">Home-Manager</a> and further tune your user-level configurations. Packages installed via <code>home-manager</code> are installed for the current user only, whereas appending packages to <code>configuration.nix</code> installs them system-wide (i.e for all users) - this is a feature not available in conventional package managers.</p>
+</li>
+<li>
+<p><em>Reproducibility and Rollbacks</em>:
+NixOS offers a highly reproducible system. The declarative nature of its configuration ensures that you can easily reproduce the same system state on different machines. But that&rsquo;s not all! NixOS also allows for atomic upgrades and rollbacks, so you can confidently revert to a previous system configuration if needed. It&rsquo;s like having a time machine!</p>
+</li>
+<li>
+<p><em>Package Isolation</em>:
+NixOS takes a unique approach to package management by providing package isolation. Each package is installed in its own little directory, ensuring that dependencies don&rsquo;t clash with other packages and minimizing the risk of system instability. It&rsquo;s like giving each package its own little bubble, and this is what enables package rollbacks as well as having multiple versions of packages (something which is almost impossible in conventional distros).</p>
+</li>
+<li>
+<p><em>NixOS Community</em>:
+Don&rsquo;t forget, you&rsquo;re not alone on this journey. NixOS has a vibrant and helpful community that&rsquo;s ready to lend a hand. If you stumble upon any issues or have questions along the way, the official documentation and community forums have the answers.</p>
+</li>
+</ul>
+<hr>
+<h3 id="want-a-sample-configuration-">Want a sample configuration ?<a href="#want-a-sample-configuration-" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>My configuration is available <a href="https://gitlab.com/zstg/nixos-config/">here</a>. Feel free to modify and use it. Note that NixOS makes rolling back (to a working config) trivial. Don&rsquo;t hesitate and play around with the options. The <a href="https://search.nixos.org">web interface</a> contains the list of packages and configuration options that NixOS supports. Be sure to change the username and other details!</p>
+<p>Note that you must symlink the config files to their required places (else the files wouldn&rsquo;t be read). This can be done easily:  (assuming you&rsquo;ve cloned this to your home directory)</p>
+<pre tabindex="0"><code> sudo ln -sf ~/nixos-config/configuration.nix /etc/nixos/ # if you want my config
+ mkdir -p ~/.config/home-manager/
+ ln -sf ~/nixos-config/home.nix ~/.config/home-manager/
+</code></pre><blockquote>
+<p>Home-manager is an unofficial tool provided by NixOS that helps take user-level configuration to the next level. It lets you perform declarative management at the user-level, thus enabling the user to manage their progrm configs in a declarative way, like NixOS&rsquo; OS-wide declarative approach.</p>
+</blockquote>
+<hr>
+<h2 id="conclusion">Conclusion<a href="#conclusion" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>Congratulations once again on installing NixOS! You&rsquo;ve taken a step into the world of declarative configuration, powerful package management, and system reproducibility. By following the installation process outlined in this guide, you&rsquo;re well on your way to enjoying the unique features that NixOS brings to the table. Embrace the flexibility, atomic upgrades, and package isolation that NixOS offers, and make your system truly your own. Happy Nix-ing!
+Wanna try a package before actually installing it onto your system (by adding the package to <code>configuration.nix</code>) ? Use <code>nix-shell -p &lt;package_name&gt;</code> to install the package in an ephemeral shell.</p>
+
+      </div></div>
+
+  
+
+  
+    
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2023 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

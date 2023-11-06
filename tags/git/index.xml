@@ -5,12 +5,11 @@
     <link>https://zstg.github.io/tags/git/</link>
     <description>Recent content in Git on Stig&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Sun, 05 Nov 2023 21:22:25 +0530</lastBuildDate><atom:link href="https://zstg.github.io/tags/git/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language><atom:link href="https://zstg.github.io/tags/git/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Setup a simple blog using GitHub Pages and Hugo</title>
       <link>https://zstg.github.io/posts/setupblog/</link>
-      <pubDate>Sun, 05 Nov 2023 21:22:25 +0530</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://zstg.github.io/posts/setupblog/</guid>
       <description>Blogs are a great way to share your thoughts, ideas, and experiences with the world. They can be used for personal or professional purposes, and there are blogs on just about every topic imaginable.
@@ -94,9 +93,12 @@ We can now deploy this repo to GitHub and it will automatically be converted to 
 &lt;/div&gt;
 &lt;div class=&#34;src src-bash&#34;&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# in zstgblog&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;hugo -t terminal
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;cd public
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# add, commit, push to main&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git rm -r --cached public
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;hugo 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git add .
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git add public
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git commit -am &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Force rebuild&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git push&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;div id=&#34;outline-container-headline-3&#34; class=&#34;outline-6&#34;&gt;
 &lt;h6 id=&#34;headline-3&#34;&gt;
