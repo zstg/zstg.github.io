@@ -81,7 +81,7 @@ Edit &lt;code&gt;content/posts/nameOfFile.md&lt;/code&gt; and add a &lt;em&gt;br
 Next, make the GitHub Page repo (&lt;a href=&#34;https://github.com/username/username.github.io)&#34;&gt;https://github.com/username/username.github.io)&lt;/a&gt; a &lt;code&gt;Git submodule&lt;/code&gt; of the current repo. This is done to ensure that this repo can be used for GitHub Pages.&lt;/p&gt;
 &lt;div class=&#34;src src-bash&#34;&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Ensure that you&amp;#39;re in the zstgblog directory&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git submodule add -b main https://github.com/zstg/zstg.github.io.git public&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git submodule add https://github.com/zstg/zstg.github.io.git public&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;
 We can now deploy this repo to GitHub and it will automatically be converted to a proper GitHub page powered by Hugo.&lt;/p&gt;
