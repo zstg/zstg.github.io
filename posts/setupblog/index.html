@@ -191,11 +191,15 @@ We can now deploy this repo to GitHub and it will automatically be converted to 
 </div>
 <div class="src src-bash">
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># in zstgblog</span>
-</span></span><span style="display:flex;"><span>git rm -r --cached public
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># git rm -r --cached public</span>
 </span></span><span style="display:flex;"><span>hugo 
+</span></span><span style="display:flex;"><span>cd public
 </span></span><span style="display:flex;"><span>git add .
-</span></span><span style="display:flex;"><span>git add public
-</span></span><span style="display:flex;"><span>git commit -am <span style="color:#e6db74">&#34;Force rebuild&#34;</span>
+</span></span><span style="display:flex;"><span>git commit -am <span style="color:#e6db74">&#34;Add new content&#34;</span>
+</span></span><span style="display:flex;"><span>git push
+</span></span><span style="display:flex;"><span>cd ..
+</span></span><span style="display:flex;"><span>git add .
+</span></span><span style="display:flex;"><span>git commit -am <span style="color:#e6db74">&#34;Rebuilt website&#34;</span>
 </span></span><span style="display:flex;"><span>git push</span></span></code></pre></div>
 </div>
 <div id="outline-container-headline-3" class="outline-6">
