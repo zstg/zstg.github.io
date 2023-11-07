@@ -1,13 +1,67 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Posts on Stig&#39;s blog</title>
+    <title>Posts on </title>
     <link>https://zstg.github.io/posts/</link>
-    <description>Recent content in Posts on Stig&#39;s blog</description>
+    <description>Recent content in Posts on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language><atom:link href="https://zstg.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Install nixOS using the minimal ISO</title>
+      <title>Configuring Arch post-install</title>
+      <link>https://zstg.github.io/posts/linux/arch-part2/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://zstg.github.io/posts/linux/arch-part2/</guid>
+      <description>I&amp;rsquo;m using Arch with Hyprland, and so here&amp;rsquo;s a quick reference for getting things up-to-speed.
+Initial sudo pacman -S waybar mako libnotify starship wl-clipboard hyprland xdg-desktop-portal-hyprland git ripgrep fd bat blueman brave-bin librewolf-bin eza fuse2 git-delta gpm grim slurp swappy hugo keepassxc kitty ly nano-syntax-highlighting zsh-syntax-highlighting neofetch neovim networkmanager-applet noto-fonts oh-my-zsh-git openssh pacman-contrib pinentry pipewire-pulse playerctl qt5-wayland qt6-wayland tree wireplumber usermod -aG input,video,dialout stig # it&amp;#39;s fine if this gives an error, modify accordingly chsh -s /usr/bin/zsh # Change to ZSH git clone https://gitlab.</description>
+      <content>&lt;p&gt;I&amp;rsquo;m using Arch with Hyprland, and so here&amp;rsquo;s a quick reference for getting things up-to-speed.&lt;/p&gt;
+&lt;h2 id=&#34;initial&#34;&gt;Initial&lt;/h2&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;sudo pacman -S waybar mako libnotify starship wl-clipboard hyprland xdg-desktop-portal-hyprland git ripgrep fd bat blueman brave-bin librewolf-bin eza fuse2 git-delta gpm grim slurp swappy hugo keepassxc kitty ly nano-syntax-highlighting zsh-syntax-highlighting neofetch neovim networkmanager-applet noto-fonts oh-my-zsh-git openssh pacman-contrib pinentry pipewire-pulse playerctl qt5-wayland qt6-wayland tree wireplumber
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;usermod -aG input,video,dialout stig &lt;span style=&#34;color:#75715e&#34;&gt;# it&amp;#39;s fine if this gives an error, modify accordingly&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;chsh -s /usr/bin/zsh 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Change to ZSH&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git clone https://gitlab.com/zstg/dotfiles ~/.dotfiles
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;syncer &lt;span style=&#34;color:#75715e&#34;&gt;# linker not reqd, stuff is in PATH&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;~/.dotfiles/misc/setup-yay
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;paru -S hyprpaper eww-tray-wayland-git
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;~/dotfiles/misc/setup-rofi
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;~/.dotfiles/misc/setup-doom-emacs
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;~/.dotfiles/misc/setup-nvchad
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;systemctl --user enable --now xdg-desktop-portal-hyprland wireplumber pipewire-pulse pipewire gnome-keyring-daemon emacs 
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;gtk-settings&#34;&gt;GTK settings&lt;/h2&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;paru -S arc-gtk-theme gtk3 papirus-icon-theme bibata-cursor-theme-bin 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Syncer would have copied the gtk settings as well&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;fonts&#34;&gt;Fonts&lt;/h2&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;paru -S ttf-ms-fonts &lt;span style=&#34;color:#75715e&#34;&gt;# For LibreOffice Flatpak&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;paru -S ttf-jetbrains-mono-nerd ttf-nerd-fonts-symbols-common ttf-nerd-fonts-symbols-mono
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;sudo fc-cache -fv
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;fc-cache -fv
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;flatpak&#34;&gt;Flatpak&lt;/h2&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;paru -S flatpak
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;flatpak --user remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;polkit&#34;&gt;Polkit&lt;/h2&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;sudo pacman -S polkit-gnome gnome-keyring libgnome-keyring
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# /lib/polkit-gnome/polkit-gnome-authentication-agent-1 is part of Hyprland config&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;swap&#34;&gt;Swap&lt;/h2&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;sudo fallocate -l 8G /swapfile
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;sudo chmod &lt;span style=&#34;color:#ae81ff&#34;&gt;600&lt;/span&gt; /swapfile 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;sudo mkswap /swapfile 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;echo &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;/swapfile    none    swap    sw    0    0&amp;#39;&lt;/span&gt; | sudo tee -a /etc/fstab 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# sudo reboot to use the swapfile &lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;hibernate-settings&#34;&gt;Hibernate settings&lt;/h2&gt;
+&lt;p&gt;Edit &lt;code&gt;/etc/systemd/logind.conf:&lt;/code&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# InhibitDelayMaxSec=5&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;HandlePowerKey&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;ignore
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;HandlePowerKeyLongPress&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;poweroff
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# DefaultTimeoutStopSec=5s&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Edit &lt;code&gt;/etc/systemd/sleep.conf&lt;/code&gt;:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;HibernateDelaySec&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;3600&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content>
+    </item>
+    
+    <item>
+      <title>Install NixOS using the minimal ISO</title>
       <link>https://zstg.github.io/posts/linux/nixos/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
@@ -76,27 +130,27 @@ NixOS is an immutable OS.&lt;/p&gt;
 &lt;p&gt;The picture below shows my partitioning layout: (again, note &lt;code&gt;/boot&lt;/code&gt; is used even for EFI systems).&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://zstg.github.io/lsblk.png&#34; alt=&#34;lsblk output&#34;&gt;&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;My&lt;/em&gt; partitioning layout can be achieved using:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;parted /dev/sda -- mklabel gpt
-parted /dev/sdb -- mklabel gpt
-
-# Create the partitions
-parted /dev/sda -- mkpart primary 0% 100% # /home
-
-parted /dev/sdb -- mkpart ESP fat32 1MB 1024MB # 512 will do for /boot
-parted /dev/sdb -- set 1 esp on 
-parted /dev/sdb -- mkpart primary 512MB 100% # / 
-
-# Format to resp filesystems
-mkfs.ext4 -L home /dev/sda1
-mkfs.ext4 -L nixos /dev/sdb2
-mkfs.fat -F 32 -n boot /dev/sdb1
-&lt;/code&gt;&lt;/pre&gt;&lt;h5 id=&#34;mount-the-partitions&#34;&gt;Mount the partitions:&lt;/h5&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;parted /dev/sda -- mklabel gpt
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;parted /dev/sdb -- mklabel gpt
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Create the partitions&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;parted /dev/sda -- mkpart primary 0% 100% &lt;span style=&#34;color:#75715e&#34;&gt;# /home&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;parted /dev/sdb -- mkpart ESP fat32 1MB 1024MB &lt;span style=&#34;color:#75715e&#34;&gt;# 512 will do for /boot&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;parted /dev/sdb -- set &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; esp on 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;parted /dev/sdb -- mkpart primary 512MB 100% &lt;span style=&#34;color:#75715e&#34;&gt;# / &lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Format to resp filesystems&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;mkfs.ext4 -L home /dev/sda1
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;mkfs.ext4 -L nixos /dev/sdb2
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;mkfs.fat -F &lt;span style=&#34;color:#ae81ff&#34;&gt;32&lt;/span&gt; -n boot /dev/sdb1
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h5 id=&#34;mount-the-partitions&#34;&gt;Mount the partitions:&lt;/h5&gt;
 &lt;p&gt;Now, create mount points and mount the partitions to the desired locations. For instance, if you want to mount the root partition to &lt;code&gt;/mnt&lt;/code&gt;, use this command:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;mkdir -p /mnt/boot
-mount /dev/disk/by-label/nixos /mnt
-mount /dev/disk/by-label/boot /mnt/boot
-mount /dev/disk/by-label/home /mnt/home
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;If you - like me - require separate partitions for &lt;code&gt;/home&lt;/code&gt; or any other directories, mount them accordingly.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;mkdir -p /mnt/boot
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;mount /dev/disk/by-label/nixos /mnt
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;mount /dev/disk/by-label/boot /mnt/boot
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;mount /dev/disk/by-label/home /mnt/home
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;If you - like me - require separate partitions for &lt;code&gt;/home&lt;/code&gt; or any other directories, mount them accordingly.&lt;/p&gt;
 &lt;h5 id=&#34;generate-nixos-configuration&#34;&gt;Generate NixOS configuration:&lt;/h5&gt;
 &lt;p&gt;To generate the initial NixOS configuration, run the following command:&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;nixos-generate-config --root /mnt&lt;/code&gt;&lt;/p&gt;
@@ -105,8 +159,7 @@ mount /dev/disk/by-label/home /mnt/home
 &lt;p&gt;Open up your favorite text editor and customize the configuration file at &lt;code&gt;/mnt/etc/nixos/configuration.nix&lt;/code&gt; to your heart&amp;rsquo;s content. This file allows you to specify partitions, file systems, boot options, network configuration, and other system settings. Make it your playground!&lt;/p&gt;
 &lt;h5 id=&#34;install-nixos&#34;&gt;Install NixOS:&lt;/h5&gt;
 &lt;p&gt;After you&amp;rsquo;re done tweaking the configuration file, save the changes and run the following command to install NixOS:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;`nixos-install`    
-&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;nixos-install&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;This will install NixOS using the configuration file you provided. It&amp;rsquo;s like waving a magic wand!&lt;/p&gt;
 &lt;h5 id=&#34;reboot-into-nixos&#34;&gt;Reboot into NixOS:&lt;/h5&gt;
 &lt;p&gt;With the installation process completed successfully, remove the USB drive, take a deep breath, and reboot your computer. You should now see the NixOS boot menu, ready to welcome you into your newly installed NixOS system. Enjoy the ride!&lt;/p&gt;
@@ -138,10 +191,10 @@ Don&amp;rsquo;t forget, you&amp;rsquo;re not alone on this journey. NixOS has a 
 &lt;h3 id=&#34;want-a-sample-configuration-&#34;&gt;Want a sample configuration ?&lt;/h3&gt;
 &lt;p&gt;My configuration is available &lt;a href=&#34;https://gitlab.com/zstg/nixos-config/&#34;&gt;here&lt;/a&gt;. Feel free to modify and use it. Note that NixOS makes rolling back (to a working config) trivial. Don&amp;rsquo;t hesitate and play around with the options. The &lt;a href=&#34;https://search.nixos.org&#34;&gt;web interface&lt;/a&gt; contains the list of packages and configuration options that NixOS supports. Be sure to change the username and other details!&lt;/p&gt;
 &lt;p&gt;Note that you must symlink the config files to their required places (else the files wouldn&amp;rsquo;t be read). This can be done easily:  (assuming you&amp;rsquo;ve cloned this to your home directory)&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt; sudo ln -sf ~/nixos-config/configuration.nix /etc/nixos/ # if you want my config
- mkdir -p ~/.config/home-manager/
- ln -sf ~/nixos-config/home.nix ~/.config/home-manager/
-&lt;/code&gt;&lt;/pre&gt;&lt;blockquote&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; sudo ln -sf ~/nixos-config/configuration.nix /etc/nixos/ &lt;span style=&#34;color:#75715e&#34;&gt;# if you want my config&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; mkdir -p ~/.config/home-manager/
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; ln -sf ~/nixos-config/home.nix ~/.config/home-manager/
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;blockquote&gt;
 &lt;p&gt;Home-manager is an unofficial tool provided by NixOS that helps take user-level configuration to the next level. It lets you perform declarative management at the user-level, thus enabling the user to manage their progrm configs in a declarative way, like NixOS&amp;rsquo; OS-wide declarative approach.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;hr&gt;
@@ -153,10 +206,10 @@ Wanna try a package before actually installing it onto your system (by adding th
     
     <item>
       <title>Installing Arch the fun way</title>
-      <link>https://zstg.github.io/posts/linux/arch/</link>
+      <link>https://zstg.github.io/posts/linux/arch-part1/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://zstg.github.io/posts/linux/arch/</guid>
+      <guid>https://zstg.github.io/posts/linux/arch-part1/</guid>
       <description>Installing Arch is not hard at all, it&amp;rsquo;s quite simple to do. Arch has long been known as a power-users&amp;rsquo; distro, and Arch users are usually elitists. Today, we&amp;rsquo;ll break that notion!
 Let&amp;rsquo;s learn how to install Arch manually!
 Step 1: Download the Arch ISO Download the Arch ISO from here. You can also download it from a mirror in your country for faster download speeds.

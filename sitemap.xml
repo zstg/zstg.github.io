@@ -2,9 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://zstg.github.io/</loc>
+  </url><url>
     <loc>https://zstg.github.io/tags/arch/</loc>
   </url><url>
     <loc>https://zstg.github.io/categories/</loc>
+  </url><url>
+    <loc>https://zstg.github.io/posts/linux/arch-part2/</loc>
   </url><url>
     <loc>https://zstg.github.io/tags/git/</loc>
   </url><url>
@@ -12,7 +16,7 @@
   </url><url>
     <loc>https://zstg.github.io/posts/linux/nixos/</loc>
   </url><url>
-    <loc>https://zstg.github.io/posts/linux/arch/</loc>
+    <loc>https://zstg.github.io/posts/linux/arch-part1/</loc>
   </url><url>
     <loc>https://zstg.github.io/tags/linux/</loc>
   </url><url>
@@ -21,8 +25,6 @@
     <loc>https://zstg.github.io/posts/</loc>
   </url><url>
     <loc>https://zstg.github.io/posts/setupblog/</loc>
-  </url><url>
-    <loc>https://zstg.github.io/</loc>
   </url><url>
     <loc>https://zstg.github.io/tags/</loc>
   </url>

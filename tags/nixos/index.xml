@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>nixOS on Stig&#39;s blog</title>
+    <title>nixOS on </title>
     <link>https://zstg.github.io/tags/nixos/</link>
-    <description>Recent content in nixOS on Stig&#39;s blog</description>
+    <description>Recent content in nixOS on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language><atom:link href="https://zstg.github.io/tags/nixos/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Install nixOS using the minimal ISO</title>
+      <title>Install NixOS using the minimal ISO</title>
       <link>https://zstg.github.io/posts/linux/nixos/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
@@ -76,27 +76,27 @@ NixOS is an immutable OS.&lt;/p&gt;
 &lt;p&gt;The picture below shows my partitioning layout: (again, note &lt;code&gt;/boot&lt;/code&gt; is used even for EFI systems).&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://zstg.github.io/lsblk.png&#34; alt=&#34;lsblk output&#34;&gt;&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;My&lt;/em&gt; partitioning layout can be achieved using:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;parted /dev/sda -- mklabel gpt
-parted /dev/sdb -- mklabel gpt
-
-# Create the partitions
-parted /dev/sda -- mkpart primary 0% 100% # /home
-
-parted /dev/sdb -- mkpart ESP fat32 1MB 1024MB # 512 will do for /boot
-parted /dev/sdb -- set 1 esp on 
-parted /dev/sdb -- mkpart primary 512MB 100% # / 
-
-# Format to resp filesystems
-mkfs.ext4 -L home /dev/sda1
-mkfs.ext4 -L nixos /dev/sdb2
-mkfs.fat -F 32 -n boot /dev/sdb1
-&lt;/code&gt;&lt;/pre&gt;&lt;h5 id=&#34;mount-the-partitions&#34;&gt;Mount the partitions:&lt;/h5&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;parted /dev/sda -- mklabel gpt
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;parted /dev/sdb -- mklabel gpt
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Create the partitions&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;parted /dev/sda -- mkpart primary 0% 100% &lt;span style=&#34;color:#75715e&#34;&gt;# /home&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;parted /dev/sdb -- mkpart ESP fat32 1MB 1024MB &lt;span style=&#34;color:#75715e&#34;&gt;# 512 will do for /boot&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;parted /dev/sdb -- set &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; esp on 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;parted /dev/sdb -- mkpart primary 512MB 100% &lt;span style=&#34;color:#75715e&#34;&gt;# / &lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Format to resp filesystems&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;mkfs.ext4 -L home /dev/sda1
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;mkfs.ext4 -L nixos /dev/sdb2
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;mkfs.fat -F &lt;span style=&#34;color:#ae81ff&#34;&gt;32&lt;/span&gt; -n boot /dev/sdb1
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h5 id=&#34;mount-the-partitions&#34;&gt;Mount the partitions:&lt;/h5&gt;
 &lt;p&gt;Now, create mount points and mount the partitions to the desired locations. For instance, if you want to mount the root partition to &lt;code&gt;/mnt&lt;/code&gt;, use this command:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;mkdir -p /mnt/boot
-mount /dev/disk/by-label/nixos /mnt
-mount /dev/disk/by-label/boot /mnt/boot
-mount /dev/disk/by-label/home /mnt/home
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;If you - like me - require separate partitions for &lt;code&gt;/home&lt;/code&gt; or any other directories, mount them accordingly.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;mkdir -p /mnt/boot
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;mount /dev/disk/by-label/nixos /mnt
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;mount /dev/disk/by-label/boot /mnt/boot
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;mount /dev/disk/by-label/home /mnt/home
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;If you - like me - require separate partitions for &lt;code&gt;/home&lt;/code&gt; or any other directories, mount them accordingly.&lt;/p&gt;
 &lt;h5 id=&#34;generate-nixos-configuration&#34;&gt;Generate NixOS configuration:&lt;/h5&gt;
 &lt;p&gt;To generate the initial NixOS configuration, run the following command:&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;nixos-generate-config --root /mnt&lt;/code&gt;&lt;/p&gt;
@@ -105,8 +105,7 @@ mount /dev/disk/by-label/home /mnt/home
 &lt;p&gt;Open up your favorite text editor and customize the configuration file at &lt;code&gt;/mnt/etc/nixos/configuration.nix&lt;/code&gt; to your heart&amp;rsquo;s content. This file allows you to specify partitions, file systems, boot options, network configuration, and other system settings. Make it your playground!&lt;/p&gt;
 &lt;h5 id=&#34;install-nixos&#34;&gt;Install NixOS:&lt;/h5&gt;
 &lt;p&gt;After you&amp;rsquo;re done tweaking the configuration file, save the changes and run the following command to install NixOS:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;`nixos-install`    
-&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;nixos-install&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;This will install NixOS using the configuration file you provided. It&amp;rsquo;s like waving a magic wand!&lt;/p&gt;
 &lt;h5 id=&#34;reboot-into-nixos&#34;&gt;Reboot into NixOS:&lt;/h5&gt;
 &lt;p&gt;With the installation process completed successfully, remove the USB drive, take a deep breath, and reboot your computer. You should now see the NixOS boot menu, ready to welcome you into your newly installed NixOS system. Enjoy the ride!&lt;/p&gt;
@@ -138,10 +137,10 @@ Don&amp;rsquo;t forget, you&amp;rsquo;re not alone on this journey. NixOS has a 
 &lt;h3 id=&#34;want-a-sample-configuration-&#34;&gt;Want a sample configuration ?&lt;/h3&gt;
 &lt;p&gt;My configuration is available &lt;a href=&#34;https://gitlab.com/zstg/nixos-config/&#34;&gt;here&lt;/a&gt;. Feel free to modify and use it. Note that NixOS makes rolling back (to a working config) trivial. Don&amp;rsquo;t hesitate and play around with the options. The &lt;a href=&#34;https://search.nixos.org&#34;&gt;web interface&lt;/a&gt; contains the list of packages and configuration options that NixOS supports. Be sure to change the username and other details!&lt;/p&gt;
 &lt;p&gt;Note that you must symlink the config files to their required places (else the files wouldn&amp;rsquo;t be read). This can be done easily:  (assuming you&amp;rsquo;ve cloned this to your home directory)&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt; sudo ln -sf ~/nixos-config/configuration.nix /etc/nixos/ # if you want my config
- mkdir -p ~/.config/home-manager/
- ln -sf ~/nixos-config/home.nix ~/.config/home-manager/
-&lt;/code&gt;&lt;/pre&gt;&lt;blockquote&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; sudo ln -sf ~/nixos-config/configuration.nix /etc/nixos/ &lt;span style=&#34;color:#75715e&#34;&gt;# if you want my config&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; mkdir -p ~/.config/home-manager/
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; ln -sf ~/nixos-config/home.nix ~/.config/home-manager/
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;blockquote&gt;
 &lt;p&gt;Home-manager is an unofficial tool provided by NixOS that helps take user-level configuration to the next level. It lets you perform declarative management at the user-level, thus enabling the user to manage their progrm configs in a declarative way, like NixOS&amp;rsquo; OS-wide declarative approach.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;hr&gt;

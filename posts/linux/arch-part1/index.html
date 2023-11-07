@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Installing Arch the fun way :: </title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="In this blog post, we check out the installation of Archlinux, a distro notoriously hard to install." />
+<meta name="keywords" content="Linux, Arch" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://zstg.github.io/posts/linux/arch-part1/" />
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  <link rel="stylesheet" href="https://zstg.github.io/styles.css">
+
+
+
+
+
+
+
+  <link rel="shortcut icon" href="https://zstg.github.io/img/theme-colors/blue.png">
+  <link rel="apple-touch-icon" href="https://zstg.github.io/img/theme-colors/blue.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Installing Arch the fun way">
+<meta property="og:description" content="In this blog post, we check out the installation of Archlinux, a distro notoriously hard to install." />
+<meta property="og:url" content="https://zstg.github.io/posts/linux/arch-part1/" />
+<meta property="og:site_name" content="" />
+
+  
+  
+  <meta property="og:image" content="https://zstg.github.io/">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="blue">
+
+
+<div class="container center headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    Stig&#39;s blog
+  </div>
+</a>
+
+    </div>
+    
+    
+  </div>
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://zstg.github.io/posts/linux/arch-part1/">Installing Arch the fun way</a>
+  </h1>
+  <div class="post-meta"><span class="post-author">ZeStig</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://zstg.github.io/tags/arch/">Arch</a>&nbsp;
+      
+      #<a href="https://zstg.github.io/tags/linux/">Linux</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p>Installing Arch is not hard at all, it&rsquo;s quite simple to do. Arch has long been known as a power-users&rsquo; distro, and Arch users are usually elitists. Today, we&rsquo;ll break that notion!</p>
+<p>Let&rsquo;s learn how to install Arch manually!</p>
+<h2 id="step-1-download-the-arch-iso">Step 1: Download the Arch ISO<a href="#step-1-download-the-arch-iso" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>Download the Arch ISO from <a href="https://archlinux.org/download">here</a>. You can also download it from a mirror in your country for faster download speeds.</p>
+<h2 id="step-2-boot-into-the-arch-iso">Step 2: Boot into the Arch ISO<a href="#step-2-boot-into-the-arch-iso" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>Create a fresh VM and boot into the Arch ISO that you&rsquo;ve downloaded. Alternatively, you can flash the image to a USB and boot from it. The ISO file will automatically boot into a shell. You can type <code>clear</code> to clear the screen.</p>
+<h2 id="step-3-set-the-time-and-date">Step 3: Set the Time and Date<a href="#step-3-set-the-time-and-date" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>Run the following command to set the time and date:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>timedatectl set-ntp true
+</span></span></code></pre></div><h2 id="step-4-partition-the-virtual-hard-drive">Step 4: Partition the Virtual Hard Drive<a href="#step-4-partition-the-virtual-hard-drive" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>Partition your virtual hard drive using the following commands:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>parted /dev/sda -- mklabel gpt <span style="color:#75715e"># THIS WILL WIPE YOUR DEVICE, don&#39;t do this if you&#39;re dual-booting</span>
+</span></span><span style="display:flex;"><span>parted /dev/sda -- mkpart ESP fat32 1MB 512MB <span style="color:#75715e"># 512 MB bootloader</span>
+</span></span><span style="display:flex;"><span>parted /dev/sda -- mkpart primary ext4 512MB 100% <span style="color:#75715e"># rem space for the root filesystem</span>
+</span></span><span style="display:flex;"><span>parted /dev/sda -- set <span style="color:#ae81ff">1</span> esp on <span style="color:#75715e"># make the partition bootable</span>
+</span></span></code></pre></div><h2 id="step-5-format-the-partitions">Step 5: Format the Partitions<a href="#step-5-format-the-partitions" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>Format the partitions that you&rsquo;ve created:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>mkfs.fat -F32 /dev/sda1 -n boot
+</span></span><span style="display:flex;"><span>mkfs.ext4 /dev/sda2 -L root
+</span></span></code></pre></div><p>If you&rsquo;ve created a btrfs filesystem, use the following command instead:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>mkfs.btrfs /dev/sda2 -L root
+</span></span></code></pre></div><h2 id="step-6-mount-the-partitions">Step 6: Mount the Partitions<a href="#step-6-mount-the-partitions" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>Mount the partitions to your filesystem:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>mount /dev/sda2 /mnt
+</span></span><span style="display:flex;"><span>mkdir -p /mnt/boot/EFI
+</span></span><span style="display:flex;"><span>mount /dev/sda1 /mnt/boot/EFI
+</span></span></code></pre></div><h2 id="step-7-install-base-arch-stuff">Step 7: Install Base Arch Stuff<a href="#step-7-install-base-arch-stuff" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>Install the base Arch stuff onto your install. This process can take ≈ 10-15 min depending on your internet connection:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>pacstrap /mnt base linux linux-firmware
+</span></span></code></pre></div><h2 id="step-8-set-hostname">Step 8: Set Hostname<a href="#step-8-set-hostname" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>Add a hostname to your VM:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>genfstab -L /mnt &gt;&gt; /mnt/etc/fstab <span style="color:#75715e"># use labels to identify em</span>
+</span></span><span style="display:flex;"><span>modprobe efivarfs
+</span></span><span style="display:flex;"><span>arch-chroot /mnt
+</span></span></code></pre></div><p>Choose a proper timezone and set the hostname:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ln -sf /usr/share/zoneinfo/America/Chicago /etc/localtime
+</span></span><span style="display:flex;"><span>hwclock --systohc
+</span></span><span style="display:flex;"><span>echo Arch-VM &gt; /etc/hostname <span style="color:#75715e"># replace with a hostname of your choice, preferably no spaces</span>
+</span></span></code></pre></div><h2 id="step-9-configure-etchosts">Step 9: Configure /etc/hosts<a href="#step-9-configure-etchosts" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>Edit the <code>/etc/hosts</code> file and add the following:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1   localhost
+</span></span><span style="display:flex;"><span>::1         localhost
+</span></span><span style="display:flex;"><span>127.0.1.1   arch.localdomain arch <span style="color:#75715e"># REPLACE arch WITH YOUR HOSTNAME!!!</span>
+</span></span></code></pre></div><h2 id="step-10-set-root-password">Step 10: Set Root Password<a href="#step-10-set-root-password" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>Set the password for the root user:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>passwd
+</span></span></code></pre></div><h2 id="step-11-add-user">Step 11: Add User<a href="#step-11-add-user" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>Add a user and set a password for it:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>useradd -m stig <span style="color:#f92672">&amp;&amp;</span> passwd stig:
+</span></span></code></pre></div><p>Add the user to the necessary groups:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>usermod -aG wheel,audio,video,optical,storage stig
+</span></span></code></pre></div><p>Install sudo and nano:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>pacman -S sudo nano --noconfirm
+</span></span></code></pre></div><p>Add the user to the wheel group in the <code>/etc/sudoers</code> file:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>EDITOR<span style="color:#f92672">=</span>nano visudo
+</span></span></code></pre></div><p>Uncomment the following line in the <code>/etc/sudoers</code> file:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>%wheel ALL<span style="color:#f92672">=(</span>ALL:ALL<span style="color:#f92672">)</span> ALL
+</span></span></code></pre></div><h2 id="step-12-install-bootloader">Step 12: Install Bootloader<a href="#step-12-install-bootloader" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Systemd-boot</th>
+<th>GRUB</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BIOS</td>
+<td>N</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>UEFI</td>
+<td>Y</td>
+<td>Y</td>
+</tr>
+</tbody>
+</table>
+<p>Install the bootloader:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>pacman -S grub efibootmgr os-prober
+</span></span></code></pre></div><p>Note that os-prober is optional, but can be useful to troubleshoot dual-boot systems. You need not install it inside a VM, or when you&rsquo;re not dual-booting.
+Then install the bootloader to the right place:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>mkdir /mnt/boot/EFI 
+</span></span><span style="display:flex;"><span>grub-install --target<span style="color:#f92672">=</span>x86_64-efi --bootloader-id<span style="color:#f92672">=</span>grub_uefi --recheck 
+</span></span></code></pre></div><p>Now we need to generate a grub config file.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>grub-mkconfig -o /boot/grub/grub.cfg
+</span></span></code></pre></div><p>Get a networking daemon set up:
+<code>pacman -S networkmanager --noc &amp;&amp; systemctl enable NetworkManager</code></p>
+<p>Leave the arch-chroot; installation&rsquo;s almost over.</p>
+<p><code>exit</code></p>
+<p>Finally unmount the live USB: <code>umount -l /mnt &amp;&amp; exit</code></p>
+<p>Shut down the VM: <code>shutdown now</code></p>
+<p>The virtual machine has been shut down , eject the ISO file (remove the USB if you&rsquo;re performing the installation on bare metal).
+When the VM has finished booting up once more, login into the tty by typing your username and password.</p>
+<p>Next, we&rsquo;re going to install video drivers (<em>if</em> they haven&rsquo;t been installed):</p>
+<p><code>sudo pacman -S --needed xf86-video-fbdev xorg xorg-xinit --noc</code></p>
+<p>Now we install a desktop.</p>
+<p>Choose which DE you need from <a href="https://wiki.archlinux.org/title/Desktop_environment">this link</a>.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>If you want a <a href="https://wiki.archlinux.org/title/Display_manager">display manager</a> such as <a href="https://github.com/sddm/sddm">SDDM</a>, you can set it up as well:</p>
+<pre tabindex="0"><code>sudo pacman -S sddm --noconfirm
+sudo systemctl enable sddm # will autostart the service from next boot onwards
+</code></pre><p>Now that the Arch install <strong>has <em>finished</em></strong>, simply reboot your system using the <code>reboot</code> command.</p>
+
+      </div></div>
+
+  
+
+  
+    
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2023 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
