@@ -136,11 +136,10 @@
 </span></span></code></pre></div><h2 id="step-6-mount-the-partitions">Step 6: Mount the Partitions<a href="#step-6-mount-the-partitions" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
 <p>Mount the partitions to your filesystem:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>mount /dev/sda2 /mnt
-</span></span><span style="display:flex;"><span>mkdir -p /mnt/boot/EFI
-</span></span><span style="display:flex;"><span>mount /dev/sda1 /mnt/boot/EFI
+</span></span><span style="display:flex;"><span>mount --mkdir /dev/sda1 /mnt/boot
 </span></span></code></pre></div><h2 id="step-7-install-base-arch-stuff">Step 7: Install Base Arch Stuff<a href="#step-7-install-base-arch-stuff" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
 <p>Install the base Arch stuff onto your install. This process can take ≈ 10-15 min depending on your internet connection:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>pacstrap /mnt base linux linux-firmware
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>pacstrap /mnt base linux linux-firmware <span style="color:#75715e"># linux-firmware is optional inside a VM...</span>
 </span></span></code></pre></div><h2 id="step-8-set-hostname">Step 8: Set Hostname<a href="#step-8-set-hostname" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
 <p>Add a hostname to your VM:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>genfstab -L /mnt &gt;&gt; /mnt/etc/fstab <span style="color:#75715e"># use labels to identify em</span>
@@ -162,7 +161,7 @@
 <p>Add a user and set a password for it:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>useradd -m stig <span style="color:#f92672">&amp;&amp;</span> passwd stig:
 </span></span></code></pre></div><p>Add the user to the necessary groups:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>usermod -aG wheel,audio,video,optical,storage stig
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>usermod -aG wheel,input,audio,video,optical,storage stig
 </span></span></code></pre></div><p>Install sudo and nano:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>pacman -S sudo nano --noconfirm
 </span></span></code></pre></div><p>Add the user to the wheel group in the <code>/etc/sudoers</code> file:</p>
@@ -193,22 +192,36 @@
 </table>
 <p>Install the bootloader:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>pacman -S grub efibootmgr os-prober
-</span></span></code></pre></div><p>Note that os-prober is optional, but can be useful to troubleshoot dual-boot systems. You need not install it inside a VM, or when you&rsquo;re not dual-booting.
-Then install the bootloader to the right place:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>mkdir /mnt/boot/EFI 
-</span></span><span style="display:flex;"><span>grub-install --target<span style="color:#f92672">=</span>x86_64-efi --bootloader-id<span style="color:#f92672">=</span>grub_uefi --recheck 
+</span></span></code></pre></div><p>Note that os-prober is optional, but can be useful to troubleshoot dual-boot systems. You need not install it inside a VM, or when you&rsquo;re not dual-booting.</p>
+<p>Then install the bootloader to the right place - you can choose between Grub and Systemd-boot.</p>
+<blockquote>
+<h3 id="grub">Grub<a href="#grub" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span> mkdir /boot/EFI 
+</span></span><span style="display:flex;"><span> grub-install --target<span style="color:#f92672">=</span>x86_64-efi --bootloader-id<span style="color:#f92672">=</span>grub_uefi --recheck 
 </span></span></code></pre></div><p>Now we need to generate a grub config file.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>grub-mkconfig -o /boot/grub/grub.cfg
-</span></span></code></pre></div><p>Get a networking daemon set up:
-<code>pacman -S networkmanager --noc &amp;&amp; systemctl enable NetworkManager</code></p>
-<p>Leave the arch-chroot; installation&rsquo;s almost over.</p>
+</span></span></code></pre></div><blockquote>
+<h3 id="systemd-boot">Systemd-boot<a href="#systemd-boot" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>bootctl install
+</span></span></code></pre></div><p>Open <code>/etc/fstab</code> and note the <em>UUID</em> of the partition mounted at <code>/</code> (<code>root</code> or <code>/dev/sda2</code> in this case).</p>
+<p>Now create <code>/boot/loader/entries/arch.conf</code> with the following content:</p>
+<pre tabindex="0"><code>title Arch Linux
+linux /vmlinuz-linux
+initrd /intel-ucode.img 
+initrd /initramfs-linux.amg
+options root=&lt;UUID obtained above&gt; rw
+</code></pre><p>NOTE: <em>Replace with</em> <code>amd-ucode.img</code> <em>if you have an AMD processor</em>.</p>
+<p>Get a networking daemon set up:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>pacman -S networkmanager --noconfirm
+</span></span><span style="display:flex;"><span>systemctl enable NetworkManager
+</span></span></code></pre></div><p>Leave the arch-chroot; installation&rsquo;s almost over.</p>
 <p><code>exit</code></p>
 <p>Finally unmount the live USB: <code>umount -l /mnt &amp;&amp; exit</code></p>
 <p>Shut down the VM: <code>shutdown now</code></p>
 <p>The virtual machine has been shut down , eject the ISO file (remove the USB if you&rsquo;re performing the installation on bare metal).
 When the VM has finished booting up once more, login into the tty by typing your username and password.</p>
-<p>Next, we&rsquo;re going to install video drivers (<em>if</em> they haven&rsquo;t been installed):</p>
-<p><code>sudo pacman -S --needed xf86-video-fbdev xorg xorg-xinit --noc</code></p>
 <p>Now we install a desktop.</p>
 <p>Choose which DE you need from <a href="https://wiki.archlinux.org/title/Desktop_environment">this link</a>.</p>
 <!-- raw HTML omitted -->
