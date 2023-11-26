@@ -135,7 +135,7 @@ Install hugo and git
 Repo creation
 </h2>
 <div id="outline-text-headline-2" class="outline-text-2">
-<p>The next step involves creating public repos on GitHub. I&#39;ll be creating 2 repos, one for <a href="https://github.com/zstg/zstg.github.io">GitHub Pages deployment</a> and the other for storing <a href="https://github.com/zstg/blog">the blog itself</a>. For beginners, I recommend creating these repos from the web interface rather than the commandline, but feel free to do it in any way you please.</p>
+<p>The next step involves creating public repos on GitHub. I&#39;ll be creating 2 repos, a <strong>non-empty</strong> repo for <a href="https://github.com/zstg/zstg.github.io">GitHub Pages deployment</a> and the other for storing <a href="https://github.com/zstg/blog">the blog itself</a>. For beginners, I recommend creating these repos from the web interface rather than the commandline, but feel free to do it in any way you please.</p>
 <p>
 After the repos are created, clone them to your local machine:</p>
 <div class="src src-bash">
@@ -187,12 +187,6 @@ Next, make the GitHub Page repo (<a href="https://github.com/username/username.g
 </div>
 <p>
 We can now deploy this repo to GitHub and it will automatically be converted to a proper GitHub page powered by Hugo.</p>
-<div class="src src-bash">
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># in zstgblog directory</span>
-</span></span><span style="display:flex;"><span>git add .
-</span></span><span style="display:flex;"><span>git commit -am <span style="color:#e6db74">&#34;Add commit message here&#34;</span>
-</span></span><span style="display:flex;"><span>git push</span></span></code></pre></div>
-</div>
 <div class="src src-bash">
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># in zstgblog</span>
 </span></span><span style="display:flex;"><span><span style="color:#75715e"># git rm -r --cached public</span>

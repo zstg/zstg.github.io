@@ -38,7 +38,7 @@ Install hugo and git
 Repo creation
 &lt;/h2&gt;
 &lt;div id=&#34;outline-text-headline-2&#34; class=&#34;outline-text-2&#34;&gt;
-&lt;p&gt;The next step involves creating public repos on GitHub. I&amp;#39;ll be creating 2 repos, one for &lt;a href=&#34;https://github.com/zstg/zstg.github.io&#34;&gt;GitHub Pages deployment&lt;/a&gt; and the other for storing &lt;a href=&#34;https://github.com/zstg/blog&#34;&gt;the blog itself&lt;/a&gt;. For beginners, I recommend creating these repos from the web interface rather than the commandline, but feel free to do it in any way you please.&lt;/p&gt;
+&lt;p&gt;The next step involves creating public repos on GitHub. I&amp;#39;ll be creating 2 repos, a &lt;strong&gt;non-empty&lt;/strong&gt; repo for &lt;a href=&#34;https://github.com/zstg/zstg.github.io&#34;&gt;GitHub Pages deployment&lt;/a&gt; and the other for storing &lt;a href=&#34;https://github.com/zstg/blog&#34;&gt;the blog itself&lt;/a&gt;. For beginners, I recommend creating these repos from the web interface rather than the commandline, but feel free to do it in any way you please.&lt;/p&gt;
 &lt;p&gt;
 After the repos are created, clone them to your local machine:&lt;/p&gt;
 &lt;div class=&#34;src src-bash&#34;&gt;
@@ -90,12 +90,6 @@ Next, make the GitHub Page repo (&lt;a href=&#34;https://github.com/username/use
 &lt;/div&gt;
 &lt;p&gt;
 We can now deploy this repo to GitHub and it will automatically be converted to a proper GitHub page powered by Hugo.&lt;/p&gt;
-&lt;div class=&#34;src src-bash&#34;&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# in zstgblog directory&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git add .
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git commit -am &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Add commit message here&amp;#34;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git push&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;/div&gt;
 &lt;div class=&#34;src src-bash&#34;&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# in zstgblog&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# git rm -r --cached public&lt;/span&gt;

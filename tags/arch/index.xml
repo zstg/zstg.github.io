@@ -13,10 +13,12 @@
       
       <guid>https://zstg.github.io/posts/linux/arch-part2/</guid>
       <description>I&amp;rsquo;m using Arch with Hyprland, and so here&amp;rsquo;s a quick reference for getting things up-to-speed.
-Initial sudo pacman -S waybar mako libnotify starship wl-clipboard hyprland xdg-desktop-portal-hyprland git ripgrep fd bat blueman brave-bin librewolf-bin eza fuse2 git-delta gpm grim slurp swappy hugo keepassxc kitty ly nano-syntax-highlighting zsh-syntax-highlighting neofetch neovim networkmanager-applet noto-fonts oh-my-zsh-git openssh pacman-contrib pinentry pipewire-pulse playerctl qt5-wayland qt6-wayland tree wireplumber usermod -aG input,video,dialout stig # it&amp;#39;s fine if this gives an error, modify accordingly chsh -s /usr/bin/zsh # Change to ZSH git clone https://gitlab.</description>
+Initial sudo pacman -S waybar mako libnotify starship wl-clipboard hyprland xdg-desktop-portal-hyprland git ripgrep fd bat blueman brave-bin librewolf-bin \ eza fuse2 git-delta gpm grim slurp swappy hugo keepassxc kitty ly nano-syntax-highlighting zsh-syntax-highlighting neofetch \ networkmanager-applet noto-fonts oh-my-zsh-git openssh pacman-contrib pinentry pipewire-pulse playerctl qt5-wayland qt6-wayland tree wireplumber man-pages # provides man pages for some C functions/headers usermod -aG input,video,dialout stig # it&amp;#39;s fine if this gives an error, modify accordingly chsh -s /usr/bin/zsh # Change to ZSH git clone https://gitlab.</description>
       <content>&lt;p&gt;I&amp;rsquo;m using Arch with Hyprland, and so here&amp;rsquo;s a quick reference for getting things up-to-speed.&lt;/p&gt;
 &lt;h2 id=&#34;initial&#34;&gt;Initial&lt;/h2&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;sudo pacman -S waybar mako libnotify starship wl-clipboard hyprland xdg-desktop-portal-hyprland git ripgrep fd bat blueman brave-bin librewolf-bin eza fuse2 git-delta gpm grim slurp swappy hugo keepassxc kitty ly nano-syntax-highlighting zsh-syntax-highlighting neofetch neovim networkmanager-applet noto-fonts oh-my-zsh-git openssh pacman-contrib pinentry pipewire-pulse playerctl qt5-wayland qt6-wayland tree wireplumber
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;sudo pacman -S waybar mako libnotify starship wl-clipboard hyprland xdg-desktop-portal-hyprland git ripgrep fd bat blueman brave-bin librewolf-bin &lt;span style=&#34;color:#ae81ff&#34;&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;&lt;/span&gt;     eza fuse2 git-delta gpm grim slurp swappy hugo keepassxc kitty ly nano-syntax-highlighting zsh-syntax-highlighting neofetch  &lt;span style=&#34;color:#ae81ff&#34;&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;&lt;/span&gt;     networkmanager-applet noto-fonts oh-my-zsh-git openssh pacman-contrib pinentry pipewire-pulse playerctl qt5-wayland qt6-wayland tree wireplumber man-pages &lt;span style=&#34;color:#75715e&#34;&gt;# provides man pages for some C functions/headers&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;usermod -aG input,video,dialout stig &lt;span style=&#34;color:#75715e&#34;&gt;# it&amp;#39;s fine if this gives an error, modify accordingly&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;chsh -s /usr/bin/zsh 
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Change to ZSH&lt;/span&gt;
@@ -94,15 +96,19 @@ Step 2: Boot into the Arch ISO Create a fresh VM and boot into the Arch ISO that
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;step-6-mount-the-partitions&#34;&gt;Step 6: Mount the Partitions&lt;/h2&gt;
 &lt;p&gt;Mount the partitions to your filesystem:&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;mount /dev/sda2 /mnt
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;mount --mkdir /dev/sda1 /mnt/boot
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;mount --mkdir /dev/sda1 /mnt/boot &lt;span style=&#34;color:#75715e&#34;&gt;# if you&amp;#39;ve using BIOS&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;mount --mkdir /dev/sda1 /mnt/boot/efi &lt;span style=&#34;color:#75715e&#34;&gt;# if you&amp;#39;re using UEFI&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;step-7-install-base-arch-stuff&#34;&gt;Step 7: Install Base Arch Stuff&lt;/h2&gt;
 &lt;p&gt;Install the base Arch stuff onto your install. This process can take ≈ 10-15 min depending on your internet connection:&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;pacstrap /mnt base linux linux-firmware &lt;span style=&#34;color:#75715e&#34;&gt;# linux-firmware is optional inside a VM...&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# IF YOU&amp;#39;RE ON A NON-SOYSTEMD DISTRO SUCH AS ARTIX&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;basestrap /mnt base linux &lt;span style=&#34;color:#75715e&#34;&gt;# linux-firmware is optional INSIDE A VM&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;step-8-set-hostname&#34;&gt;Step 8: Set Hostname&lt;/h2&gt;
 &lt;p&gt;Add a hostname to your VM:&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;genfstab -L /mnt &amp;gt;&amp;gt; /mnt/etc/fstab &lt;span style=&#34;color:#75715e&#34;&gt;# use labels to identify em&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# fstabgen  -L /mnt &amp;gt;&amp;gt; /mnt/etc/fstab # on Artix&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;modprobe efivarfs
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;arch-chroot /mnt
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;arch-chroot /mnt &lt;span style=&#34;color:#75715e&#34;&gt;# artix-chroot /mnt bash &lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Choose a proper timezone and set the hostname:&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;ln -sf /usr/share/zoneinfo/America/Chicago /etc/localtime
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;hwclock --systohc
@@ -116,8 +122,8 @@ Step 2: Boot into the Arch ISO Create a fresh VM and boot into the Arch ISO that
 &lt;p&gt;Set the password for the root user:&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;passwd
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;step-11-add-user&#34;&gt;Step 11: Add User&lt;/h2&gt;
-&lt;p&gt;Add a user and set a password for it:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;useradd -m stig &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; passwd stig:
+&lt;p&gt;Add a user and set a password for the user:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;useradd -m stig &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; passwd stig
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Add the user to the necessary groups:&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;usermod -aG wheel,input,audio,video,optical,storage stig
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Install sudo and nano:&lt;/p&gt;
@@ -155,8 +161,7 @@ Step 2: Boot into the Arch ISO Create a fresh VM and boot into the Arch ISO that
 &lt;blockquote&gt;
 &lt;h3 id=&#34;grub&#34;&gt;Grub&lt;/h3&gt;
 &lt;/blockquote&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; mkdir /boot/EFI 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; grub-install --target&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;x86_64-efi --bootloader-id&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;grub_uefi --recheck 
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; grub-install &lt;span style=&#34;color:#75715e&#34;&gt;# --target=x86_64-efi --bootloader-id=grub_uefi --recheck &lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Now we need to generate a grub config file.&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;grub-mkconfig -o /boot/grub/grub.cfg
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;blockquote&gt;
@@ -171,9 +176,11 @@ initrd /intel-ucode.img
 initrd /initramfs-linux.amg
 options root=&amp;lt;UUID obtained above&amp;gt; rw
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;NOTE: &lt;em&gt;Replace with&lt;/em&gt; &lt;code&gt;amd-ucode.img&lt;/code&gt; &lt;em&gt;if you have an AMD processor&lt;/em&gt;.&lt;/p&gt;
+&lt;h2 id=&#34;step-13-finish-the-install&#34;&gt;Step 13: Finish the install&lt;/h2&gt;
 &lt;p&gt;Get a networking daemon set up:&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;pacman -S networkmanager --noconfirm
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;systemctl enable NetworkManager
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Replace accordingly if you&amp;#39;re running a non-soystemd distro&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Leave the arch-chroot; installation&amp;rsquo;s almost over.&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;exit&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Finally unmount the live USB: &lt;code&gt;umount -l /mnt &amp;amp;&amp;amp; exit&lt;/code&gt;&lt;/p&gt;
@@ -185,9 +192,10 @@ When the VM has finished booting up once more, login into the tty by typing your
 &lt;!-- raw HTML omitted --&gt;
 &lt;!-- raw HTML omitted --&gt;
 &lt;p&gt;If you want a &lt;a href=&#34;https://wiki.archlinux.org/title/Display_manager&#34;&gt;display manager&lt;/a&gt; such as &lt;a href=&#34;https://github.com/sddm/sddm&#34;&gt;SDDM&lt;/a&gt;, you can set it up as well:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;sudo pacman -S sddm --noconfirm
-sudo systemctl enable sddm # will autostart the service from next boot onwards
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Now that the Arch install &lt;strong&gt;has &lt;em&gt;finished&lt;/em&gt;&lt;/strong&gt;, simply reboot your system using the &lt;code&gt;reboot&lt;/code&gt; command.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;sudo pacman -S sddm --noconfirm
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;sudo systemctl enable sddm &lt;span style=&#34;color:#75715e&#34;&gt;# will autostart the service from next boot onwards&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Replace accordingly if you&amp;#39;re running a non-soystemd distro&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Now that the Arch install &lt;strong&gt;has &lt;em&gt;finished&lt;/em&gt;&lt;/strong&gt;, simply reboot your system using the &lt;code&gt;reboot&lt;/code&gt; command.&lt;/p&gt;
 </content>
     </item>
     

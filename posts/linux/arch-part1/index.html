@@ -136,15 +136,19 @@
 </span></span></code></pre></div><h2 id="step-6-mount-the-partitions">Step 6: Mount the Partitions<a href="#step-6-mount-the-partitions" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
 <p>Mount the partitions to your filesystem:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>mount /dev/sda2 /mnt
-</span></span><span style="display:flex;"><span>mount --mkdir /dev/sda1 /mnt/boot
+</span></span><span style="display:flex;"><span>mount --mkdir /dev/sda1 /mnt/boot <span style="color:#75715e"># if you&#39;ve using BIOS</span>
+</span></span><span style="display:flex;"><span>mount --mkdir /dev/sda1 /mnt/boot/efi <span style="color:#75715e"># if you&#39;re using UEFI</span>
 </span></span></code></pre></div><h2 id="step-7-install-base-arch-stuff">Step 7: Install Base Arch Stuff<a href="#step-7-install-base-arch-stuff" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
 <p>Install the base Arch stuff onto your install. This process can take ≈ 10-15 min depending on your internet connection:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>pacstrap /mnt base linux linux-firmware <span style="color:#75715e"># linux-firmware is optional inside a VM...</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># IF YOU&#39;RE ON A NON-SOYSTEMD DISTRO SUCH AS ARTIX</span>
+</span></span><span style="display:flex;"><span>basestrap /mnt base linux <span style="color:#75715e"># linux-firmware is optional INSIDE A VM</span>
 </span></span></code></pre></div><h2 id="step-8-set-hostname">Step 8: Set Hostname<a href="#step-8-set-hostname" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
 <p>Add a hostname to your VM:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>genfstab -L /mnt &gt;&gt; /mnt/etc/fstab <span style="color:#75715e"># use labels to identify em</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># fstabgen  -L /mnt &gt;&gt; /mnt/etc/fstab # on Artix</span>
 </span></span><span style="display:flex;"><span>modprobe efivarfs
-</span></span><span style="display:flex;"><span>arch-chroot /mnt
+</span></span><span style="display:flex;"><span>arch-chroot /mnt <span style="color:#75715e"># artix-chroot /mnt bash </span>
 </span></span></code></pre></div><p>Choose a proper timezone and set the hostname:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ln -sf /usr/share/zoneinfo/America/Chicago /etc/localtime
 </span></span><span style="display:flex;"><span>hwclock --systohc
@@ -158,8 +162,8 @@
 <p>Set the password for the root user:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>passwd
 </span></span></code></pre></div><h2 id="step-11-add-user">Step 11: Add User<a href="#step-11-add-user" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
-<p>Add a user and set a password for it:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>useradd -m stig <span style="color:#f92672">&amp;&amp;</span> passwd stig:
+<p>Add a user and set a password for the user:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>useradd -m stig <span style="color:#f92672">&amp;&amp;</span> passwd stig
 </span></span></code></pre></div><p>Add the user to the necessary groups:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>usermod -aG wheel,input,audio,video,optical,storage stig
 </span></span></code></pre></div><p>Install sudo and nano:</p>
@@ -197,8 +201,7 @@
 <blockquote>
 <h3 id="grub">Grub<a href="#grub" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 </blockquote>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span> mkdir /boot/EFI 
-</span></span><span style="display:flex;"><span> grub-install --target<span style="color:#f92672">=</span>x86_64-efi --bootloader-id<span style="color:#f92672">=</span>grub_uefi --recheck 
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span> grub-install <span style="color:#75715e"># --target=x86_64-efi --bootloader-id=grub_uefi --recheck </span>
 </span></span></code></pre></div><p>Now we need to generate a grub config file.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>grub-mkconfig -o /boot/grub/grub.cfg
 </span></span></code></pre></div><blockquote>
@@ -213,9 +216,11 @@ initrd /intel-ucode.img
 initrd /initramfs-linux.amg
 options root=&lt;UUID obtained above&gt; rw
 </code></pre><p>NOTE: <em>Replace with</em> <code>amd-ucode.img</code> <em>if you have an AMD processor</em>.</p>
+<h2 id="step-13-finish-the-install">Step 13: Finish the install<a href="#step-13-finish-the-install" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
 <p>Get a networking daemon set up:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>pacman -S networkmanager --noconfirm
 </span></span><span style="display:flex;"><span>systemctl enable NetworkManager
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Replace accordingly if you&#39;re running a non-soystemd distro</span>
 </span></span></code></pre></div><p>Leave the arch-chroot; installation&rsquo;s almost over.</p>
 <p><code>exit</code></p>
 <p>Finally unmount the live USB: <code>umount -l /mnt &amp;&amp; exit</code></p>
@@ -227,9 +232,10 @@ When the VM has finished booting up once more, login into the tty by typing your
 <!-- raw HTML omitted -->
 <!-- raw HTML omitted -->
 <p>If you want a <a href="https://wiki.archlinux.org/title/Display_manager">display manager</a> such as <a href="https://github.com/sddm/sddm">SDDM</a>, you can set it up as well:</p>
-<pre tabindex="0"><code>sudo pacman -S sddm --noconfirm
-sudo systemctl enable sddm # will autostart the service from next boot onwards
-</code></pre><p>Now that the Arch install <strong>has <em>finished</em></strong>, simply reboot your system using the <code>reboot</code> command.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo pacman -S sddm --noconfirm
+</span></span><span style="display:flex;"><span>sudo systemctl enable sddm <span style="color:#75715e"># will autostart the service from next boot onwards</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Replace accordingly if you&#39;re running a non-soystemd distro</span>
+</span></span></code></pre></div><p>Now that the Arch install <strong>has <em>finished</em></strong>, simply reboot your system using the <code>reboot</code> command.</p>
 
       </div></div>
 
