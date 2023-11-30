@@ -153,6 +153,8 @@
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ln -sf /usr/share/zoneinfo/America/Chicago /etc/localtime
 </span></span><span style="display:flex;"><span>hwclock --systohc
 </span></span><span style="display:flex;"><span>echo Arch-VM &gt; /etc/hostname <span style="color:#75715e"># replace with a hostname of your choice, preferably no spaces</span>
+</span></span></code></pre></div><p>Install sudo and nano:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>pacman -S sudo nano --noconfirm
 </span></span></code></pre></div><h2 id="step-9-configure-etchosts">Step 9: Configure /etc/hosts<a href="#step-9-configure-etchosts" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
 <p>Edit the <code>/etc/hosts</code> file and add the following:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1   localhost
@@ -166,8 +168,6 @@
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>useradd -m stig <span style="color:#f92672">&amp;&amp;</span> passwd stig
 </span></span></code></pre></div><p>Add the user to the necessary groups:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>usermod -aG wheel,input,audio,video,optical,storage stig
-</span></span></code></pre></div><p>Install sudo and nano:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>pacman -S sudo nano --noconfirm
 </span></span></code></pre></div><p>Add the user to the wheel group in the <code>/etc/sudoers</code> file:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>EDITOR<span style="color:#f92672">=</span>nano visudo
 </span></span></code></pre></div><p>Uncomment the following line in the <code>/etc/sudoers</code> file:</p>
