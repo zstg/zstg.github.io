@@ -122,8 +122,9 @@
 <p>Run the following command to set the time and date:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>timedatectl set-ntp true
 </span></span></code></pre></div><h2 id="step-4-partition-the-virtual-hard-drive">Step 4: Partition the Virtual Hard Drive<a href="#step-4-partition-the-virtual-hard-drive" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
-<p>Partition your virtual hard drive using the following commands:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>parted /dev/sda -- mklabel gpt <span style="color:#75715e"># THIS WILL WIPE YOUR DEVICE, don&#39;t do this if you&#39;re dual-booting</span>
+<p>This step requires <code>parted</code>, so install it if it isn&rsquo;t available in the live environment: <code>sudo pacman -S parted</code>.
+Partition your virtual hard drive using the following commands:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>parted /dev/sda -- mklabel gpt <span style="color:#75715e"># THIS WILL WIPE YOUR DEVICE, don&#39;t do this if you&#39;re dual-booting!</span>
 </span></span><span style="display:flex;"><span>parted /dev/sda -- mkpart ESP fat32 1MB 512MB <span style="color:#75715e"># 512 MB bootloader</span>
 </span></span><span style="display:flex;"><span>parted /dev/sda -- mkpart primary ext4 512MB 100% <span style="color:#75715e"># rem space for the root filesystem</span>
 </span></span><span style="display:flex;"><span>parted /dev/sda -- set <span style="color:#ae81ff">1</span> esp on <span style="color:#75715e"># make the partition bootable</span>
@@ -140,9 +141,9 @@
 </span></span><span style="display:flex;"><span>mount --mkdir /dev/sda1 /mnt/boot/efi <span style="color:#75715e"># if you&#39;re using UEFI</span>
 </span></span></code></pre></div><h2 id="step-7-install-base-arch-stuff">Step 7: Install Base Arch Stuff<a href="#step-7-install-base-arch-stuff" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
 <p>Install the base Arch stuff onto your install. This process can take ≈ 10-15 min depending on your internet connection:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>pacstrap /mnt base linux linux-firmware <span style="color:#75715e"># linux-firmware is optional inside a VM...</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>pacstrap /mnt base-devel linux linux-firmware <span style="color:#75715e"># linux-firmware is optional inside a VM...</span>
 </span></span><span style="display:flex;"><span><span style="color:#75715e"># IF YOU&#39;RE ON A NON-SOYSTEMD DISTRO SUCH AS ARTIX</span>
-</span></span><span style="display:flex;"><span>basestrap /mnt base linux <span style="color:#75715e"># linux-firmware is optional INSIDE A VM</span>
+</span></span><span style="display:flex;"><span>basestrap /mnt base-devel linux elogind-openrc
 </span></span></code></pre></div><h2 id="step-8-set-hostname">Step 8: Set Hostname<a href="#step-8-set-hostname" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
 <p>Add a hostname to your VM:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>genfstab -L /mnt &gt;&gt; /mnt/etc/fstab <span style="color:#75715e"># use labels to identify em</span>
@@ -153,8 +154,8 @@
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ln -sf /usr/share/zoneinfo/America/Chicago /etc/localtime
 </span></span><span style="display:flex;"><span>hwclock --systohc
 </span></span><span style="display:flex;"><span>echo Arch-VM &gt; /etc/hostname <span style="color:#75715e"># replace with a hostname of your choice, preferably no spaces</span>
-</span></span></code></pre></div><p>Install sudo and nano:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>pacman -S sudo nano --noconfirm
+</span></span></code></pre></div><p>Install the nano text editor:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>pacman -S  nano --noconfirm
 </span></span></code></pre></div><h2 id="step-9-configure-etchosts">Step 9: Configure /etc/hosts<a href="#step-9-configure-etchosts" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
 <p>Edit the <code>/etc/hosts</code> file and add the following:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1   localhost
@@ -164,10 +165,8 @@
 <p>Set the password for the root user:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>passwd
 </span></span></code></pre></div><h2 id="step-11-add-user">Step 11: Add User<a href="#step-11-add-user" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
-<p>Add a user and set a password for the user:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>useradd -m stig <span style="color:#f92672">&amp;&amp;</span> passwd stig
-</span></span></code></pre></div><p>Add the user to the necessary groups:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>usermod -aG wheel,input,audio,video,optical,storage stig
+<p>Add a user (add them to required groups) and set a password for the user:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>useradd -m stig -G wheel,input,audio,video,optical,storage <span style="color:#f92672">&amp;&amp;</span> passwd stig
 </span></span></code></pre></div><p>Add the user to the wheel group in the <code>/etc/sudoers</code> file:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>EDITOR<span style="color:#f92672">=</span>nano visudo
 </span></span></code></pre></div><p>Uncomment the following line in the <code>/etc/sudoers</code> file:</p>
@@ -254,7 +253,7 @@ When the VM has finished booting up once more, login into the tty by typing your
   <div class="footer__inner">
     
       <div class="copyright">
-        <span>© 2023 Powered by <a href="https://gohugo.io">Hugo</a></span>
+        <span>© 2024 Powered by <a href="https://gohugo.io">Hugo</a></span>
     
       <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
       </div>
