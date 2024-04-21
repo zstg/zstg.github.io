@@ -3,7 +3,6 @@ title: "Install NixOS using the minimal ISO"
 author: "ZeStig"
 published: 2023-09-01
 authorTwitter: "" #do not include @
-cover: ""
 tags: ["Linux", "nixOS"]
 keywords: ["", ""]
 description: "In this blog post, we're speedrunning through an installation of NixOS using the minimal ISO (which does not come with a GUI)."
@@ -12,7 +11,7 @@ readingTime: false
 hideComments: false
 category: "Linux"
 ---
-
+<!-- ../../../assets/images/emacs-org/Jupyter.png  -->
 ---
 Hey there! Are you ready to dive into the world of NixOS? Get ready to experience a unique Linux distribution that's all about declarative configuration and package management. NixOS brings reproducibility, atomic upgrades and rollbacks, and package isolation to the table. Let's walk through the installation process of NixOS and learn how to partition your disk using the `parted` command-line tool.
 
@@ -72,7 +71,7 @@ It's time to create those partitions! Use `parted` to create the partitions you 
 
    This command creates a primary partition with the ext4 file system, starting from 1MiB and going up to 100GiB. Customize the size and file system to your liking. Repeat this step for any additional partitions you require, like a swap partition or a separate home partition.
 
-   ![Partitioning with parted](/partitions.png)
+   ![Partitioning with parted](../../../assets/images/partitions.png)
 
 
 ##### Set partition flags: 
@@ -97,7 +96,7 @@ Let's format those partitions you just created with the appropriate file systems
    
    The picture below shows my partitioning layout: (again, note `/boot` is used even for EFI systems).
    
-   ![lsblk output](/lsblk.png)
+   ![lsblk output](../../../assets/images/lsblk.png)
 
    
    *My* partitioning layout can be achieved using:

@@ -148,11 +148,11 @@ I'm pleased enough to make this my system-wide PDF editor.
 
 Whoops, did i forget images? Here ya go:
 
-![](file:///emacs-org/Jupyter.png)
+![](../../../assets/images/emacs-org/Jupyter.png)
 
-![](file:///emacs-org/latex-preview2.png)
+![](../../../assets/images/emacs-org/latex-preview2.png)
 
-![](file:///emacs-org/latex-preview.png)
+![](../../../assets/images/emacs-org/latex-preview.png)
 
 Ok then, I'll be back with some Emacs content in the near future. Stay
 tuned!
