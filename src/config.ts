@@ -46,6 +46,11 @@ export const profileConfig: ProfileConfig = {
       url: 'https://gitlab.com/zstg',
     },
     {
+      name: 'Reddit',
+      icon: 'fa6-brands:reddit',
+      url: 'https://reddit.com/u/ZeStig2409',
+    },
+    {
       name: 'GitHub',
       icon: 'fa6-brands:github',
       url: 'https://github.com/zstg',
