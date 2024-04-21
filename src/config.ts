@@ -13,7 +13,7 @@ export const siteConfig: SiteConfig = {
   themeHue: 250,
   banner: {
     enable: false,
-    src: 'assets/images/demo-banner.png',
+    src: 'assets/images/hashtags-black.png',
   },
 }
 
@@ -54,7 +54,7 @@ export const profileConfig: ProfileConfig = {
 }
 
 export const licenseConfig: LicenseConfig = {
-  enable: true,
+  enable: false,
   name: 'CC BY-NC-SA 4.0',
   url: 'https://creativecommons.org/licenses/by-nc-sa/4.0/',
 }

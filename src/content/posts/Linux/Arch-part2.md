@@ -50,7 +50,7 @@ paru -S arc-gtk-theme papirus-icon-theme bibata-cursor-theme-bin
 ```
 To make Arc-dark the default system theme, 
 add this to `~/.config/gtk-3.0/settings.ini` - note that the required packages have been installed above. If you want a different set, modify accordingly.
-```
+```ini
   [Settings]
   gtk-theme-name = Arc-Dark
   gtk-icon-theme-name = ePapirus-Dark
@@ -59,7 +59,7 @@ add this to `~/.config/gtk-3.0/settings.ini` - note that the required packages h
 ```
 
 And add this to `~/.icons/default/index.theme`:
-```
+```ini
 [Icon Theme]
 Name=Default
 Comment=Default Cursor Theme
@@ -97,7 +97,7 @@ echo '/swapfile    none    swap    sw    0    0' | sudo tee -a /etc/fstab # make
 ## Hibernate settings
 Edit `/etc/systemd/logind.conf:`
 
-```bash
+```ini
 # InhibitDelayMaxSec=5
 HandlePowerKey=ignore
 HandlePowerKeyLongPress=poweroff
@@ -107,7 +107,7 @@ HandleLidSwitchExternalPower=hibernate
 ```
 Edit `/etc/systemd/sleep.conf`:
 
-```bash
+```ini
 AllowHibernation=yes
 HibernateDelaySec=3600
 ```

@@ -15,9 +15,9 @@ within Org mode in Emacs?
 I'm on Arch *BTW*, and i don't like the `texlive-basic`,
 `texlive-full` and `texlive-bin` packages that are present in the Arch
 repos. So I'll be setting up a local Texlive installation in this
-section. I've symlinked (to `/usr/local/bin`{.verbatim}) some binaries
+section. I've symlinked (to `/usr/local/bin`) some binaries
 that Emacs requires. *I* didn't add the entire installation folder to
-`PATH`{.verbatim} because it adds a lot of executables to my `fish`
+`PATH` because it adds a lot of executables to my `fish`
 autosuggestions.
 
 ``` bash
@@ -71,7 +71,7 @@ LaTeX previews. Note that the steps below will be applicable only to the
 ```
 
 This makes it convenient to use `Jupyter` src blocks within Emacs. Note
-that `emacs-jupyter`{.verbatim} needs to be set up for this. I've also
+that `emacs-jupyter` needs to be set up for this. I've also
 set a custom size for the LaTeX (and image, e.g plot) previews here.
 
 ``` lisp
@@ -84,7 +84,7 @@ set a custom size for the LaTeX (and image, e.g plot) previews here.
 
 # Org mode LaTeX configuration
 
-`Org-fragtog`{.verbatim} is a package that brings [on-hover]{.underline}
+`Org-fragtog` is a package that brings [on-hover]{.underline}
 LaTeX preview functionality to Emacs. This *requires* a local LaTeX
 environment such as the one I'm using. The configuration below loads
 LaTeX previews when a file is opened.
@@ -105,14 +105,14 @@ LaTeX previews when a file is opened.
 ```
 
 This automatically configures LaTeX previews for us because the Jupyter
-kernel supports `%matplotlib inline`{.verbatim}.
+kernel supports `%matplotlib inline`.
 
 # Conda
 
-I'm using `Anaconda`{.verbatim} for ML work, and so I've configured
+I'm using `Anaconda` for ML work, and so I've configured
 Emacs to auto-load my `ML` environment (in which I've installed the
 `Jupyter` packages). I've installed *miniconda* to
-`~/.miniconda`{.verbatim} and so i've set these variables accordingly,
+`~/.miniconda` and so i've set these variables accordingly,
 you'd have to modify these values based on your prefix.
 
 ``` lisp
@@ -130,7 +130,7 @@ you'd have to modify these values based on your prefix.
 
 [pdf-tools](https://github.com/vedang/pdf-tools) is a replacement of
 DocView for viewing PDF files inside Emacs. It uses the
-`poppler`{.verbatim} library, which also means that 'pdf-tools' *can*
+`poppler` library, which also means that 'pdf-tools' *can*
 be used to modify PDFs. This requires the `poppler` library, and so it
 must be installed (in my case, using `pacman`). This also brings PDF
 editing abilities to Emacs - which I *guess* isn't available in DocView

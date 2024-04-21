@@ -144,7 +144,7 @@ Uncomment the following line in the `/etc/sudoers` file:
 ## Step 12: Install Bootloader
 
 |      | Systemd-boot   | GRUB |
-| --   |  --            | --   |
+| ---  |  ---           | ---  |
 | BIOS | N              | Y    |
 | UEFI | Y              | Y    | 
 

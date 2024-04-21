@@ -12,12 +12,12 @@ Blogs are a great way to share your thoughts, ideas, and experiences
 with the world. They can be used for personal or professional purposes,
 and there are blogs on just about every topic imaginable.
 
-Hugo is a popular static site generator that can be used to create
+Astro is a popular static site generator that can be used to create
 blogs, websites, and other types of online content. It is known for its
 speed, flexibility, and ease of use.
 
 In this blog post, I will walk you through the steps of creating a blog
-with Hugo. I will assume that you have some basic knowledge of Git and
+with Astro. I will assume that you have some basic knowledge of Git and
 the command line.
 
 # Install pnpm and git
@@ -34,11 +34,9 @@ sudo pacman -S git pnpm
 # Repo creation
 
 The next step involves creating a public repo on GitHub (to host your website). I'll be
-creating 2 repos, a **non-empty** repo for [GitHub Pages
-deployment](https://github.com/zstg/zstg.github.io) and the other for
-storing [the blog itself](https://github.com/zstg/blog). For beginners,
-I recommend creating these repos from the web interface rather than the
-commandline, but feel free to do it in any way you please.
+creating a repo for [GitHub Pages
+deployment](https://github.com/zstg/zstg.github.io). I recommend beginners create these repos from the web interface rather than (pushing to a remote from
+the command-line), but feel free to do it in any way you please.
 
 After the repos are created, clone them to your local machine. In my case, I'm cloning my existing repo.
 
