@@ -17,6 +17,7 @@
     "@astrojs/svelte": "^5.2.0",
     "@astrojs/tailwind": "^5.1.0",
     "@fontsource-variable/jetbrains-mono": "^5.0.20",
+    "@fontsource/jetbrains-mono": "^5.0.20",
     "@fontsource/roboto": "^5.0.12",
     "@swup/astro": "^1.4.0",
     "astro": "^4.4.15",
