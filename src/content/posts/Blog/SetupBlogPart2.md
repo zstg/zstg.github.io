@@ -61,8 +61,14 @@ To preview the posts that you write, run `pnpm build && pnpm astro preview` from
 ``` bash
 $EDITOR src/content/posts/nameOfFile.md
 ```
-<!-- > The file structure instead of src/content/posts does NOT matter, categories and tags are defined at the top of each file. -->
+---
+**&#9432; NOTE**
+
 > The `PAGE_SIZE` variable defined in `src/constants/constants.ts` defines the _number_ of articles allowed per page.
+
+> The file structure instead of `src/content/posts` does NOT matter, categories and tags are defined at the top of each file.
+
+---
 
 Edit `src/content/posts/nameOfFile.md` and add a *brief* intro to your post.
 
@@ -75,7 +81,7 @@ git push
 Next up, we need to add a _GitHub Action_ (provided by Astro) that deploys from our existing repo.
 
 Create `.github/workflows/deploy.yml` with the following content. **Ensure** that Actions are enabled and that the `Allow all actions and reusable workflows`  option is checked.
-```toml
+```yaml
 name: Deploy to GitHub Pages
 
 on:
