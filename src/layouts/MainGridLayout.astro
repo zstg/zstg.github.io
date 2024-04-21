@@ -1,21 +1,20 @@
 ---
-import Layout from "./Layout.astro";
-import Navbar from "@components/Navbar.astro";
-import SideBar from "@components/widget/SideBar.astro";
-import {pathsEqual} from "@utils/url-utils";
-import Footer from "@components/Footer.astro";
-import BackToTop from "@components/control/BackToTop.astro";
-import {siteConfig} from "@/config";
+import Layout from './Layout.astro'
+import Navbar from '@components/Navbar.astro'
+import SideBar from '@components/widget/SideBar.astro'
+import { pathsEqual } from '@utils/url-utils'
+import Footer from '@components/Footer.astro'
+import BackToTop from '@components/control/BackToTop.astro'
+import { siteConfig } from '@/config'
 
 interface Props {
-    title: string;
-    banner?: string;
+  title: string
+  banner?: string
 }
 
 const { title, banner } = Astro.props
 const isHomePage = pathsEqual(Astro.url.pathname, '/')
 const enableBanner = siteConfig.banner.enable
-
 ---
 
 <Layout title={title} banner={banner}>

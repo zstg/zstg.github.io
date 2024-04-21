@@ -1,31 +1,31 @@
 ---
-import { getCollection } from 'astro:content';
-import MainGridLayout from "@layouts/MainGridLayout.astro";
-import ImageWrapper from "../../components/misc/ImageWrapper.astro";
-import {Icon} from "astro-icon/components";
-import PostMetadata from "../../components/PostMeta.astro";
-import {i18n} from "@i18n/translation";
-import I18nKey from "@i18n/i18nKey";
-import {getDir, getPostUrlBySlug} from "@utils/url-utils";
-import License from "@components/misc/License.astro";
-import {licenseConfig} from "src/config";
-import Markdown from "@components/misc/Markdown.astro";
-import path from "path";
+import { getCollection } from 'astro:content'
+import MainGridLayout from '@layouts/MainGridLayout.astro'
+import ImageWrapper from '../../components/misc/ImageWrapper.astro'
+import { Icon } from 'astro-icon/components'
+import PostMetadata from '../../components/PostMeta.astro'
+import { i18n } from '@i18n/translation'
+import I18nKey from '@i18n/i18nKey'
+import { getDir, getPostUrlBySlug } from '@utils/url-utils'
+import License from '@components/misc/License.astro'
+import { licenseConfig } from 'src/config'
+import Markdown from '@components/misc/Markdown.astro'
+import path from 'path'
 
 export async function getStaticPaths() {
-    const blogEntries = await getCollection('posts', ({ data }) => {
-        return import.meta.env.PROD ? data.draft !== true : true;
-    });
-    return blogEntries.map(entry => ({
-        params: { slug: entry.slug }, props: { entry },
-    }));
+  const blogEntries = await getCollection('posts', ({ data }) => {
+    return import.meta.env.PROD ? data.draft !== true : true
+  })
+  return blogEntries.map(entry => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }))
 }
 
-const { entry } = Astro.props;
-const { Content } = await entry.render();
+const { entry } = Astro.props
+const { Content } = await entry.render()
 
-const { remarkPluginFrontmatter } = await entry.render();
-
+const { remarkPluginFrontmatter } = await entry.render()
 ---
 <MainGridLayout banner={entry.data.image} title={entry.data.title}>
     <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative mb-4">

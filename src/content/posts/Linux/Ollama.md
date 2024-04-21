@@ -30,7 +30,7 @@ curl -fsSL https://ollama.com/install.sh | sh
 
 If you're on Windows, download the executable from [the
 website](https://ollama.com/download/OllamaSetup.exe) and run the setup
-file. This will setup an [Ollama]{.underline} service (on all of the
+file. This will setup an <u>Ollama</u> service (on all of the
 above operating systems).
 
 To pull your first model,
