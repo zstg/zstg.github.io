@@ -38,7 +38,7 @@ export const profileConfig: ProfileConfig = {
     {
       name: 'Mastodon',
       icon: 'fa6-brands:mastodon',
-      url: 'https://fosstodon.org/zstg',
+      url: 'https://fedia.social/@zstg',
     },
     {
       name: 'GitLab',

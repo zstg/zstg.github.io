@@ -61,6 +61,8 @@ To preview the posts that you write, run `pnpm build && pnpm astro preview` from
 ``` bash
 $EDITOR src/content/posts/nameOfFile.md
 ```
+<!-- > The file structure instead of src/content/posts does NOT matter, categories and tags are defined at the top of each file. -->
+> The `PAGE_SIZE` variable defined in `src/constants/constants.ts` defines the _number_ of articles allowed per page.
 
 Edit `src/content/posts/nameOfFile.md` and add a *brief* intro to your post.
 

@@ -67,7 +67,7 @@ If you are using Docker instead of Podman:
 ``` bash
 docker run --rm -p 3000:8080 \
    -v open-webui:/app/backend/data \
-   --network=host
+   --network=host \
    --add-host=host.docker.internal:host-gateway \
    -e OLLAMA_BASE_URL=http://127.0.0.1:11434 \
    -e ANONYMIZED_TELEMETRY=False \
