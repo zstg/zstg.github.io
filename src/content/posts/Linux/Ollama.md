@@ -78,6 +78,24 @@ Now open a browser and start configuring Open-WebUI!
 [Here](https://docs.openwebui.com/assets/images/demo-6793d95448aa180bca8dafbd21aa91b5.gif)'s
 a demo on how to use Open-WebUI.
 
+### Bonus
+Here's how you can configure Emacs to use Ollama using [GPTel](https://github.com/karthink/gptel). I'm using [`straight`](https://github.com/radian-software/straight.el) and hence this can be pulled from the GitHub repo. If you're *not* using Straight.el, instructions may vary:
+```lisp
+(use-package gptel
+  :straight t
+  :config
+  ;; OPTIONAL configuration
+  (setq
+   gptel-model "neural-chat:latest"
+   gptel-backend (gptel-make-ollama "Ollama"
+                   :host "localhost:11434"
+                   :stream t
+                   :models '("neural-chat:latest"))))
+(setq gc-cons-threshold (* 2 1000 1000))
+```
+I've configured GPTel (and hence Ollama) to use [`neural-chat`](https://huggingface.co/Intel/neural-chat-7b-v3-3) because I've pulled the model locally. Feel free to choose any other model(s) of your liking.
+
+
 # Fin
 
 Pick and choose the model of your choice. The more parameters a model
