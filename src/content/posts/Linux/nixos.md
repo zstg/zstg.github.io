@@ -174,7 +174,7 @@ NixOS offers a highly reproducible system. The declarative nature of its configu
 - *NixOS Community*:
  Don't forget, you're not alone on this journey. NixOS has a vibrant and helpful community that's ready to lend a hand. If you stumble upon any issues or have questions along the way, the official documentation and community forums have the answers.
 ---
-### Want a sample configuration ?
+### Want a sample configuration?
 
  My configuration is available [here](https://gitlab.com/zstg/nixos-config/). Feel free to modify and use it. Note that NixOS makes rolling back (to a working config) trivial. Don't hesitate and play around with the options. The [web interface](https://search.nixos.org) contains the list of packages and configuration options that NixOS supports. Be sure to change the username and other details! 
 
