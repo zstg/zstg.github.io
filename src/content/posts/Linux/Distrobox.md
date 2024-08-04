@@ -122,8 +122,8 @@ And here's my `short-name-aliases.conf`:
 ## not .config/containers
 [aliases]
 
-# "fedora"="registry.fedoraproject.org/fedora"
-"fedora"="quay.io/toolbx-images/fedora-toolbox"
+"fedora"="registry.fedoraproject.org/fedora-toolbox:40"
+# "fedora"="quay.io/toolbx-images/fedora-toolbox"
 "ubuntu"="quay.io/toolbx/ubuntu-toolbox"
 "archlinux"="quay.io/toolbx/arch-toolbox"
 ```
@@ -136,7 +136,12 @@ Creating your first Distrobox container is a breeze. Just pick your favorite dis
 ```bash
 distrobox create -i arch -n ArchBTW -I -H ~/.home
 ```
-- I've used `-H ~/.home` because I'm setting a custom home directory. I don't wanna keep my home clean!
+Note that Fedora - and some other distros such as Gentoo - may need additional setup:
+```bash
+distrobox create -i fedora:rawhide -n fedora -H ~/.home -I --additional-packages "systemd"
+```
+
+- I've used `-H ~/.home` because I'm setting a custom home directory. I wanna keep my home clean!
 - `-I` isolates the `init` system. `systemd` works inside the container.
 
 Replace `arch` with your desired distro image, and voila! You're now inside your cozy little container, ready to tinker to your heart's content. Of course, you're not limited to these images.
