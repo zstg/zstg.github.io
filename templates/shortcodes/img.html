@@ -1,0 +1,17 @@
+<div class="post-img-container">
+  {%- if not alt -%}
+  {%- set alt = title -%}
+  {%- endif -%}
+  {% set iwebp = resize_image(path=page.colocated_path ~ src, op="fit_width", width=690, format="webp",
+  quality=config.extra.webp_quality) -%}
+  {% set ijpg = resize_image(path=page.colocated_path ~ src, op="fit_width", width=690, format="jpeg",
+  quality=config.extra.jpeg_quality) -%}
+
+  <a href="{{ src }}">
+    <picture>
+      <source srcset="{{ iwebp.url }}" type="image/webp">
+      <img src="{{ ijpg.url }}" alt="{{ alt }}" type="image/jpg" />
+    </picture>
+  </a>
+  <p>{{ title }}</p>
+</div>
