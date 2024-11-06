@@ -153,10 +153,10 @@ Now that you're armed with Distrobox and Podman, the possibilities are endless! 
 Heck, I've even managed to get a full-fledged desktop - [COSMIC](https://github.com/pop-os/cosmic-epoch) - working on my setup. I used a Fedora container for this purpose - the [COPR package](https://copr.fedorainfracloud.org/coprs/ryanabx/cosmic-epoch/). 
 ## Setting up Cosmic on Fedora
 
-![Distrobox setup](/Linux/distrobox.png)
+![Distrobox setup](/linux/distrobox.png)
 
 **You can always check the podman output via** `podman logs -f <container name>` - `podman logs -f Feds` **in my case.**
-![Podman output](/Linux/podman-log.png)
+![Podman output](/linux/podman-log.png)
 
 
 - Create a Fedora distrobox container via:
@@ -172,6 +172,6 @@ sudo dnf install cosmic-desktop
 Because I'm launching the desktop via a TTY, I need to run `DISPLAY=:1 dbus-launch cosmic-session`. I'd installed the `dbus-x11` package on Fedora for this.
 I'm quite pleased with the output:
 
-![Fedora running COSMIC via Distrobox](/Linux/Fedora.jpeg)
+![Fedora running COSMIC via Distrobox](/linux/Fedora.jpeg)
 
 That's all for now, folks! Hope you enjoyed this dive into the world of Distrobox. Until next time, happy containerizing! 🐳🎉

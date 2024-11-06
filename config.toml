@@ -152,8 +152,8 @@ show_repo = true
 # See https://www.getzola.org/documentation/content/linking/#internal-links
 links = [
 	{ name = "Links", menu = [
-		{ url = "@/blog/_index.md", name = "Blog" },
-		{ url = "@/linux/_index.md", name = "Linux" }
+		{ url = "@/linux/_index.md", name = "Linux" },
+		{ url = "@/blog/_index.md", name = "Blog" }
 	] },
 	# { url = "https://daudix.one/", name = "Coffee" }
 ]

@@ -147,10 +147,10 @@ I'm pleased enough to make this my system-wide PDF editor.
 
 Whoops, did i forget images? Here ya go:
 
-<!-- {{ image(url="/Linux/Jupyter.png") }} -->
-![](/Linux/Jupyter.png)
-![](/Linux/latex-preview2.png)
-![](/Linux/latex-preview.png)
+<!-- {{ image(url="/linux/Jupyter.png") }} -->
+![](/linux/Jupyter.png)
+![](/linux/latex-preview2.png)
+![](/linux/latex-preview.png)
 
 Ok then, I'll be back with some Emacs content in the near future. Stay
 tuned!

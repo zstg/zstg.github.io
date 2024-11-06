@@ -17,7 +17,7 @@ Hey there! Are you ready to dive into the world of NixOS? Get ready to experienc
 ---
 
 ## What is NixOS?
-![NixOS logo](/Linux/nixos.png)
+![NixOS logo](/linux/nixos.png)
 NixOS is an immutable OS.
 
 An immutable system refers to a system where the state or configuration cannot be changed once it is set. In simpler terms, it means that once something is set up or configured in an immutable system, it cannot be modified or altered afterwards. It remains fixed and cannot be changed.
@@ -70,7 +70,7 @@ It's time to create those partitions! Use `parted` to create the partitions you 
 
    This command creates a primary partition with the ext4 file system, starting from 1MiB and going up to 100GiB. Customize the size and file system to your liking. Repeat this step for any additional partitions you require, like a swap partition or a separate home partition.
 
-   ![Partitioning with parted](/Linux/partitions.png)
+   ![Partitioning with parted](/linux/partitions.png)
 
 
 ##### Set partition flags: 
@@ -95,7 +95,7 @@ Let's format those partitions you just created with the appropriate file systems
    
    The picture below shows my partitioning layout: (again, note `/boot` is used even for EFI systems).
    
-   ![lsblk output](/Linux/lsblk.png)
+   ![lsblk output](/linux/lsblk.png)
 
    
    *My* partitioning layout can be achieved using:
