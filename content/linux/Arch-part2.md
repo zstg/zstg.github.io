@@ -12,6 +12,30 @@ hideComments: false
 category: "Linux"
 ---
 
+{% crt() %}
+```
+                                   ▄
+                                  ▟█▙
+                                 ▟███▙
+                                ▟█████▙
+                               ▟███████▙
+                              ▂▔▀▜██████▙
+                             ▟██▅▂▝▜█████▙
+                            ▟█████████████▙
+                           ▟███████████████▙
+                          ▟█████████████████▙
+                         ▟███████████████████▙
+                        ▟█████████▛▀▀▜████████▙
+                       ▟████████▛      ▜███████▙
+                      ▟█████████        ████████▙
+                     ▟██████████        █████▆▅▄▃▂
+                    ▟██████████▛        ▜█████████▙
+                   ▟██████▀▀▀              ▀▀██████▙
+                  ▟███▀▘                       ▝▀███▙
+                 ▟▛▀                               ▀▜▙
+```
+{% end %}
+
 I'm using Arch with Hyprland, and so here's a quick reference for getting things up-to-speed.
 ## Initial configuration
 ```bash
@@ -20,7 +44,7 @@ sudo pacman -S waybar mako libnotify starship wl-clipboard hyprland pipewire \
 			   brave-bin librewolf-bin \
 		       eza fuse2 git-delta gpm grim slurp swappy hugo keepassxc \
 			   kitty ly nano-syntax-highlighting zsh-syntax-highlighting neofetch  \
-               networkmanager-applet noto-fonts oh-my-zsh-git pacman-contrib  \ 
+               networkmanager-applet noto-fonts oh-my-zsh-git pacman-contrib \
 	           openssh pinentry playerctl qt5-wayland qt6-wayland tree wireplumber \
 	           man-pages # provides man pages for some C functions/headers
 	 

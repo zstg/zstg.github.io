@@ -12,6 +12,30 @@ hideComments: false
 category: "Linux"
 ---
 
+{% crt() %}
+```
+                                   ▄
+                                  ▟█▙
+                                 ▟███▙
+                                ▟█████▙
+                               ▟███████▙
+                              ▂▔▀▜██████▙
+                             ▟██▅▂▝▜█████▙
+                            ▟█████████████▙
+                           ▟███████████████▙
+                          ▟█████████████████▙
+                         ▟███████████████████▙
+                        ▟█████████▛▀▀▜████████▙
+                       ▟████████▛      ▜███████▙
+                      ▟█████████        ████████▙
+                     ▟██████████        █████▆▅▄▃▂
+                    ▟██████████▛        ▜█████████▙
+                   ▟██████▀▀▀              ▀▀██████▙
+                  ▟███▀▘                       ▝▀███▙
+                 ▟▛▀                               ▀▜▙
+```
+{% end %}
+
 This guide is for anyone who's just installed Arch Linux with GRUB and BTRFS. I’m going to keep things straightforward, using the defaults set up by `archinstall`. If you’re ready, let’s dive in!
 
 ## Install Required Packages

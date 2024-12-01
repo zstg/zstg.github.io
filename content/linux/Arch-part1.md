@@ -11,6 +11,30 @@ hideComments: false
 category: "Linux"
 ---
 
+{% crt() %}
+```
+                                   ▄
+                                  ▟█▙
+                                 ▟███▙
+                                ▟█████▙
+                               ▟███████▙
+                              ▂▔▀▜██████▙
+                             ▟██▅▂▝▜█████▙
+                            ▟█████████████▙
+                           ▟███████████████▙
+                          ▟█████████████████▙
+                         ▟███████████████████▙
+                        ▟█████████▛▀▀▜████████▙
+                       ▟████████▛      ▜███████▙
+                      ▟█████████        ████████▙
+                     ▟██████████        █████▆▅▄▃▂
+                    ▟██████████▛        ▜█████████▙
+                   ▟██████▀▀▀              ▀▀██████▙
+                  ▟███▀▘                       ▝▀███▙
+                 ▟▛▀                               ▀▜▙
+```
+{% end %}
+
 Installing Arch is not hard at all, it's quite simple to do. Arch has long been known as a power-users' distro, and Arch users are usually elitists. Today, we'll break that notion! 
 
 Let's learn how to install Arch manually!
