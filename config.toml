@@ -200,7 +200,7 @@ host = "fedia.social"
 # Your Mastodon username; used to determine who the original poster is.
 user = "zstg"
 # Whether to show the QR code to Mastodon post
-# show_qr = true
+show_qr = true
 
 # GoatCounter analytics; enabled only if present in config.
 # [extra.goatcounter]
