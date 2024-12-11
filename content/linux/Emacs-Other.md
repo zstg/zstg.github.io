@@ -1,6 +1,6 @@
 ---
 title: "Miscellaneous Emacs configuration"
-date: 2024-12-01
+date: 2024-12-11
 author: ZeStig 
 category: "Emacs"
 description: "Interesting Emacs configuration ideas" 
@@ -42,7 +42,7 @@ The LaTeX backend for Org-beamer is solid and works wonders with the LaTeX envir
 
 Here’s a minimal setup for using Org-beamer:
 
-```org
+```
 #+LATEX_CLASS: beamer
 #+LATEX_CLASS_OPTIONS: [presentation]
 #+BEAMER_THEME: Madrid
@@ -73,7 +73,7 @@ The best part? You can embed JavaScript, custom themes, and even interactive ele
 Call me biased, but I prefer this over the previously mentioned Beamer solution. Who doesn't like some pizzazz??
 
 Add something like this to the Org file that you want to export:
-```org
+```
 #+REVEAL_JS: t
 #+REVEAL_THEME: solarized
 #+REVEAL_TRANSITIONS: zoom
@@ -105,7 +105,7 @@ Elpaca is built to be much leaner, and it doesn’t try to do too much. It’s f
 
 Here's how you set it up:
 
-(I've plagiarised this from the [elpaca README](https://github.com/progfolio/elpaca)).
+(I've plagiarised this from the [elpaca README](https://github.com/progfolio/elpaca?tab=readme-ov-file#installer)).
 ```lisp
 (defvar elpaca-installer-version 0.8)
 (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
@@ -169,7 +169,65 @@ For migrating packages available on GitHub from Straight to Elpaca:
 
 If you're looking to simplify your package management and reduce some of the complexity that comes with more feature-rich solutions like Straight, Elpaca is definitely worth checking out.
 
+## Org Roam
+[Roam](https://roamresearch.com/) is a note-taking application designed around the concept of **bidirectional linking**.  This means that when you create a link to another note, that link is also automatically added to the linked note, creating a web of interconnected ideas.  This is in contrast to traditional note-taking apps which treat notes as isolated files.
 
+Let's say you're writing a note about "Artificial Intelligence."  You might link to related notes like "Machine Learning", "Deep Learning" and "Neural Networks".  Then, when you look at the "Machine Learning" note, you'll see a backlink to your "Artificial Intelligence" note. Org-Roam also provides a graph UI of the links thus generated.
+
+### Setting up Syncthing
+Install Syncthing. Instructions vary across operating systems. Here's how I do it:
+```bash
+sudo pacman -S syncthing
+```
+I've also enabled the Syncthing daemon - `systemctl --user enable --now syncthing`.
+
+We can proceed to configuring Syncthing. I've used one mobile phone for demonstration purposes, but this procedure is identical for any number of devices - phones and computers alike.
+
+![Setting up Syncthing to work - part 1](/linux/Syncthing1.png)
+
+![Part 2](/linux/Syncthing2.png)
+
+Note that `HyperOS` is the name that I've assigned to my phone on Syncthing.
+
+Simply download the Syncthing app on your other device - it would automatically detect all devices on your network (that have Syncthing running). Choose the right device and you're done. I use [Org-note](https://org-note.com/) to view/edit notes on my phone.
+
+### Org-Roam-UI
+This package - installed along with Org-Roam -  provides the ability to visually display your notes as a graph, showing the connections between them. This provides a powerful way to understand the structure of your knowledge base and identify relationships between different concepts.
+
+Here's my Org and Org-Roam configuration:
+
+```lisp
+(use-package org-roam
+  :config
+  (setq org-roam-directory (file-truename "~/Documents/Notes")))
+
+(use-package org-roam-ui
+  :ensure '(org-roam-ui :host github :repo "org-roam/org-roam-ui")
+  :after org-roam
+  ;;  :hook (after-init . org-roam-ui-mode)
+  :config
+  (setq org-roam-ui-sync-theme t
+        org-roam-ui-follow t
+	org-roam-completion-everywhere t
+        org-roam-ui-update-on-save t
+        org-roam-ui-open-on-start t)
+  (org-roam-db-autosync-enable))
+```
+
+Feel free to change the location where you store notes via the `org-roam-directory` variable. `org-roam-db-autosync-enable` will automaically sync the graph UI and redraw the graph as nodes get added/removed/modified.
+
+Create your first node using `org-roam-node-find`. This brings up a *capture buffer* where you can type stuff. After you're done, simply save the file.
+
+Note that **nodes will be created automatically if they do not exist**.
+
+To link notes, use the `org-roam-node-insert` function. This function is what creates a link in the graph web UI. 
+
+Open the web UI in a browser using `org-roam-ui-open`. 
+
+Here's what the web UI looks like in my Notes folder:
+![Org Roam in 2D](/linux/ORUI1.png)
+![Some customization](/linux/ORUI2.png)
+I like the Gruvbox theme, so I'd probably apply it from the web UI. Prefs will be saved in cache.
 ## Mail
 >This is where the fun begins.
 
@@ -266,14 +324,15 @@ echo <password> > .passwd
 gpg -c .passwd
 rm .passwd
 ```
+*NOTE*: `<password>` is your <u>application password</u>, not the Google Account password. 
+I'm not sure if this changed recently (as of time of this update) or if it has always been that way.
 
 Create the directory where you want to store your mail. I've stored mine in `~/.mail`.
-
 We're almost there. Now all that's left is to configure `mbsync` (aka `isync`) and fetch the mail...
 
 Create `~/.mbsyncrc` with the following content:
 
-```
+```bash
 IMAPStore gmail-remote
 Host imap.gmail.com
 SSLType IMAPS
@@ -298,7 +357,7 @@ Obviously replace `<USERNAME>@gmail.com` with your email address.
 
 Finally, let's create initialise the mail index and fetch the mail:
 
-```
+```bash
 mu init --maildir=$HOME/.mail --my-address='<USERNAME>@gmail.com'
 mu index
 ```

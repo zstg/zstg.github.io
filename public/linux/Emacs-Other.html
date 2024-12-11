@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<title>Emacs-Other.html</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+
+</head>
+
+<body>
+
+<p>I’ve been spending a bit of time getting my Emacs configuration
+up-to-date, cutting down on bloat, and reducing package usage. Here’s
+how it went:</p>
+<h2 id="setting-up-presentations">Setting up presentations</h2>
+<p>One of the things I wanted to streamline was setting up presentations
+directly from Emacs. I’ve tried a couple of methods, and here’s a quick
+rundown of what worked best for me.</p>
+<h3 id="setting-up-a-latex-environment">Setting up a LaTeX
+environment</h3>
+<p>Org-mode continues to be one of Emacs’ most powerful tools. One thing
+I discovered recently is the <em>Org-beamer</em> export feature, which
+lets you create presentations directly from Org files. It’s pretty neat
+since you can structure your slides just like an outline. It’s like
+writing your slides in markdown but with the full power of Org-mode’s
+features. All you need to do is use a couple of <code>#+</code>
+directives, and the export to LaTeX will handle the rest.</p>
+<p>Note that this needs the following set up: - <code>pandoc</code> - I
+obtained it from the <a href="https://aur.archlinux.org">AUR</a> since I
+use Arch (BTW). Installation steps vary depending on the GNU+Linux
+distribution and OS. - <code>TeXLive</code> - it’s possible to use the
+system package on Archlinux, but I’ve setup a local installation. Here’s
+how I did it:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> ~/.Texlive</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/.Texlive</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> https://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># this typically needs gunzip installed</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">unzip</span> ~/.dotfiles/scripts/ex install-tl-unx.tar.gz</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="ex">./install-tl</span> <span class="at">--texdir</span> ~/.Texlive</span></code></pre></div>
+<p>I added the Texlive installation to the Emacs <code>path</code>
+because I do not like these scripts <em>“polluting”</em> my
+<code>fish</code> suggestions 🙄. Anyways, a simple</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>(setenv <span class="st">&quot;PATH&quot;</span> (concat (getenv <span class="st">&quot;HOME&quot;</span>) <span class="st">&quot;/.Texlive/bin/x86_64-linux:&quot;</span> (getenv <span class="st">&quot;PATH&quot;</span>)))</span></code></pre></div>
+<p>did the job for me.</p>
+<p>I ended up using this setup for a few talks, and honestly, it’s super
+handy. The presentation is completely text-based, so you can tweak
+content as easily as changing a heading. I also love that you can embed
+code blocks with results in your slides if you’re doing a technical
+talk, which looks great.</p>
+<h4 id="org-beamer">Org-beamer</h4>
+<p>The LaTeX backend for Org-beamer is solid and works wonders with the
+LaTeX environment mentioned above. YMMV.</p>
+<p>Here’s a minimal setup for using Org-beamer:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode org"><code class="sourceCode orgmode"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>#+LATEX_CLASS: beamer</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>#+LATEX_CLASS_OPTIONS: <span class="ot">[presentation</span>]</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>#+BEAMER_THEME: Madrid</span></code></pre></div>
+<p>You can specify themes, colors, and the layout you want. A couple of
+tweaks like this can go a long way to make your presentation look clean
+without needing to dive into too many customization details.</p>
+<p>Here’s what my setup looks like. Note that I’ve set this in my Emacs
+configuration because I’ll <em>mostly</em> follow similar settings
+across presentations.</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">setq</span> org-latex-default-class <span class="st">&quot;beamer&quot;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    org-latex-class-options <span class="st">&quot;[smaller]&quot;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    org-beamer-theme <span class="st">&quot;Malmoe&quot;</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    org-latex-with-hyperref <span class="kw">nil</span>)</span></code></pre></div>
+<p>To get Org-Beamer to work, all you need to do is add a
+<code>#+STARTUP: beamer</code> to the (top of) the file you want to
+export.</p>
+<p>You can then export your slides to <code>Beamer PDF</code> and open
+it in any PDF viewer (or even your browser). Sweet. Who needs
+<del>PowerPoint</del> office suites?!</p>
+<h3 id="via-org-reveal-and-revealjs">Via Org-reveal and RevealJS</h3>
+<p>On the other hand, if you’re more into web-based presentations,
+Org-reveal comes to the rescue. It exports your Org-mode files to HTML
+and integrates seamlessly with Reveal.js, giving you smooth transitions
+and interactive slides.</p>
+<p>The process is pretty straightforward: just make sure you’ve got the
+necessary tools installed (like the <code>ox-reveal</code> package).
+Once you’ve set up Org-reveal, your Org files can become fully
+interactive web presentations.</p>
+<p>The best part? You can embed JavaScript, custom themes, and even
+interactive elements like quizzes and polls. I prefer this setup for
+non-technical presentations, where I want some snazzy effects and a more
+polished, web-based result.</p>
+<p>Call me biased, but I prefer this over the previously mentioned
+Beamer solution. Who doesn’t like some pizzazz??</p>
+<p>Add something like this to the Org file that you want to export:</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode org"><code class="sourceCode orgmode"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>#+REVEAL_JS: t</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>#+REVEAL_THEME: solarized</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>#+REVEAL_TRANSITIONS: zoom</span></code></pre></div>
+<p>And here are my settings:</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">setq</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">;; org-reveal-root &quot;https://cdn.jsdelivr.net/npm/reveal.js&quot;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    org-reveal-root <span class="st">&quot;/home/stig/Git/reveal.js&quot;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    org-reveal-theme <span class="st">&quot;league&quot;</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    org-reveal-width <span class="dv">1920</span> <span class="co">;; 1200 too small</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    org-reveal-height <span class="dv">1080</span> <span class="co">;;800 too broad</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    org-reveal-margin <span class="fl">0.001</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    org-reveal-min-scale <span class="fl">0.01</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    org-reveal-max-scale <span class="fl">1.0</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    org-reveal-transition <span class="st">&quot;cube&quot;</span> <span class="co">;; Wayfire vibes</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">;; org-reveal-head-preamble &quot;&lt;meta name=\&quot;description\&quot; content=\&quot;Org-Reveal Introduction.\&quot;&gt;&quot;</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">;; org-reveal-postamble &quot;&lt;p&gt; Created by ZeStig. &lt;/p&gt;&quot;</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    org-reveal-hlevel <span class="dv">1</span>)</span></code></pre></div>
+<p>There are lots of themes and transitions available out of the box,
+and you can always tweak them as needed.</p>
+<h2 id="switching-to-elpaca-from-straight">Switching to Elpaca from
+Straight</h2>
+<p>I’ve also been taking a closer look at package management in Emacs.
+After spending a long time using Straight.el, I decided to give Elpaca a
+try, mostly due to its simplicity and speed. Straight.el has been great,
+but it can sometimes feel like overkill, especially if you’re just
+looking for a lightweight, fast way to manage packages.</p>
+<p>Elpaca is built to be much leaner, and it doesn’t try to do too much.
+It’s focused on performance, which, for me, is a huge deal. I noticed a
+slight performance boost after switching, and the configuration is super
+simple compared to what I had with Straight.el.</p>
+<p>Here’s how you set it up:</p>
+<p>(I’ve plagiarised this from the <a
+href="https://github.com/progfolio/elpaca?tab=readme-ov-file#installer">elpaca
+README</a>).</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defvar</span><span class="fu"> elpaca-installer-version </span><span class="fl">0.8</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defvar</span><span class="fu"> elpaca-directory </span>(expand-file-name <span class="st">&quot;elpaca/&quot;</span> user-emacs-directory))</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defvar</span><span class="fu"> elpaca-builds-directory </span>(expand-file-name <span class="st">&quot;builds/&quot;</span> elpaca-directory))</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defvar</span><span class="fu"> elpaca-repos-directory </span>(expand-file-name <span class="st">&quot;repos/&quot;</span> elpaca-directory))</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defvar</span><span class="fu"> elpaca-order </span>&#39;(elpaca :repo <span class="st">&quot;https://github.com/progfolio/elpaca.git&quot;</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>                              :ref <span class="kw">nil</span> :depth <span class="dv">1</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>                              :files (<span class="bu">:defaults</span> <span class="st">&quot;elpaca-test.el&quot;</span> (:exclude <span class="st">&quot;extensions&quot;</span>))</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>                              :build (:not elpaca--activate-package)))</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>(<span class="kw">let*</span> ((repo  (expand-file-name <span class="st">&quot;elpaca/&quot;</span> elpaca-repos-directory))</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>       (build (expand-file-name <span class="st">&quot;elpaca/&quot;</span> elpaca-builds-directory))</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>       (order (<span class="kw">cdr</span> elpaca-order))</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>       (default-directory repo))</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  (add-to-list <span class="dt">&#39;load-path</span> (<span class="kw">if</span> (file-exists-p build) build repo))</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">unless</span> (file-exists-p repo)</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    (make-directory repo <span class="kw">t</span>)</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">when</span> (<span class="op">&lt;</span> emacs-major-version <span class="dv">28</span>) (<span class="kw">require</span> <span class="dt">&#39;subr-x</span>))</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    (condition-case-unless-debug err</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>        (if-let* ((buffer (pop-to-buffer-same-window <span class="st">&quot;*elpaca-bootstrap*&quot;</span>))</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>                  ((<span class="kw">zerop</span> (<span class="kw">apply</span> <span class="op">#&#39;</span>call-process `(<span class="st">&quot;git&quot;</span> <span class="kw">nil</span> ,buffer <span class="kw">t</span> <span class="st">&quot;clone&quot;</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>                                                  ,@(when-let* ((depth (plist-get order :depth)))</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>                                                      (<span class="kw">list</span> (<span class="kw">format</span> <span class="st">&quot;--depth=%d&quot;</span> depth) <span class="st">&quot;--no-single-branch&quot;</span>))</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>                                                  ,(plist-get order :repo) ,repo))))</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>                  ((<span class="kw">zerop</span> (call-process <span class="st">&quot;git&quot;</span> <span class="kw">nil</span> buffer <span class="kw">t</span> <span class="st">&quot;checkout&quot;</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>                                        (<span class="kw">or</span> (plist-get order :ref) <span class="st">&quot;--&quot;</span>))))</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>                  (emacs (concat invocation-directory invocation-name))</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>                  ((<span class="kw">zerop</span> (call-process emacs <span class="kw">nil</span> buffer <span class="kw">nil</span> <span class="st">&quot;-Q&quot;</span> <span class="st">&quot;-L&quot;</span> <span class="st">&quot;.&quot;</span> <span class="st">&quot;--batch&quot;</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>                                        <span class="st">&quot;--eval&quot;</span> <span class="st">&quot;(byte-recompile-directory </span><span class="sc">\&quot;</span><span class="st">.</span><span class="sc">\&quot;</span><span class="st"> 0 &#39;force)&quot;</span>)))</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>                  ((<span class="kw">require</span> <span class="dt">&#39;elpaca</span>))</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>                  ((elpaca-generate-autoloads <span class="st">&quot;elpaca&quot;</span> repo)))</span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>            (<span class="kw">progn</span> (message <span class="st">&quot;%s&quot;</span> (buffer-string)) (kill-buffer buffer))</span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>          (<span class="kw">error</span> <span class="st">&quot;%s&quot;</span> (with-current-buffer buffer (buffer-string))))</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>      ((<span class="kw">error</span>) (<span class="kw">warn</span> <span class="st">&quot;%s&quot;</span> err) (delete-directory repo <span class="dt">&#39;recursive</span>))))</span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">unless</span> (<span class="kw">require</span> <span class="dt">&#39;elpaca-autoloads</span> <span class="kw">nil</span> <span class="kw">t</span>)</span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">require</span> <span class="dt">&#39;elpaca</span>)</span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>    (elpaca-generate-autoloads <span class="st">&quot;elpaca&quot;</span> repo)</span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">load</span> <span class="st">&quot;./elpaca-autoloads&quot;</span>)))</span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>(add-hook <span class="dt">&#39;after-init-hook</span> <span class="op">#&#39;</span>elpaca-process-queues)</span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>(elpaca `(,@elpaca-order))</span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>  <span class="co">;; Install use-package support</span></span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>(elpaca elpaca-use-package</span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>  <span class="co">;; Enable :elpaca use-package keyword.</span></span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>  (elpaca-use-package-mode)</span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>  <span class="co">;; Assume :elpaca t unless otherwise specified.</span></span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>  <span class="co">;; (setq elpaca-use-package-by-default t)) -&gt; replace https://github.com/progfolio/elpaca/issues/255</span></span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">setq</span> use-package-always-ensure <span class="kw">t</span>))</span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a>(elpaca-wait)</span></code></pre></div>
+<p>Then, I just migrated my existing packages over to Elpaca. The
+process was smooth and didn’t require a complete rework of my setup. So
+far, everything’s been fast, and the management overhead is much
+lower.</p>
+<p>For migrating packages available on GitHub from Straight to
+Elpaca:</p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode diff"><code class="sourceCode diff"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="st">- (use-package emacs-everywhere</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="st">-      :straight (:type git :host github :repo &quot;tecosaur/emacs-everywhere&quot;)</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="va">+ (use-package emacs-everywhere</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="va">+  :ensure &#39;(emacs-everywhere :host github :repo &quot;tecosaur/emacs-everywhere&quot;)</span></span></code></pre></div>
+<p>If you’re looking to simplify your package management and reduce some
+of the complexity that comes with more feature-rich solutions like
+Straight, Elpaca is definitely worth checking out.</p>
+<h2 id="org-roam">Org Roam</h2>
+<p><a href="https://roamresearch.com/">Roam</a> is a note-taking
+application designed around the concept of <strong>bidirectional
+linking</strong>. This means that when you create a link to another
+note, that link is also automatically added to the linked note, creating
+a web of interconnected ideas. This is in contrast to traditional
+note-taking apps which treat notes as isolated files.</p>
+<p>Let’s say you’re writing a note about “Artificial Intelligence.” You
+might link to related notes like “Machine Learning,” “Deep Learning,”
+and “Neural Networks” using <code>[[Machine Learning]]</code>,
+<code>[[Deep Learning]]</code>, and <code>[[Neural Networks]]</code>.
+Then, when you look at the “Machine Learning” note, you’ll see a
+backlink to your “Artificial Intelligence” note. ## Mail &gt;This is
+where the fun begins.</p>
+<blockquote>
+<p>Anakin, Ep 3, Revenge of the Sith (2005)</p>
+</blockquote>
+<p>You need a mail indexer such as <code>mu</code> installed. You also
+need a mailbox synchroniser such as <code>mbsync</code>:</p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">yay</span> <span class="at">-S</span> mu</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> isync gnutls</span></code></pre></div>
+<p><code>gnutls</code> is likely installed by default on your GNU+Linux
+distribution. Then you need an <u><em>Application Password</em></u> for
+authenticating to GMail. You can obtain one from the <a
+href="https://myaccount.google.com">Google Accounts</a> page. Simply
+search for “App Password” in the search field and create an app
+password. Store the App password securely for we’ll need it later.</p>
+<p>We now need to configure Emacs and <code>mbsync</code>.</p>
+<h3 id="emacs">Emacs</h3>
+<p>Add this to your configuration:</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>(add-to-list <span class="dt">&#39;load-path</span> <span class="st">&quot;/usr/share/emacs/site-lisp/mu4e&quot;</span>)(<span class="kw">require</span> <span class="dt">&#39;mu4e</span>)(<span class="kw">use-package</span> mu4e  :ensure <span class="kw">nil</span>  :config</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">setq</span> mail-user-agent <span class="dt">&#39;mu4e-user-agent</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">setq</span> mu4e-drafts-folder <span class="st">&quot;/[Gmail].Drafts&quot;</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">setq</span> mu4e-sent-folder   <span class="st">&quot;/[Gmail].Sent Mail&quot;</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">setq</span> mu4e-trash-folder  <span class="st">&quot;/[Gmail].Trash&quot;</span>)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">;; don&#39;t save message to Sent Messages, Gmail/IMAP takes care of this</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">setq</span> mu4e-sent-messages-behavior <span class="dt">&#39;delete</span>)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">;; setup some handy shortcuts</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">;; you can quickly switch to your Inbox -- press ``ji&#39;&#39;</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>  <span class="co">;; then, when you want archive some messages, move them to</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>  <span class="co">;; the &#39;All Mail&#39; folder by pressing ``ma&#39;&#39;.</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>   (<span class="kw">setq</span> mu4e-maildir-shortcuts</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>    &#39;( (:maildir <span class="st">&quot;/INBOX&quot;</span>              <span class="bu">:key</span> ?i)</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>       (:maildir <span class="st">&quot;/[Gmail].Sent Mail&quot;</span>  <span class="bu">:key</span> ?s)</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>       (:maildir <span class="st">&quot;/[Gmail].Trash&quot;</span>      <span class="bu">:key</span> ?t)</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>       (:maildir <span class="st">&quot;/[Gmail].All Mail&quot;</span>   <span class="bu">:key</span> ?a)))</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>  (add-to-list <span class="dt">&#39;mu4e-bookmarks</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>           <span class="co">;; &#39;:favorite t&#39; i.e, use this one for the modeline</span></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>           &#39;(:query <span class="st">&quot;maildir:/inbox&quot;</span> <span class="bu">:name</span> <span class="st">&quot;Inbox&quot;</span> <span class="bu">:key</span> ?i :favorite <span class="kw">t</span>))</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>  <span class="co">;; allow for updating mail using &#39;U&#39; in the main view:</span></span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">setq</span> mu4e-get-mail-command <span class="st">&quot;mbsync -a&quot;</span>)</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>  <span class="co">;; something about ourselves</span></span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">setq</span> user-mail-address <span class="st">&quot;&lt;USERNAME&gt;@gmail.com&quot;</span></span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>    user-full-name  <span class="st">&quot;&lt;NAME&gt;&quot;</span>)</span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>  <span class="co">;; ( setq message-signature (concat &quot;\n&quot; &quot;\n&quot;))</span></span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">setq</span> mu4e-compose-signature (concat <span class="st">&quot;Sent with &lt;U+E7CF&gt;</span><span class="sc">\n</span><span class="st">&quot;</span> <span class="st">&quot;https://zstg.is-a.dev</span><span class="sc">\n</span><span class="st">&quot;</span>))</span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>   (<span class="kw">require</span> <span class="dt">&#39;smtpmail</span>)</span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">setq</span> message-send-mail-function <span class="dt">&#39;smtpmail-send-it</span></span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>    send-mail-function <span class="dt">&#39;smtpmail-send-it</span></span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a>    smtpmail-default-smtp-server <span class="st">&quot;smtp.gmail.com&quot;</span></span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a>    smtpmail-smtp-server <span class="st">&quot;smtp.gmail.com&quot;</span></span>
+<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a>    smtpmail-smtp-service <span class="dv">587</span></span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>    smtpmail-stream-type <span class="dt">&#39;starttls</span></span>
+<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>    smtpmail-smtp-user <span class="st">&quot;&lt;USERNAME&gt;@gmail.com&quot;</span></span>
+<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>    starttls-use-gnutls <span class="kw">t</span></span>
+<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a>    starttls-gnutls-program <span class="st">&quot;gnutls-cli&quot;</span></span>
+<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a>    starttls-extra-arguments <span class="kw">nil</span>)</span>
+<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a>  <span class="co">;; this is not the right place to configure auth details...</span></span>
+<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">setq</span> auth-source-debug <span class="kw">t</span></span>
+<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a>    auth-sources &#39;((:source <span class="st">&quot;~/.authinfo.gpg&quot;</span>))</span>
+<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a>        <span class="co">;; don&#39;t keep message buffers around</span></span>
+<span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a>        message-kill-buffer-on-exit <span class="kw">t</span>))</span></code></pre></div>
+<p>Replace <code>USERNAME</code> and <code>NAME</code>
+appropriately.</p>
+<p>But wait? Where are the actual Gmail credentials? Surely they must be
+stored somewhere?</p>
+<p>To answer that question, add this to the <code>~/.authinfo</code>
+file: Create the file if it doesn’t exist.</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">machine</span> <span class="st">&quot;smtp.gmail.com&quot;</span> login <span class="st">&quot;username@gmail.com&quot;</span> password <span class="st">&quot;abcd bcde cdef defg&quot;</span></span></code></pre></div>
+<p>Obviously replace <code>abcd bcde cdef defg</code> with the
+<em>Application Password</em> that you set previously.</p>
+<p>Now encrypt this file:</p>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gpg</span> <span class="at">-c</span> ~/.authinfo</span></code></pre></div>
+<p>This will create a <code>~/.authinfo.gpg</code> file that stores the
+App Password.</p>
+<p>Do the same thing for your Gmail password.</p>
+<pre><code>echo &lt;password&gt; &gt; .passwd
+gpg -c .passwd
+rm .passwd</code></pre>
+<p><em>NOTE</em>: <code>&lt;password&gt;</code> is your <u>application
+password</u>, not the Google Account password. I’m not sure if this
+changed recently (as of time of this update) or if it has always been
+that way.</p>
+<p>Create the directory where you want to store your mail. I’ve stored
+mine in <code>~/.mail</code>. We’re almost there. Now all that’s left is
+to configure <code>mbsync</code> (aka <code>isync</code>) and fetch the
+mail…</p>
+<p>Create <code>~/.mbsyncrc</code> with the following content:</p>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">IMAPStore</span> gmail-remote</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Host</span> imap.gmail.com</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="ex">SSLType</span> IMAPS</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="ex">AuthMechs</span> LOGIN</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="ex">User</span> <span class="op">&lt;</span>USERNAME<span class="op">&gt;</span>@gmail.com</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="ex">PassCmd</span> <span class="st">&quot;gpg -dq --for-your-eyes-only ~/.passwd.gpg&quot;</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="ex">MaildirStore</span> gmail-local</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="ex">Path</span> ~/.mail/</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="ex">Inbox</span> ~/.mail/INBOX</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="ex">Subfolders</span> Verbatim</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="ex">Channel</span> gmail</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="ex">Master</span> :gmail-remote:</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="ex">Slave</span> :gmail-local:</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="ex">Create</span> Both</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a><span class="ex">Expunge</span> Both</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a><span class="ex">Patterns</span> <span class="pp">*</span> !<span class="st">&quot;[Gmail]/All Mail&quot;</span> !<span class="st">&quot;[Gmail]/Important&quot;</span> !<span class="st">&quot;[Gmail]/Starred&quot;</span> !<span class="st">&quot;[Gmail]/Bin&quot;</span></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a><span class="ex">SyncState</span> <span class="pp">*</span></span></code></pre></div>
+<p>Obviously replace <code>&lt;USERNAME&gt;@gmail.com</code> with your
+email address.</p>
+<p>Finally, let’s create initialise the mail index and fetch the
+mail:</p>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mu</span> init <span class="at">--maildir</span><span class="op">=</span><span class="va">$HOME</span>/.mail <span class="at">--my-address</span><span class="op">=</span><span class="st">&#39;&lt;USERNAME&gt;@gmail.com&#39;</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="ex">mu</span> index</span></code></pre></div>
+<p>When you open Emacs the next time, a simple
+<code>mu4e-update-index</code> will display all the email you have
+received. ## RSS</p>
+<p>I’m not quite sure how often (or even if) I’ll use this
+functionality, but I’ve set up an RSS reader inside Emacs. This was
+simple to do, and I’ve just plagarised <a
+href="https://distro.tube">DT</a>’s <a
+href="https://gitlab.com/dwt1/dotfiles/-/blob/master/.config/emacs/config.org">configuration</a>.</p>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">use-package</span> elfeed</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  :config</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">setq</span> elfeed-search-feed-face <span class="st">&quot;:foreground #ffffff :weight bold&quot;</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>        elfeed-feeds (<span class="kw">quote</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    ((<span class="st">&quot;https://www.reddit.com/r/linux.rss&quot;</span> reddit linux)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;https://www.reddit.com/r/archlinux.rss&quot;</span> reddit archlinux)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;https://www.reddit.com/r/linuxfornoobs.rss&quot;</span> reddit linuxfornoobs)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;https://www.reddit.com/r/linuxquestions.rss&quot;</span> reddit linuxquestions)</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;https://www.reddit.com/r/commandline.rss&quot;</span> reddit commandline)</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;https://www.reddit.com/r/distrotube.rss&quot;</span> reddit distrotube)</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;https://www.reddit.com/r/emacs.rss&quot;</span> reddit emacs)</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;https://www.gamingonlinux.com/article_rss.php&quot;</span> gaming linux)</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;https://hackaday.com/blog/feed/&quot;</span> hackaday linux)</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;https://opensource.com/feed&quot;</span> opensource linux)</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;https://linux.softpedia.com/backend.xml&quot;</span> softpedia linux)</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;https://itsfoss.com/feed/&quot;</span> itsfoss linux)</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;https://www.zdnet.com/topic/linux/rss.xml&quot;</span> zdnet linux)</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;https://www.phoronix.com/rss.php&quot;</span> phoronix linux)</span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;http://feeds.feedburner.com/d0od&quot;</span> omgubuntu linux)</span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;https://www.computerworld.com/index.rss&quot;</span> computerworld linux)</span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;https://www.networkworld.com/category/linux/index.rss&quot;</span> networkworld linux)</span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;https://www.techrepublic.com/rssfeeds/topic/open-source/&quot;</span> techrepublic linux)</span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;https://betanews.com/feed&quot;</span> betanews linux)</span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;http://lxer.com/module/newswire/headlines.rss&quot;</span> lxer linux)</span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;https://distrowatch.com/news/dwd.xml&quot;</span> distrowatch linux)))))</span></code></pre></div>
+<h2 id="fin">Fin</h2>
+<p>All in all, this update to my Emacs setup has been pretty satisfying.
+I’ve cut down on unnecessary packages, streamlined my workflow for
+creating presentations, and improved performance. The best part is that
+it’s still flexible enough for me to jump into new tools or adjust
+things as I need them.</p>
+<p>If you’re looking to clean up your own configuration or try out some
+of the things I mentioned, I’d say go for it. Emacs is an ongoing
+adventure, and it’s always fun to explore new ways of improving the
+experience. Happy hacking!</p>
+
+</body>
+</html>
