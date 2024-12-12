@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>ZeStig&#x27;s lair - Rework</title>
+    <subtitle>ZeStig&#x27;s blog site</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://zstg.is-a.dev/tags/rework/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://zstg.is-a.dev"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2024-01-19T00:00:00+00:00</updated>
+    <id>https://zstg.is-a.dev/tags/rework/atom.xml</id>
+    <entry xml:lang="en">
+        <title>New Website</title>
+        <published>2024-01-19T00:00:00+00:00</published>
+        <updated>2024-01-19T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            Dexter Reed
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://zstg.is-a.dev/blog/new-website/"/>
+        <id>https://zstg.is-a.dev/blog/new-website/</id>
+        
+        <content type="html" xml:base="https://zstg.is-a.dev/blog/new-website/">&lt;h2 id=&quot;why&quot;&gt;Why?&lt;&#x2F;h2&gt;
+&lt;p&gt;…what the ʞɔnɟ do you mean why…&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;zstg.is-a.dev&#x2F;blog&#x2F;new-website&#x2F;oldsite.png&quot; alt=&quot;Old Placeholder Website&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;figcaption&gt;The old ugly, lacking and boring &lt;b&gt;&lt;i&gt;placeholder&lt;&#x2F;i&gt;&lt;&#x2F;b&gt; website.&lt;&#x2F;figcaption&gt;
+&lt;p&gt;Also, this site supports blog posts, RSS and more which is better than the placeholder and &lt;a class=&quot;link-site&quot; href=&quot;https:&#x2F;&#x2F;sungsphinx.codeberg.page&#x2F;@cleanup&quot;&gt;&lt;b&gt;my&lt;&#x2F;b&gt; old site&lt;&#x2F;a&gt;. (It is also more modern as in both code and the website look and feel)&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;i-want-the-old-site-because-i-am-clinically-insane&quot;&gt;I Want The Old Site (because I am clinically insane)&lt;&#x2F;h2&gt;
+&lt;p&gt;No… well if you really want… you can go &lt;a class=&quot;link-site&quot; href=&quot;https:&#x2F;&#x2F;sorg.codeberg.page&#x2F;@legacy&quot;&gt;here&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;credits&quot;&gt;Credits&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;a class=&quot;link-site&quot; href=&quot;https:&#x2F;&#x2F;daudix.codeberg.page&quot;&gt;David Lapshin &#x2F; Daudix&lt;&#x2F;a&gt; - &lt;a class=&quot;link-site&quot; href=&quot;https:&#x2F;&#x2F;daudix.codeberg.page&#x2F;duckquill&quot;&gt;Duckquill Zola Theme (obviously)&lt;&#x2F;a&gt;, &lt;a class=&quot;link-site&quot; href=&quot;https:&#x2F;&#x2F;codeberg.org&#x2F;daudix&#x2F;duckquill&#x2F;raw&#x2F;branch&#x2F;main&#x2F;.woodpecker.yml&quot;&gt;Woodpecker CI YML (Build &amp;amp; Publish with Zola Automatically)&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;a class=&quot;link-site&quot; href=&quot;https:&#x2F;&#x2F;www.getzola.org&#x2F;&quot;&gt;Zola (obviously as well)&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+</feed>
