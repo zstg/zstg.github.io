@@ -46,7 +46,7 @@
 							{{- page.date | date(format=date_format, locale=date_locale) -}}
 						</time>
 						{%- if page.authors -%}
-							<span> • {% include "partials/authors.html" -%}</span>
+							<span> {{ config.extra.separator | default(value="•") }} {% include "partials/authors.html" -%}</span>
 						{%- endif -%}
 					</small>
 					{%- if page.taxonomies -%}
@@ -60,7 +60,6 @@
 							</small>
 						{%- endfor -%}
 					{%- endif %}
-					</small>
 				</div>
 			{%- endif -%}
 		</article>

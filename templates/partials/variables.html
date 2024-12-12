@@ -63,7 +63,7 @@
 		}
 	{%- endif -%}
 
-	{%- if page.extra.debug_layout or section.extra.debug_layout or config.extra.debug_layout -%}
+	{%- if config.extra.debug.layout -%}
 		*,
 		*::before,
 		*::after {

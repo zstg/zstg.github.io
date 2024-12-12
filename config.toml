@@ -196,7 +196,7 @@ show_source = false
 # the needed rel="me" link is set in the head based on these.
 [extra.comments]
 # Your Mastodon API host; instance that you have an account on.
-host = "fedia.social"
+host = "fosstodon.org"
 # Your Mastodon username; used to determine who the original poster is.
 user = "zstg"
 # Whether to show the QR code to Mastodon post

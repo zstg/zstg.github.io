@@ -1,6 +1,7 @@
 +++
 insert_anchor_links = "left"
 title = "Home"
+description = "ZeStig's blog site."
 +++
 <!--
 {% crt() %}

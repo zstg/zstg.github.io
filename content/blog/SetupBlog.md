@@ -1,17 +1,22 @@
----
-title: "Setup a simple blog using GitHub Pages and Hugo" 
-author: "ZeStig"
-date: "2024-03-26"
-authorTwitter: ""
-cover: ""
-tags : ["Git", "Hugo"] 
-keywords : ["Blog", "GitHub Pages"] 
-description : "A quick tutorial on how to set up a blog post using Hugo, hosted on GitHub pages"
-showFullContent: false
-readingTime: false
-hideComent: false
-category : "Blog"
----
++++
+title = "Setup a simple blog using GitHub Pages and Hugo" 
+author = "ZeStig"
+date = "2024-03-26"
+authorTwitter = ""
+cover = ""
+tags  = ["Git", "Hugo"] 
+keywords  = ["Blog", "GitHub Pages"] 
+description  = "A quick tutorial on how to set up a blog post using Hugo, hosted on GitHub pages"
+showFullContent = false
+readingTime = false
+hideComent = false
+category  = "Blog"
+
+[extra.comments]
+host = "toot.community"
+id = "111784580759701190"
+user = "sungsphinx"
++++
 
 Blogs are a great way to share your thoughts, ideas, and experiences
 with the world. They can be used for personal or professional purposes,
