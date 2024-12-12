@@ -1,43 +1,27 @@
 title = "ZeStig's lair"
 base_url = "https://zstg.is-a.dev"
-description = "ZeStig's blog site."
+description = "ZeStig's blog site"
+theme = "duckquill"
+
 compile_sass = true
 minify_html = true
-generate_feeds = false
-# Only the first file will be used in the navbar feed button,
-# other feeds will still be available in page's head.
-feed_filenames = ["rss.xml", "atom.xml"]
+feed_filenames = ["atom.xml"]
 build_search_index = false
 author = "ZeStig"
 
-# Based on https://github.com/welpo/tabi
-#
-# To translate the entire theme, there must be a file with the same ISO 639-1 or BCP 47
-# language code in the `i18n` directory of your site or the Duckquill theme.
-# For example, "i18n/fr.toml" for French or "i18n/zh-Hans.toml" for Simplified Chinese.
-# Otherwise the theme will be in English.
-#
-# ISO 639-1: https://localizely.com/iso-639-1-list/
-# BCP 47: https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry
-default_language = "en"
-
-taxonomies = [{ name = "tags", feed = true }]
+taxonomies = [
+  {name = "tags", feed = true},
+]
 
 [markdown]
 highlight_code = true
 highlight_theme = "css"
 highlight_themes_css = [
-	{ theme = "solarized-dark", filename = "syntax-theme-dark.css" },
-	{ theme = "solarized-light", filename = "syntax-theme-light.css" }
+  { theme = "solarized-dark", filename = "syntax-theme-dark.css" },
+  { theme = "solarized-light", filename = "syntax-theme-light.css" },
 ]
 smart_punctuation = true
 bottom_footnotes = true
-
-[search]
-# index_format = "elasticlunr_json"
-index_format = "fuse_json"
-
-taxonomies = [{ name = "tags", feed = true }]
 
 [extra]
 # Which theme should be used by default (light/dark).
@@ -70,7 +54,8 @@ bundled_fonts = true
 # URL to website's issue tracker
 issues_url = "https://codeberg.org/daudix/duckquill/issues"
 # URL to website's source code
-source_url = "https://codeberg.org/daudix/duckquill"
+# source_url = "https://codeberg.org/daudix/duckquill"
+source_url = "https://github.com/zstg/zstg.github.io"
 # Additional CSS styles; expects them to be in the "./static/" directory.
 # If you are using Sass it will be generated there automatically.
 #
@@ -126,8 +111,8 @@ csp = [
 	{ directive = "media-src", domains = ["'self'", "https:"] },
 	{ directive = "script-src", domains = ["'self'"] },
 	{ directive = "style-src", domains = ["'self'", "'unsafe-inline'"] },
-	{ directive = "frame-src", domains = ["https://player.vimeo.com", "https://www.youtube-nocookie.com", "https://toot.community"] },
-	{ directive = "connect-src", domains = ["https://toot.community"] },
+	{ directive = "frame-src", domains = ["https://player.vimeo.com", "https://www.youtube-nocookie.com", "https://fosstodon.org"] },
+	{ directive = "connect-src", domains = ["https://fosstodon.org"] },
 	{ directive = "frame-ancestors", domains = ["'none'"] },
 	{ directive = "base-uri", domains = ["'none'"] },
 	{ directive = "form-action", domains = ["'none'"] }
@@ -152,8 +137,8 @@ show_repo = true
 # See https://www.getzola.org/documentation/content/linking/#internal-links
 links = [
 	{ name = "Links", menu = [
-		{ url = "/linux", name = "Linux" },
-		{ url = "/blog", name = "Blog" }
+		{ url = "@/linux/_index.md", name = "Linux" },
+		{ url = "@/blog/_index.md", name = "Blog" }
 	] },
 	# { url = "https://daudix.one/", name = "Coffee" }
 ]
@@ -177,38 +162,33 @@ socials = [
 	# { url = "https://fedia.social/@zstg", name = "Fediverse", icon = "%3Csvg role='img' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Ctitle%3EFirefish%3C/title%3E%3Cpath d='M16.771 0c-.68-.016-1.342.507-1.342 1.304V7.27c0 .719.582 1.301 1.3 1.301h5.967c1.16 0 1.74-1.401.92-2.22L17.65.383a1.275 1.275 0 0 0-.879-.383ZM6.573.106c-.672-.017-1.326.5-1.326 1.287v5.892c0 .71.575 1.285 1.285 1.285h5.892c1.145 0 1.718-1.384.908-2.194L7.44.484a1.259 1.259 0 0 0-.867-.379ZM1.286 10.287c-.71 0-1.286.576-1.286 1.286v11.142C0 23.425.576 24 1.286 24h11.143c.71 0 1.285-.575 1.285-1.285V11.573c0-.71-.575-1.286-1.285-1.286zm15.485 0c-.68-.017-1.342.507-1.342 1.304v5.966c0 .718.582 1.3 1.3 1.3h5.967c1.16 0 1.74-1.4.92-2.22L17.65 10.67a1.275 1.275 0 0 0-.879-.384zM3.43 17.144a1.714 1.714 0 1 1 0 3.428 1.714 1.714 0 0 1 0-3.428zm4.285 0a1.714 1.714 0 1 1 0 3.428 1.714 1.714 0 0 1 0-3.428z'/%3E%3C/svg%3E" }
 ]
 # Whether to show "© Title, YEAR"
+# "© Title, YEAR" in the footer
 show_copyright = false
 # Whether to show "Powered by Zola and Duckquill"
 show_powered_by = true
 # Whether to show link to website source
-show_source = false
+show_source = true
 # Custom copyright text
 #
 # copyright = "© *Aperture* **Science** ~~Innovators~~, `1972`"
 
-# Based on https://carlschwan.eu/2020/12/29/adding-comments-to-your-static-blog-with-mastodon/
+# URL to the website without the https:// part, used for Johnvertisement leaderboard
+johnvert_ref = "zstg.is-a.dev"
+# Johnvertisement in the footer
+show_johnvert = true
+
+# Based on https://github.com/cassidyjames/cassidyjames.github.io/blob/75cd2a202de7a1026de1ea00a4ef1d5b2675c7ff/_config.yaml#L35-L74
 #
 # Mastodon-powered commenting.
-# Values can be overridden in the front-matter, e.g.
+# Values can be overridden in front-matter, e.g.
 # for multi-author blogs or guest posts.
 #
 # These variables are also used for Mastodon verification,
 # the needed rel="me" link is set in the head based on these.
 [extra.comments]
-# Your Mastodon API host; instance that you have an account on.
-# host = "fedia.social"
+# Your Mastodon API host; this should be where you have an account
 host = ""
-# Your Mastodon username; used to determine who the original poster is.
-# user = "fedia.social"
+# Used to determine who the original/verified poster is;
+# role may be expanded in the future (e.g. for moderation).
+# INFO: There is no Silly Org Mastodon account right now.
 user = ""
-# Whether to show the QR code to Mastodon post
-# show_qr = true
-
-# GoatCounter analytics; enabled only if present in config.
-# [extra.goatcounter]
-# Your GoatCounter server; goatcounter.com is used by default.
-#
-# host = "YOUR_SERVER"
-#
-# Your GoatCounter username
-# user = "duckquill"
