@@ -9,9 +9,9 @@ tags = ["Website", "Rework", "Redesign", "Duckquill & Zola"]
 toc = true
 
 [extra.comments]
-host = "toot.community"
-id = "111784580759701190"
-user = "sungsphinx"
+host = "fosstodon.org"
+id = "113640407630173110"
+user = "zstg"
 +++
 
 ## Why?
@@ -29,4 +29,3 @@ No... well if you really want... you can go <a class="link-site" href="https://s
 <a class="link-site" href="https://daudix.codeberg.page">David Lapshin / Daudix</a> - <a class="link-site" href="https://daudix.codeberg.page/duckquill">Duckquill Zola Theme (obviously)</a>, <a class="link-site" href="https://codeberg.org/daudix/duckquill/raw/branch/main/.woodpecker.yml">Woodpecker CI YML (Build & Publish with Zola Automatically)</a>
 
 <a class="link-site" href="https://www.getzola.org/">Zola (obviously as well)</a>
-
