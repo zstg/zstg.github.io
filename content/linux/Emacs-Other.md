@@ -1,10 +1,12 @@
----
-title: "Miscellaneous Emacs configuration"
-date: 2024-12-11
-author: ZeStig 
-category: "Emacs"
-description: "Interesting Emacs configuration ideas" 
----
++++
+title = "Miscellaneous Emacs configuration"
+date = 2024-12-11
+author = "ZeStig"
+category = "Emacs"
+description = "Interesting Emacs configuration ideas" 
+[extra.comments]
+id = "113640407630173110"
++++
 
 I've been spending a bit of time getting my Emacs configuration up-to-date, cutting down on bloat, and reducing package usage. Here's how it went:
 

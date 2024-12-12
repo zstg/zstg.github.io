@@ -1,12 +1,12 @@
----
-title: "Setup a simple blog using GitHub Pages and Astro"
-author: "ZeStig"
-date: 2024-04-21
-tags : ["Git", "Astro"]
-category : "Blog"
-keywords : ["Blog", "GitHub Pages"]
-description : "A quick tutorial on how to set up a blog post using Astro, hosted on GitHub pages"
----
++++
+title = "Setup a simple blog using GitHub Pages and Astro"
+author = "ZeStig"
+date = 2024-04-21
+tags = ["Git", "Astro"]
+category = "Blog"
+keywords = ["Blog", "GitHub Pages"]
+description = "A quick tutorial on how to set up a blog post using Astro, hosted on GitHub pages"
++++
 
 Blogs are a great way to share your thoughts, ideas, and experiences
 with the world. They can be used for personal or professional purposes,

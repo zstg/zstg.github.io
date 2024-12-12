@@ -13,9 +13,7 @@ hideComent = false
 category  = "Blog"
 
 [extra.comments]
-host = "toot.community"
 id = "111784580759701190"
-user = "sungsphinx"
 +++
 
 Blogs are a great way to share your thoughts, ideas, and experiences
