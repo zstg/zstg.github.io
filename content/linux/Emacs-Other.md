@@ -4,6 +4,7 @@ date = 2024-12-11
 author = "ZeStig"
 category = "Emacs"
 description = "Interesting Emacs configuration ideas" 
+
 [extra.comments]
 id = "113640407630173110"
 +++

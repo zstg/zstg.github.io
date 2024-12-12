@@ -9,9 +9,7 @@ tags = ["Website", "Rework", "Redesign", "Duckquill & Zola"]
 toc = true
 
 [extra.comments]
-host = "fosstodon.org"
 id = "113640407630173110"
-user = "zstg"
 +++
 
 ## Why?

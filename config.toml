@@ -187,8 +187,19 @@ show_johnvert = true
 # the needed rel="me" link is set in the head based on these.
 [extra.comments]
 # Your Mastodon API host; this should be where you have an account
-host = ""
+host = "fosstodon.org"
 # Used to determine who the original/verified poster is;
 # role may be expanded in the future (e.g. for moderation).
 # INFO: There is no Silly Org Mastodon account right now.
-user = ""
+user = "zstg"
+# Whether to show the QR code to Mastodon post
+show_qr = true
+
+# GoatCounter analytics; enabled only if present in config.
+# [extra.goatcounter]
+# Your GoatCounter server; goatcounter.com is used by default.
+#
+# host = "YOUR_SERVER"
+#
+# Your GoatCounter username
+# user = "duckquill"
