@@ -7,7 +7,7 @@ generate_feeds = false
 # Only the first file will be used in the navbar feed button,
 # other feeds will still be available in page's head.
 feed_filenames = ["rss.xml", "atom.xml"]
-build_search_index = true
+build_search_index = false
 author = "ZeStig"
 
 # Based on https://github.com/welpo/tabi
@@ -152,7 +152,7 @@ show_repo = true
 # See https://www.getzola.org/documentation/content/linking/#internal-links
 links = [
 	{ name = "Links", menu = [
-		{ url = "/linux", name = "Linux", icon = "hammer" },
+		{ url = "/linux", name = "Linux" },
 		{ url = "/blog", name = "Blog" }
 	] },
 	# { url = "https://daudix.one/", name = "Coffee" }
@@ -197,12 +197,12 @@ show_source = false
 [extra.comments]
 # Your Mastodon API host; instance that you have an account on.
 # host = "fedia.social"
-host = "fosstodon.org"
+host = ""
 # Your Mastodon username; used to determine who the original poster is.
 # user = "fedia.social"
-user = "zstg"
+user = ""
 # Whether to show the QR code to Mastodon post
-show_qr = true
+# show_qr = true
 
 # GoatCounter analytics; enabled only if present in config.
 # [extra.goatcounter]
