@@ -187,7 +187,7 @@ show_johnvert = true
 # the needed rel="me" link is set in the head based on these.
 [extra.comments]
 # Your Mastodon API host; this should be where you have an account
-host = "fosstodon.org"
+host = "fedia.social" # fosstodon.org reqd for comments....
 # Used to determine who the original/verified poster is;
 # role may be expanded in the future (e.g. for moderation).
 # INFO: There is no Silly Org Mastodon account right now.

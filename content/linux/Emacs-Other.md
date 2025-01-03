@@ -358,7 +358,12 @@ SyncState *
 ```
 Obviously replace `<USERNAME>@gmail.com` with your email address.
 
-Finally, let's create initialise the mail index and fetch the mail:
+Create a directory where you want to store the mail:
+```bash
+mkdir ~/.mail
+```
+
+Then let's create initialise the mail index and fetch the mail:
 
 ```bash
 mu init --maildir=$HOME/.mail --my-address='<USERNAME>@gmail.com'
