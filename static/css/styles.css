@@ -1,0 +1,69 @@
+:root {
+  --bg_h: #f2f4f8;
+  --bg: #e1e2e7;
+  --bg_s: #dcdfe4;
+  --bg1: #d5d6db;
+  --bg2: #c0c2c7;
+  --bg3: #a6a8ad;
+  --bg4: #8c8e93;
+
+  --fg: #1a1b26;
+  --fg1: #1f2335;
+  --fg2: #2e334d;
+  --fg3: #3b4261;
+  --fg4: #545c7e;
+
+  --red: #f52a65;
+  --green: #587539;
+  --yellow: #8c6c3e;
+  --blue: #2e7de9;
+  --purple: #9854f1;
+  --aqua: #007197;
+  --orange: #b15c00;
+  --gray: #848cb5;
+
+  --red-dim: #e64553;
+  --green-dim: #6a9589;
+  --yellow-dim: #e0af68;
+  --blue-dim: #5eacd3;
+  --purple-dim: #9d7cd8;
+  --aqua-dim: #449dab;
+  --orange-dim: #ff9e64;
+  --gray-dim: #7aa2f7;
+}
+
+
+.darkmode {
+  --bg_h: #1a1b26;
+  --bg: #1a1b26;
+  --bg_s: #1f2335;
+  --bg1: #24283b;
+  --bg2: #292e42;
+  --bg3: #3b4261;
+  --bg4: #414868;
+
+  --fg: #c0caf5;
+  --fg1: #a9b1d6;
+  --fg2: #9aa5ce;
+  --fg3: #7aa2f7;
+  --fg4: #6a8cbc;
+
+  --red: #f7768e;
+  --green: #9ece6a;
+  --yellow: #e0af68;
+  --blue: #7aa2f7;
+  --purple: #bb9af7;
+  --aqua: #7dcfff;
+  --gray: #565f89;
+  --orange: #ff9e64;
+
+  --red-dim: #db4b4b;
+  --green-dim: #73daca;
+  --yellow-dim: #e0af68;
+  --blue-dim: #2ac3de;
+  --purple-dim: #9d7cd8;
+  --aqua-dim: #1abc9c;
+  --gray-dim: #7aa2f7;
+  --orange-dim: #ff9e64;
+}
+

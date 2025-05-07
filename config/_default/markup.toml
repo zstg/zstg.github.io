@@ -1,0 +1,14 @@
+# defaultMarkdownHandler = "goldmark"
+
+[goldmark.renderer]
+unsafe = true
+
+[highlight]
+codeFences = true
+noClasses = false
+# style = "tokyonight-storm"   
+    
+[tableOfContents]
+endLevel = 6
+ordered = false
+startLevel = 2

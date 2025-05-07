@@ -1,0 +1,52 @@
+title = "ZeStig"
+description = "ZeStig's Lair"
+footnote = """
+Made with <a href="https://gohugo.io" target="_blank">
+<img src="/images/icons/hugo.svg" alt="Hugo" width="45px" height="12px"class="hugo-svg">
+</a> and <a href="https://www.gnu.org/software/emacs/" target="_blank">
+<img src="/images/icons/emacs-alt.svg" width="20px" height="20px" alt="Emacs" class="emacs-svg"></a>
+"""
+keywords = ["emacs", "linux", "blog", "orgmode"]
+customCSS = ["css/styles.css", "css/syntax.css"]
+dateFormat = "2 January 2006"
+emphasisWithDots = true
+toc = true
+showWordCount = true
+showReadingTime = true
+rootFontSize = "105%"
+math = false
+enableDuckDuckGoSearchBox = true
+numberedSubtitles = true
+
+[commentEngine]
+code = """
+<script src="https://giscus.app/client.js"
+        data-repo="zstg/zstg.github.io"
+        data-repo-id="R_kgDOOl3Ceg"
+        data-category="[ENTER CATEGORY NAME HERE]"
+        data-category-id="[ENTER CATEGORY ID HERE]"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="catppuccin_macchiato"
+        data-lang="en"
+        crossorigin="anonymous"
+        async>
+</script>
+"""
+
+[buymeacoffee]
+code = """
+"""
+
+[sharingbuttons]
+facebook = false
+twitter = false
+email = false
+linkedin = false
+reddit = false
+whatsapp = false
+hackernews = false
+telegram = false

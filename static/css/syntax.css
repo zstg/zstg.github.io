@@ -1,0 +1,80 @@
+/* === Tokyonight Light === */
+.chroma {
+  background-color: #e1e2e7;
+  color: #1a1b26;
+}
+
+/* Background */
+.bg { background-color: #e1e2e7; color: #1a1b26; }
+
+/* Line Highlight */
+.hl { background-color: #dcdfe4; }
+
+/* Keywords */
+.k, .kc, .kd, .kn, .kp, .kr { color: #2e7de9; font-weight: bold; }
+.kt { color: #8c6c3e; }
+
+/* Names */
+.na { color: #587539; font-weight: bold; }
+.nb, .nf { color: #9854f1; }
+.no { color: #b15c00; }
+.ne, .nl, .nt { color: #f52a65; }
+
+/* Strings */
+.s, .sa, .sb, .sc, .s1, .s2 { color: #9ece6a; }
+.ss { color: #2e7de9; }
+
+/* Numbers */
+.m, .mb, .mf, .mh, .mi, .mo, .il { color: #b15c00; }
+
+/* Operators */
+.o, .ow { color: #ff9e64; }
+
+/* Comments */
+.c, .ch, .cm, .c1, .cs { color: #848cb5; font-style: italic; }
+.cp, .cpf { color: #007197; font-style: italic; }
+
+/* Generic */
+.ge { color: #7aa2f7; text-decoration: underline; }
+.gu, .gh { color: #8c6c3e; font-weight: bold; }
+
+/* === Tokyonight Dark === */
+.darkmode .chroma {
+  background-color: #1a1b26;
+  color: #c0caf5;
+}
+
+.darkmode .bg { background-color: #1a1b26; color: #c0caf5; }
+.darkmode .hl { background-color: #292e42; }
+
+.darkmode .k, .darkmode .kc, .darkmode .kd, .darkmode .kn, .darkmode .kp, .darkmode .kr {
+  color: #7aa2f7; font-weight: bold;
+}
+
+.darkmode .kt { color: #e0af68; }
+.darkmode .na { color: #9ece6a; font-weight: bold; }
+.darkmode .nb, .darkmode .nf { color: #bb9af7; }
+.darkmode .no { color: #ff9e64; }
+.darkmode .ne, .darkmode .nl, .darkmode .nt { color: #f7768e; }
+
+.darkmode .s, .darkmode .sa, .darkmode .sb, .darkmode .sc, .darkmode .s1, .darkmode .s2 {
+  color: #9ece6a;
+}
+
+.darkmode .ss { color: #7dcfff; }
+
+.darkmode .m, .darkmode .mb, .darkmode .mf, .darkmode .mh, .darkmode .mi, .darkmode .mo, .darkmode .il {
+  color: #e0af68;
+}
+
+.darkmode .o, .darkmode .ow { color: #ff9e64; }
+
+.darkmode .c, .darkmode .ch, .darkmode .cm, .darkmode .c1, .darkmode .cs {
+  color: #565f89; font-style: italic;
+}
+
+.darkmode .cp, .darkmode .cpf { color: #7dcfff; font-style: italic; }
+
+.darkmode .ge { color: #bb9af7; text-decoration: underline; }
+.darkmode .gu, .darkmode .gh { color: #e0af68; font-weight: bold; }
+

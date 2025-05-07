@@ -1,0 +1,160 @@
+--- 
+title : "Setting up Gmail with Notmuch"
+published: 2025-05-03T14:39:39+05:30 
+author: ZeStig 
+tags : ["Email", "Emacs", "NixOS", "Notmuch"] 
+category : "Emacs"
+description : "How to configure Notmuch" 
+draft: false
+---
+* Setting up Gmail with Notmuch
+:PROPERTIES:
+:CUSTOM_ID: setting-up-gmail-with-notmuch
+:END:
+If you're looking to use Gmail with Notmuch in a modern email
+workflow---especially within Emacs---this post guides you through
+setting it up using [[https://github.com/gauteh/lieer][lieer]], a simple
+tool that syncs Gmail labels with Notmuch tags. We'll use =nix= to
+install tools in an isolated environment, and integrate everything with
+Emacs.
+
+--------------
+
+** Installing Notmuch and Lieer
+:PROPERTIES:
+:CUSTOM_ID: installing-notmuch-and-lieer
+:END:
+To get started quickly, I used a temporary =nix shell=. If you're using
+=home-manager=, you can permanently add =notmuch= and =lieer= there.
+
+#+begin_src nix
+nix shell nixpkgs#{notmuch, lieer}
+#+end_src
+
+--------------
+
+** Notmuch Initial Setup
+:PROPERTIES:
+:CUSTOM_ID: notmuch-initial-setup
+:END:
+Initialize Notmuch with:
+
+#+begin_src fish
+notmuch setup
+#+end_src
+
+You'll be prompted for some initial information. Here's a sample
+configuration:
+
+#+begin_src text
+Your full name [Stig]: ZeStig
+Your primary email address [stig@host]: zestig@duck.com
+Additional email address [Press 'Enter' if none]:
+Top-level directory of your email archive [/home/stig/mail]: /home/stig/.mail
+Tags to apply to all new messages (separated by spaces) [unread inbox]: new
+Tags to exclude when searching messages (separated by spaces) [deleted spam]:
+#+end_src
+
+#+begin_quote
+*Important*: Edit =~/.notmuch-config= to include the following in the
+=[new]= section:
+#+end_quote
+
+#+begin_src ini
+[new]
+tags=new
+ignore=/.*[.](json|lock|bak)$/
+#+end_src
+
+--------------
+
+** Setting up Lieer (=gmi=)
+:PROPERTIES:
+:CUSTOM_ID: setting-up-lieer-gmi
+:END:
+Create the email directory and initialize the Gmail repo:
+
+#+begin_src fish
+mkdir -p ~/.mail/zestig/
+notmuch new
+cd ~/.mail/zestig/
+gmi init zestig@duck.com
+#+end_src
+
+Apply these minor config tweaks:
+
+#+begin_src sh
+gmi set --replace-slash-with-dot
+gmi set --ignore-tags-local new
+#+end_src
+
+Now, start the sync process.
+
+*It will open a browser to authenticate with Gmail. Be sure to sign in
+with the correct account!*
+
+#+begin_src sh
+gmi sync
+#+end_src
+
+--------------
+
+** Configuring Emacs for Notmuch
+:PROPERTIES:
+:CUSTOM_ID: configuring-emacs-for-notmuch
+:END:
+*** Custom =sendmail= wrapper
+:PROPERTIES:
+:CUSTOM_ID: custom-sendmail-wrapper
+:END:
+Create a script called =gmi-sendmail= and place it in your =$PATH=:
+
+#+begin_src sh
+#!/usr/bin/env bash
+MAILBOX_PATH="$HOME/.mail/zestig/"
+
+# Read email content from stdin and send via gmi
+gmi send --quiet -C "$MAILBOX_PATH" -t
+#+end_src
+
+Make it executable with =chmod +x gmi-sendmail=.
+
+--------------
+
+*** Emacs Configuration
+:PROPERTIES:
+:CUSTOM_ID: emacs-configuration
+:END:
+*/Admittedly this part took me way more time than it should have./*
+
+Emacs supports [[https://notmuchmail.org/notmuch-emacs/][notmuch]] very
+well. It is, in my humble opinion, among the best Email clients out
+there (along with [[https://notmuchmail.org/notmuch-emacs/][mu4e]]) of
+course. So here's how to configure =notmuch= in Emacs:
+
+#+begin_src emacs-lisp
+(defun stig/sendmail-via-gmi ()
+  "Send mail using the `gmi-sendmail' shell script as the `sendmail' program."
+  (let ((sendmail-program "gmi-sendmail"))
+    (message-send-mail-with-sendmail)))
+
+(use-package notmuch
+  :config
+  (setq sendmail-program "gmi-sendmail"
+        message-send-mail-function #'stig/sendmail-via-gmi
+        notmuch-fcc-dirs nil
+        notmuch-always-prompt-for-sender 'nil
+        notmuch-search-oldest-first nil)
+  (setq notmuch-saved-searches
+        '((:name "inbox"
+                 :query "tag:inbox"
+                 :sort-order newest-first)
+          (:name "unread"
+                 :query "tag:unread"
+                 :sort-order newest-first))))
+#+end_src
+
+This will let you compose, send, and manage emails all within Emacs
+using Notmuch and Gmail.
+
+--------------

@@ -1,0 +1,131 @@
++++
+title = "Setup a simple blog using GitHub Pages and Astro"
+author = "ZeStig"
+published = 2024-04-21T12:39:39+05:30
+tags = ["Git", "Astro"]
+category = "Blog"
+keywords = ["Blog", "GitHub Pages"]
+description = "A quick tutorial on how to set up a blog post using Astro, hosted on GitHub pages"
++++
+
+Blogs are a great way to share your thoughts, ideas, and experiences
+with the world. They can be used for personal or professional purposes,
+and there are blogs on just about every topic imaginable.
+
+Astro is a popular static site generator that can be used to create
+blogs, websites, and other types of online content. It is known for its
+speed, flexibility, and ease of use.
+
+In this blog post, I will walk you through the steps of creating a blog
+with Astro. I will assume that you have some basic knowledge of Git and
+the command line.
+
+* Install pnpm and git
+
+I use Arch *BTW*, and so I can install ~Git~ from the Arch
+repositories. Instructions vary depending on OS and GNU/Linux
+distribution. ~pnpm~ is a faster drop-in replacement for ~npm~.
+
+#+begin_src bash
+sudo pacman -S git pnpm
+#+end_src
+
+* Repo creation
+
+The next step involves creating a public repo on GitHub (to host your website).  
+I'll be creating a repo for [[https://github.com/zstg/zstg.github.io][GitHub Pages deployment]].  
+I recommend beginners create these repos from the web interface rather than pushing to a remote from
+the command line, but feel free to do it in any way you please.
+
+After the repos are created, clone them to your local machine. In my case, I'm cloning my existing repo.
+
+#+begin_src bash
+cd ~/Git/ # an arbitrary directory where all my Git repos live
+git clone https://github.com/zstg/zstg.github.io.git
+cd zstg.github.io
+#+end_src
+
+Install all the npm dependencies required for the blog:
+
+#+begin_src bash
+pnpm i
+#+end_src
+
+Cool. Now we can start creating and uploading posts as we please!  
+Run this (in the same working directory) to create a [[https://markdownguide.org][MarkDown]], HTML ~~or [[https://orgmode.org][Org]]~~ file, where your blog will be stored.
+
+To preview the posts that you write, run:
+
+#+begin_src bash
+pnpm build && pnpm astro preview
+#+end_src
+
+from the project root directory.
+
+#+begin_src bash
+$EDITOR src/content/posts/nameOfFile.md
+#+end_src
+
+**ℹ NOTE**
+
+- The ~PAGE_SIZE~ variable defined in ~src/constants/constants.ts~ defines the *number* of articles allowed per page.
+- The file structure instead of ~src/content/posts~ does NOT matter — categories and tags are defined at the top of each file.
+
+Edit ~src/content/posts/nameOfFile.md~ and add a *brief* intro to your post.
+
+#+begin_src bash
+git add .
+git commit -am "Add new content"
+git push
+#+end_src
+
+* GitHub Action: Deploy
+
+Next up, we need to add a *GitHub Action* (provided by Astro) that deploys from our existing repo.
+
+Create ~.github/workflows/deploy.yml~ with the following content.  
+**Ensure** that Actions are enabled and that the ~Allow all actions and reusable workflows~ option is checked.
+
+#+begin_src yaml
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout your repository using git
+        uses: actions/checkout@v4
+      - name: Install, build, and upload your site output
+        uses: withastro/action@v2
+        with:
+            path: .
+            node-version: 20
+            package-manager: pnpm@latest
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+#+end_src
+
+After you push these changes to GitHub, the page should be generated after a while.
+
+* Fin
+
+Thanks for taking the time to read this blog!
