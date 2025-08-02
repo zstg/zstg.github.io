@@ -5,6 +5,15 @@ Made with <a href="https://gohugo.io" target="_blank">
 <img src="/images/icons/hugo.svg" alt="Hugo" width="45px" height="12px"class="hugo-svg">
 </a> and <a href="https://www.gnu.org/software/emacs/" target="_blank">
 <img src="/images/icons/emacs-alt.svg" width="20px" height="20px" alt="Emacs" class="emacs-svg"></a>
+<div class="webring" style="margin-top: 20px; font-size: 0.9em; color: #769ff0;">
+    <a href="https://nixwebr.ing/bricked" title="Previous site" style="text-decoration: none; color: #61afef;">⟵ Prev</a>
+    &nbsp;|&nbsp;
+    <a href="https://nixwebr.ing" target="_blank" style="text-decoration: none; color: #769ff0; font-weight: 500;">
+      Nix Webring
+    </a>
+    &nbsp;|&nbsp;
+    <a href="https://nixwebr.ing/jappie" target="_blank" title="Next site" style="text-decoration: none; color: #61afef;">Next ⟶</a>
+</div>    
 """
 keywords = ["emacs", "linux", "blog", "orgmode"]
 customCSS = ["css/styles.css", "css/syntax.css"]
@@ -13,7 +22,7 @@ emphasisWithDots = true
 toc = true
 showWordCount = true
 showReadingTime = true
-rootFontSize = "105%"
+rootFontSize = "150%"
 math = false
 enableDuckDuckGoSearchBox = true
 numberedSubtitles = true
