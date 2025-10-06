@@ -1,0 +1,77 @@
+#+title: Blur Shenanigans
+#+date: 2025-10-06T19:54:48+05:30
+#+categories[]:
+#+tags[]: NixOS zen-browser
+#+draft: false
+* My truimphant return to Hyprland
+First off, I'm really happy to announce that I've been using Hyprland for around a week now. I'd taken a hiatus for a few months. I'd been using KDE Plasma during that time.  Not sure what got into me, but I've come back to Hyprland. I'm also giving the COSMIC DE a try. I'm on NixOS Unstable, and so I'm daily-driving [[https://github.com/NixOS/nixpkgs/blob/d7434fa95a4f55e5f6cf6185134cd9d00130ef2c/pkgs/by-name/co/cosmic-comp/package.nix][1.0.0-beta1]] as of time of writing this.
+
+* Setting up blur on Zen
+I wholly acknowledge [[https://mastodon.social/@slipstream8125][SlipStream]]'s help setting this up. With that out of the way, let's start!
+** Get the addon and mod
+Grab the Zen internet Firefox addon from [[https://addons.mozilla.org/en-US/firefox/addon/zen-internet/][here]].
+
+In addition to this, you'll also require the [[https://zen-browser.app/mods/642854b5-88b4-4c40-b256-e035532109df][Transparent Zen mod]]:
+** Configuration
+Ensure that these flags are set in =about:config=:
+|-----------------------------------------------+-------|
+| Configuration                                 | Value |
+|-----------------------------------------------+-------|
+| =browser.tabs.allow_transparent_browser=        | true  |
+| =mod.sameerasw.zen_transparent_glance_enabled=  | true  |
+| =mod.sameerasw.zen_transparent_sidebar_enabled= | true  |
+| =widget.transparent_windows=                    | true  |
+| =zen.widget.linux.transparency=                 | true  |
+|-----------------------------------------------+-------|
+Here's what the =Transparent Zen= settings menu looks like (as of time of this post).
+
+[[file:aboutconfig.jpg]]
+
+Restart Zen after making these changes.
+
+** Configuring your DE/WM
+*** KDE Plasma
+Firstly, install the [[https://github.com/taj-ny/kwin-effects-forceblur][BetterBlur Plasma effect]]. Since I'm [[https://zstg.is-a.dev/posts/linux/nixos/nixos-part-2/][on NixOS]], I've added [[https://git.sr.ht/~zstg/dots/tree/91a17cd758c89692f4cae833b7ad534e35b3df07/item/hosts/Krypton/services/desktopmanager/kde-plasma/default.nix#L7][this]] to [[https://git.sr.ht/~zstg/dots/tree/91a17cd758c89692f4cae833b7ad534e35b3df07/item/flake.nix#L42-45][my config]].
+
+Then I've configured blur like so. Note that *I've disabled the builtin blur effect as it conflicts with the effect we've just installed*.
+
+[[file:Plasma1.jpg]]
+[[file:Plasma2.jpg]]
+*** Hyprland
+Thankfully, it's rather easy to get this working on Hyprland.
+
++Configure a window rule and change the opacity of all zen windows:+
+#+BEGIN_QUOTE
+*EDIT*: /It appears you/ *do not need* /to add the window rule I've shown below./
+#+END_QUOTE
+
+#+BEGIN_SRC nix
+windowrulev2 = opacity 0.95, class:^(${MOZ_APP_LAUNCHER:-zen-beta})$, initialtitle: $(Zen Browser)$ # blur?
+#+END_SRC
+
+… and take a look at my blur settings:
+#+BEGIN_SRC nix
+blur {
+      enabled = true
+      size = 6
+      passes = 3
+      new_optimizations = true
+    }
+    blurls = zen-beta
+    blurls = ghostty
+    blurls = vicinae
+    shadow {
+      enabled = true
+      range = 4
+      render_power = 3
+      color = rgba(1a1a1aee)
+   }
+#+END_SRC
+** ... and the finished setup looks like
+
+[[file:zenblur.png]]
+
+and here's my own blog (because why not 😉) - [[http://zstg.is-a.dev/posts/emacs/notmuch/][link to the post shown here]].
+
+[[file:blog.jpg]]
+
