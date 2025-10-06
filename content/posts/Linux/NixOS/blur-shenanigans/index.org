@@ -3,7 +3,7 @@
 #+categories[]:
 #+tags[]: NixOS zen-browser
 #+draft: false
-* My truimphant return to Hyprland
+* My triumphant return to Hyprland
 First off, I'm really happy to announce that I've been using Hyprland for around a week now. I'd taken a hiatus for a few months. I'd been using KDE Plasma during that time.  Not sure what got into me, but I've come back to Hyprland. I'm also giving the COSMIC DE a try. I'm on NixOS Unstable, and so I'm daily-driving [[https://github.com/NixOS/nixpkgs/blob/d7434fa95a4f55e5f6cf6185134cd9d00130ef2c/pkgs/by-name/co/cosmic-comp/package.nix][1.0.0-beta1]] as of time of writing this.
 
 * Setting up blur on Zen
