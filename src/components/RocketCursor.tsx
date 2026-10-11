@@ -180,11 +180,12 @@ export default function RocketCursor() {
 
       drawRocket();
 
-      // emit fire from the tail (rocket-local +y is behind the nose)
-      const tailX = cx + Math.sin(angle) * 7;
-      const tailY = cy - Math.cos(angle) * 7;
-      const backX = Math.sin(angle);
-      const backY = -Math.cos(angle);
+      // emit from the tail. The rocket is drawn nose-up in local space, and
+      // local (0,+1) maps to world (-sin a, cos a) after rotate(a).
+      const backX = -Math.sin(angle);
+      const backY = Math.cos(angle);
+      const tailX = cx + backX * 7;
+      const tailY = cy + backY * 7;
       const rate = 0.02 + Math.min(speed / 18, 1) * 0.09;
       emit += dt * (1 + speed * 0.35);
       while (emit > rate && sparks.length < MAX_SPARKS) {
@@ -193,8 +194,8 @@ export default function RocketCursor() {
         sparks.push({
           x: tailX + (Math.random() - 0.5) * 2,
           y: tailY + (Math.random() - 0.5) * 2,
-          vx: backX * (40 + Math.random() * 90) - vx * 0.12 + jitter,
-          vy: backY * (40 + Math.random() * 90) - vy * 0.12 + jitter + 14,
+          vx: backX * (40 + Math.random() * 90) + jitter,
+          vy: backY * (40 + Math.random() * 90) + 16,
           life: 1,
           maxLife: 0.35 + Math.random() * 0.5,
           size: 1.6 + Math.random() * 3.2,

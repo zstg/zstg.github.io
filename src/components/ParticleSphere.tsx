@@ -37,7 +37,7 @@ export default function ParticleSphere(props: Props) {
   let host!: HTMLDivElement;
 
   onMount(() => {
-    const COUNT = 3500;
+    const COUNT = 1800;
     const R0 = 1.2; // compact radius
     const R1 = 4.5; // expanded radius
     const baseSize = resolveSize(props);

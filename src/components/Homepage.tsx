@@ -146,7 +146,7 @@ export default function Homepage() {
             <h2 class="font-display text-3xl font-semibold text-light mb-8 text-center">What I Do</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
               {doWhat.map((item) => (
-                <div class="glass-soft border border-white/10 rounded-xl p-6 text-center">
+                <div class="glass-card border border-white/10 rounded-xl p-6 text-center">
                   <div class="text-3xl mb-3">{item.icon}</div>
                   <h3 class="text-light font-semibold text-lg mb-2">{item.title}</h3>
                   <p class="text-muted text-sm leading-relaxed">{item.desc}</p>
