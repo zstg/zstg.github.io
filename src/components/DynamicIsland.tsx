@@ -152,14 +152,16 @@ export default function DynamicIsland(props: { currentPath: string }) {
   return (
     <div ref={root} class="fixed top-4 left-1/2 -translate-x-1/2 z-50">
       <div
-        class="glass-strong overflow-hidden"
+        class="overflow-hidden"
         style={{
-          border: '2px solid var(--color-accent)',
+          background: 'color-mix(in srgb, var(--color-dark) 88%, var(--color-accent))',
+          'backdrop-filter': 'blur(22px) saturate(160%)',
+          '-webkit-backdrop-filter': 'blur(22px) saturate(160%)',
           'border-radius': '12px',
-          width: open() ? '19rem' : 'max-content',
-          'max-width': 'min(19rem, 88vw)',
+          width: open() ? '20rem' : 'max-content',
+          'max-width': 'min(20rem, 90vw)',
           'transition-property': 'width',
-          'transition-duration': '300ms',
+          'transition-duration': '320ms',
           'transition-timing-function': 'cubic-bezier(0.2, 0, 0, 1)',
         }}
         onPointerEnter={() => canHover() && show()}

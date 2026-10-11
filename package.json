@@ -14,8 +14,10 @@
   "dependencies": {
     "@astrojs/solid-js": "^7.0.1",
     "@tailwindcss/vite": "^4.3.3",
+    "@types/three": "^0.186.0",
     "astro": "^7.1.4",
     "solid-js": "^1.9.14",
-    "tailwindcss": "^4.3.3"
+    "tailwindcss": "^4.3.3",
+    "three": "^0.186.1"
   }
 }

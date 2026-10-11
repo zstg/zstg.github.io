@@ -1,5 +1,4 @@
 import { createSignal, onMount, onCleanup } from 'solid-js';
-import PenroseTriangle from './PenroseTriangle';
 import ParallaxProjects from './ParallaxProjects';
 
 const doWhat = [
@@ -76,6 +75,15 @@ export default function Homepage() {
     return Math.min(1, (p - 1) / 0.7);
   };
 
+  // sphere expands across the hero scroll (0 -> 0.8)
+  const sphereProgress = () => {
+    const p = scrollProgress();
+    if (p <= 0) return 0;
+    if (p >= 0.8) return 1;
+    return p / 0.8;
+  };
+  void sphereProgress;
+
   return (
     <div class="relative w-full" style={{ height: '350vh' }}>
       <div
@@ -85,7 +93,7 @@ export default function Homepage() {
 
         {/* HERO */}
         <div
-          class="absolute inset-0 flex flex-col items-center justify-center text-center"
+          class="absolute inset-0"
           style={{
             transform: heroTransform(),
             opacity: heroOpacity(),
@@ -93,18 +101,17 @@ export default function Homepage() {
             'pointer-events': heroOpacity() < 0.1 ? 'none' : 'auto',
           }}
         >
-          <div class="flex justify-center animate-[fade-in_1s_ease-out]">
-            <PenroseTriangle />
-          </div>
-          <h1 class="font-display text-5xl md:text-6xl font-bold text-light mt-8 text-center animate-[fade-in_1s_ease-out_0.2s_both]">
+          <div class="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
+          <h1 class="font-display text-5xl md:text-6xl font-bold text-light text-center animate-[fade-in_1s_ease-out_0.2s_both]">
             zstg
           </h1>
           <p class="text-muted text-lg mt-3 italic text-center animate-[fade-in_1s_ease-out_0.3s_both]">
             developer, builder, curious
           </p>
-          <div class="flex gap-4 mt-8 text-base animate-[fade-in_1s_ease-out_0.6s_both]">
+          <div class="flex gap-4 mt-8 text-base animate-[fade-in_1s_ease-out_0.6s_both] pointer-events-auto">
             <a href="/blog" class="btn">/blog</a>
             <a href="/about" class="btn-ghost">/about</a>
+          </div>
           </div>
         </div>
 

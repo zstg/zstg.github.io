@@ -1,7 +1,7 @@
 ---
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import BackgroundSnow from '../components/BackgroundSnow';
+import ParticleSphere from '../components/ParticleSphere';
 import SnowflakeCursor from '../components/SnowflakeCursor';
 import { ClientRouter } from 'astro:transitions';
 import '../styles/global.css';
@@ -44,7 +44,9 @@ const {
     </script>
   </head>
   <body class="min-h-screen relative">
-    <BackgroundSnow client:load />
+    <div class="fixed inset-0 z-0 pointer-events-none">
+      <ParticleSphere client:visible span={0.8} />
+    </div>
     <SnowflakeCursor client:load />
     <Header />
     <main class="w-full">
