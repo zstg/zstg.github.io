@@ -8,6 +8,30 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: "JetBrainsMono Nerd Font";
+  src: url("/fonts/JetBrainsMono-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "JetBrainsMono Nerd Font";
+  src: url("/fonts/JetBrainsMono-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "JetBrainsMono Nerd Font";
+  src: url("/fonts/JetBrainsMono-Italic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
 @theme {
   --color-dark: #050508;
   --color-dark-light: #0e0e14;
@@ -220,6 +244,84 @@ body {
 .btn-ghost:hover {
   background: color-mix(in srgb, var(--color-accent) 22%, transparent);
   box-shadow: 0 0 20px color-mix(in srgb, var(--color-accent) 15%, transparent);
+}
+
+/* ---- Gaussian blur surfaces (site-wide) ---- */
+.glass {
+  background: color-mix(in srgb, var(--color-dark) 72%, transparent);
+  backdrop-filter: blur(14px) saturate(150%);
+  -webkit-backdrop-filter: blur(14px) saturate(150%);
+}
+
+.glass-soft {
+  background: color-mix(in srgb, var(--color-dark-light) 58%, transparent);
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+}
+
+.glass-strong {
+  background: color-mix(in srgb, var(--color-dark) 55%, transparent);
+  backdrop-filter: blur(28px) saturate(180%) brightness(1.15);
+  -webkit-backdrop-filter: blur(28px) saturate(180%) brightness(1.15);
+}
+
+/* ---- Material-style small buttons (island nav) ---- */
+.m3-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.95rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 12%, transparent);
+  transition: background 0.25s ease-out, color 0.25s ease-out, box-shadow 0.25s ease-out;
+}
+
+.m3-btn:hover {
+  background: color-mix(in srgb, var(--color-accent) 22%, transparent);
+  box-shadow: 0 2px 10px color-mix(in srgb, var(--color-accent) 18%, transparent);
+}
+
+.m3-btn--active,
+.m3-btn[aria-current="page"] {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  box-shadow: 0 2px 12px color-mix(in srgb, var(--color-accent) 30%, transparent);
+}
+
+/* ---- Material-style inputs ---- */
+.m3-input,
+.m3-select {
+  display: block;
+  width: 100%;
+  padding: 0.45rem 0.85rem;
+  font-size: 0.875rem;
+  color: var(--color-light);
+  background: color-mix(in srgb, var(--color-dark-light) 62%, transparent);
+  border: 1.5px solid color-mix(in srgb, var(--color-accent) 30%, transparent);
+  outline: none;
+  transition: border-color 0.25s ease-out, box-shadow 0.25s ease-out;
+  font-family: inherit;
+}
+
+.m3-select {
+  cursor: pointer;
+  color: var(--color-accent);
+}
+
+.m3-input:focus,
+.m3-select:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 22%, transparent);
+}
+
+.m3-select option {
+  background: var(--color-dark-light);
+  color: var(--color-light);
 }
 
 @keyframes spin-slow {

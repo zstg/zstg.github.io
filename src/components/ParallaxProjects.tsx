@@ -45,7 +45,7 @@ export default function ParallaxProjects(props: Props) {
         {projects.map((project) => (
           <a
             href={project.link}
-            class="flex-shrink-0 w-72 block bg-dark-light border border-white/10 rounded-xl p-5 h-full hover:border-accent/40 transition-all duration-300 group no-underline"
+            class="flex-shrink-0 w-72 block glass-soft border border-white/10 rounded-xl p-5 h-full hover:border-accent/40 transition-all duration-300 group no-underline"
           >
             <h3 class="text-light font-semibold text-lg group-hover:text-accent transition-colors">
               {project.title}

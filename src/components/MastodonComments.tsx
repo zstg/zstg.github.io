@@ -137,7 +137,7 @@ export default function MastodonComments(props: Props) {
       <h3 class="text-light font-semibold text-lg mb-4">Comments</h3>
 
       <Show when={!props.toot || !parsed()}>
-        <div class="rounded-xl border border-white/10 bg-dark-light p-5 text-sm text-muted leading-relaxed">
+        <div class="glass-soft rounded-xl border border-white/10 p-5 text-sm text-muted leading-relaxed">
           <p>
             Comments live on the Fediverse. No discussion thread is linked for this post yet —{' '}
             <a href="https://fedia.social/@zstg" rel="me" class="text-accent hover:underline">
@@ -154,7 +154,7 @@ export default function MastodonComments(props: Props) {
         </Show>
 
         <Show when={state() === 'error'}>
-          <div class="rounded-xl border border-white/10 bg-dark-light p-5 text-sm text-muted leading-relaxed">
+          <div class="glass-soft rounded-xl border border-white/10 p-5 text-sm text-muted leading-relaxed">
             <p>
               Couldn't fetch replies right now.{' '}
               <a href={props.toot} target="_blank" rel="noopener" class="text-accent hover:underline">
@@ -169,7 +169,7 @@ export default function MastodonComments(props: Props) {
           <Show
             when={replies().length > 0}
             fallback={
-              <div class="rounded-xl border border-white/10 bg-dark-light p-5 text-sm text-muted leading-relaxed">
+              <div class="glass-soft rounded-xl border border-white/10 p-5 text-sm text-muted leading-relaxed">
                 <p>
                   No replies yet —{' '}
                   <a href={props.toot} target="_blank" rel="noopener" class="text-accent hover:underline">
@@ -188,7 +188,7 @@ export default function MastodonComments(props: Props) {
               })()}>
                 {({ r, depth }) => (
                   <article
-                    class="rounded-xl border border-white/10 bg-dark-light p-4"
+                    class="glass-soft rounded-xl border border-white/10 p-4"
                     style={{ 'margin-left': depth > 0 ? `${Math.min(depth, 3) * 1.25}rem` : '0' }}
                   >
                     <header class="flex items-center gap-3 mb-2">

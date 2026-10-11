@@ -1,3 +1,10 @@
+export interface HSL {
+  h: number;
+  s: number;
+  l: number;
+  a: number;
+}
+
 export interface ThemeVars {
   dark: string;
   darkLight: string;
@@ -207,6 +214,102 @@ export interface StoredTheme {
   customAccent?: string;
 }
 
+const clamp = (n: number, lo: number, hi: number) => Math.min(Math.max(n, lo), hi);
+
+function rgbToHsl(r: number, g: number, b: number, a = 1): HSL {
+  const rn = r / 255,
+    gn = g / 255,
+    bn = b / 255;
+  const max = Math.max(rn, gn, bn),
+    min = Math.min(rn, gn, bn);
+  const l = (max + min) / 2;
+  let h = 0;
+  let s = 0;
+  if (max !== min) {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    if (max === rn) h = ((gn - bn) / d + (gn < bn ? 6 : 0)) / 6;
+    else if (max === gn) h = ((bn - rn) / d + 2) / 6;
+    else h = ((rn - gn) / d + 4) / 6;
+  }
+  return { h: h * 360, s: s * 100, l: l * 100, a };
+}
+
+/** Accepts #rgb, #rgba, #rrggbb, #rrggbbaa, rgb()/rgba(), hsl()/hsla(). */
+export function parseColor(input: string): HSL | null {
+  if (!input) return null;
+  const s = input.trim();
+
+  let m = s.match(/^#([0-9a-f]{3,8})$/i);
+  if (m) {
+    const h = m[1];
+    const px = (i: number) => parseInt(h.slice(i * 2, i * 2 + 2), 16);
+    if (h.length === 3 || h.length === 4) {
+      const ch = (i: number) => parseInt(h[i] + h[i], 16);
+      return rgbToHsl(ch(0), ch(1), ch(2), h.length === 4 ? ch(3) / 255 : 1);
+    }
+    if (h.length === 6 || h.length === 8) {
+      return rgbToHsl(px(0), px(1), px(2), h.length === 8 ? px(3) / 255 : 1);
+    }
+    return null;
+  }
+
+  m = s.match(/^(rgba?|hsla?)\(([^)]*)\)$/i);
+  if (!m) return null;
+  const isHsl = m[1].toLowerCase().startsWith('hsl');
+  const parts = m[2].split(/[,/\s]+/).filter(Boolean);
+  const num = (v: string | undefined): number | null => {
+    if (v === undefined) return null;
+    const pct = v.endsWith('%');
+    const n = parseFloat(v);
+    if (Number.isNaN(n)) return null;
+    return pct ? n / 100 : n;
+  };
+  const a = num(parts[3] === undefined ? '1' : parts[3]);
+  if (a === null) return null;
+  if (isHsl) {
+    const h = num(parts[0]);
+    const sat = num(parts[1]);
+    const l = num(parts[2]);
+    if (h === null || sat === null || l === null) return null;
+    return { h: ((h % 360) + 360) % 360, s: clamp(sat, 0, 1) * 100, l: clamp(l, 0, 1) * 100, a: clamp(a, 0, 1) };
+  }
+  const r = num(parts[0]);
+  const g = num(parts[1]);
+  const b = num(parts[2]);
+  if (r === null || g === null || b === null) return null;
+  const norm = (v: number) => (parts[0] && parts[0].endsWith('%') ? clamp(v, 0, 1) * 255 : v);
+  return rgbToHsl(norm(r), norm(g), norm(b), clamp(a, 0, 1));
+}
+
+/** Canonical, universally-supported serialization. */
+export function toCss(c: HSL): string {
+  const h = Math.round(((c.h % 360) + 360) % 360);
+  const s = Math.round(clamp(c.s, 0, 100));
+  const l = Math.round(clamp(c.l, 0, 100));
+  const a = Number(clamp(c.a, 0, 1).toFixed(3));
+  return `hsla(${h}, ${s}%, ${l}%, ${a})`;
+}
+
+function luma(c: HSL): number {
+  const h = (c.h / 360) * 6;
+  const sat = c.s / 100;
+  const l = c.l / 100;
+  const c1 = (1 - Math.abs(2 * l - 1)) * sat;
+  const x = c1 * (1 - Math.abs((h % 2) - 1));
+  const m = l - c1 / 2;
+  const [r, g, b] =
+    h < 1 ? [c1, x, 0] : h < 2 ? [x, c1, 0] : h < 3 ? [0, c1, x] : h < 4 ? [0, x, c1] : h < 5 ? [x, 0, c1] : [c1, 0, x];
+  return (0.2126 * (r + m) + 0.7152 * (g + m) + 0.0722 * (b + m));
+}
+
+/** Readable text colour for a filled-accent surface (over the theme bg). */
+export function onAccentFor(c: HSL): string {
+  // composite translucent accents over the custom base background
+  const over: HSL = { ...c, l: c.l * c.a + 2 * (1 - c.a), s: c.s * c.a + 0 * (1 - c.a) };
+  return luma(over) > 0.42 ? '#0a0a12' : '#f2f6ff';
+}
+
 export function loadStoredTheme(): StoredTheme {
   try {
     const raw = localStorage.getItem(THEME_STORAGE_KEY);
@@ -219,26 +322,39 @@ export function loadStoredTheme(): StoredTheme {
   }
 }
 
-export function applyTheme(id: string, customAccent?: string) {
+export function applyTheme(id: string, customAccent?: string): boolean {
   const root = document.documentElement;
   const known = THEMES.some((t) => t.id === id);
-  const effective = id === 'custom' || !known ? 'custom' : id;
-  root.dataset.theme = effective;
+  const effective = !known || id === 'custom' ? 'custom' : id;
+
+  if (effective === 'custom') {
+    if (!customAccent) return false;
+    const parsed = parseColor(customAccent);
+    if (!parsed) return false;
+    const css = toCss(parsed);
+    root.dataset.theme = 'custom';
+    root.style.colorScheme = 'dark';
+    root.style.setProperty('--color-accent', css);
+    root.style.setProperty('--color-accent-dim', `color-mix(in srgb, ${css} 68%, #050508)`);
+    root.style.setProperty('--color-on-accent', onAccentFor(parsed));
+    try {
+      localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify({ theme: 'custom', customAccent: css }));
+    } catch {
+      /* ignore quota / private mode */
+    }
+    return true;
+  }
+
   const theme = THEMES.find((t) => t.id === effective);
+  root.dataset.theme = effective;
   root.style.colorScheme = theme ? theme.kind : 'dark';
-  if (effective === 'custom' && customAccent) {
-    root.style.setProperty('--color-accent', customAccent);
-    root.style.setProperty(
-      '--color-accent-dim',
-      `color-mix(in srgb, ${customAccent} 68%, #050508)`
-    );
-  } else {
-    root.style.removeProperty('--color-accent');
-    root.style.removeProperty('--color-accent-dim');
-  }
+  root.style.removeProperty('--color-accent');
+  root.style.removeProperty('--color-accent-dim');
+  root.style.removeProperty('--color-on-accent');
   try {
-    localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify({ theme: id, customAccent }));
+    localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify({ theme: effective }));
   } catch {
-    /* private mode etc. */
+    /* ignore */
   }
+  return true;
 }

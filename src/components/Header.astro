@@ -1,39 +1,19 @@
 ---
-import ThemePicker from './ThemePicker';
-
-const navLinks = [
-  { href: '/', label: 'Home' },
-  { href: '/blog', label: 'Blog' },
-  { href: '/about', label: 'About' },
-  { href: '/resume', label: 'Resume' },
-];
+import DynamicIsland from './DynamicIsland';
 
 const currentPath = Astro.url.pathname;
 ---
-<header class="fixed top-0 left-0 right-0 z-50 bg-dark/80 backdrop-blur-md border-b border-white/5">
-  <nav class="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
-    <a href="/" class="text-accent font-semibold tracking-tight hover:text-light transition-colors">
-      zstg
-    </a>
-    <ul class="flex items-center gap-1">
-      {navLinks.map(({ href, label }) => (
-        <li>
-          <a
-            href={href}
-            class:list={[
-              'px-3 py-1.5 rounded-lg text-sm transition-all duration-300',
-              currentPath === href || (href !== '/' && currentPath.startsWith(href))
-                ? 'text-accent bg-accent/10'
-                : 'text-muted hover:text-accent hover:bg-accent/5',
-            ]}
-          >
-            {label}
-          </a>
-        </li>
-      ))}
-      <li class="ml-2 flex items-center">
-        <ThemePicker client:load />
-      </li>
-    </ul>
-  </nav>
-</header>
+<DynamicIsland client:load currentPath={currentPath} />
+<noscript>
+  <header class="glass fixed top-0 left-0 right-0 z-50 border-b border-white/5">
+    <nav class="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
+      <a href="/" class="text-accent font-semibold tracking-tight">zstg</a>
+      <ul class="flex items-center gap-1">
+        <li><a href="/" class="px-3 py-1.5 text-sm text-muted">Home</a></li>
+        <li><a href="/blog" class="px-3 py-1.5 text-sm text-muted">Blog</a></li>
+        <li><a href="/about" class="px-3 py-1.5 text-sm text-muted">About</a></li>
+        <li><a href="/resume" class="px-3 py-1.5 text-sm text-muted">Resume</a></li>
+      </ul>
+    </nav>
+  </header>
+</noscript>
