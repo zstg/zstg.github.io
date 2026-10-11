@@ -2,6 +2,7 @@
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import ParticleSphere from '../components/ParticleSphere';
+import MatrixRain from '../components/MatrixRain';
 import RocketCursor from '../components/RocketCursor';
 import { ClientRouter } from 'astro:transitions';
 import '../styles/global.css';
@@ -45,7 +46,8 @@ const {
   </head>
   <body class="min-h-screen relative">
     <div class="fixed inset-0 z-0 pointer-events-none">
-      <ParticleSphere client:visible span={0.8} />
+      <MatrixRain client:idle />
+      <ParticleSphere client:visible peak={0.25} />
     </div>
     <RocketCursor client:load />
     <Header />

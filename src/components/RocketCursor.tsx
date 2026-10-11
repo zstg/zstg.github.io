@@ -8,23 +8,26 @@ import { onMount, onCleanup } from 'solid-js';
  * through yellow/orange to a dark red smoke before dying.
  */
 
-interface Spark {
+interface Pt {
   x: number;
   y: number;
-  vx: number;
-  vy: number;
-  life: number;
-  maxLife: number;
-  size: number;
 }
 
-export default function RocketCursor() {
+export default function RocketCursor(props: { size?: number }) {
   let canvas!: HTMLCanvasElement;
   let raf = 0;
 
   onMount(() => {
     const ctx = canvas.getContext('2d')!;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    // Overall rocket scale. Set `--rocket-size` in CSS (e.g. 2 for twice as
+    // big) or pass <RocketCursor size={2} />; the prop wins.
+    const cssSize = parseFloat(
+      getComputedStyle(document.documentElement).getPropertyValue('--rocket-size')
+    );
+    const SIZE =
+      props.size ?? (Number.isFinite(cssSize) && cssSize > 0 ? cssSize : 1);
 
     let W = 0;
     let H = 0;
@@ -41,8 +44,6 @@ export default function RocketCursor() {
     window.addEventListener('resize', resize);
 
     // rocket state
-    let x = -100;
-    let y = -100;
     let tx = -100;
     let ty = -100;
     let cx = -100;
@@ -50,10 +51,9 @@ export default function RocketCursor() {
     let angle = -Math.PI / 2; // facing up at rest
     let speed = 0;
     let visible = false;
-    let emit = 0;
 
-    const sparks: Spark[] = [];
-    const MAX_SPARKS = 160;
+    const trail: Pt[] = [];
+    const TRAIL_MAX = 26;
 
     function onMove(e: PointerEvent) {
       tx = e.clientX;
@@ -67,30 +67,12 @@ export default function RocketCursor() {
     document.addEventListener('pointerleave', onLeave);
 
     // Rocket geometry, drawn pointing "up" (nose at -1) in local space.
+    // `s` scales the whole sprite (body + exhaust cone) from one knob.
     function drawRocket() {
       ctx.save();
       ctx.translate(cx, cy);
       ctx.rotate(angle);
-      const s = 1;
-
-      // exhaust cone (behind the body)
-      const thrust = Math.min(1, speed / 14);
-      if (thrust > 0.02) {
-        const flick = 0.75 + Math.random() * 0.5;
-        const len = (10 + 16 * thrust) * flick;
-        const g = ctx.createLinearGradient(0, 8 * s, 0, (8 + len) * s);
-        g.addColorStop(0, 'rgba(255,255,235,0.95)');
-        g.addColorStop(0.35, 'rgba(255,205,80,0.8)');
-        g.addColorStop(0.7, 'rgba(255,120,30,0.45)');
-        g.addColorStop(1, 'rgba(255,60,0,0)');
-        ctx.fillStyle = g;
-        ctx.beginPath();
-        ctx.moveTo(-4.2 * s, 8 * s);
-        ctx.quadraticCurveTo(-2.2 * s, (12 + len * 0.5) * s, 0, (8 + len) * s);
-        ctx.quadraticCurveTo(2.2 * s, (12 + len * 0.5) * s, 4.2 * s, 8 * s);
-        ctx.closePath();
-        ctx.fill();
-      }
+      const s = SIZE;
 
       // fins
       ctx.fillStyle = 'rgba(118,159,240,0.95)';
@@ -134,21 +116,6 @@ export default function RocketCursor() {
       ctx.restore();
     }
 
-    function drawSpark(s: Spark) {
-      const k = s.life / s.maxLife; // 1 -> 0
-      const r = s.size * (0.35 + k * 0.65);
-      // white-hot -> yellow -> orange -> dark red
-      let col: string;
-      if (k > 0.7) col = `rgba(255,255,240,${k})`;
-      else if (k > 0.4) col = `rgba(255,206,90,${k * 0.95})`;
-      else if (k > 0.18) col = `rgba(255,132,32,${k * 0.8})`;
-      else col = `rgba(190,54,16,${k * 0.5})`;
-      ctx.fillStyle = col;
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, r, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
     let last = performance.now();
     function frame(now: number) {
       raf = requestAnimationFrame(frame);
@@ -180,41 +147,41 @@ export default function RocketCursor() {
 
       drawRocket();
 
-      // emit from the tail. The rocket is drawn nose-up in local space, and
-      // local (0,+1) maps to world (-sin a, cos a) after rotate(a).
-      const backX = -Math.sin(angle);
-      const backY = Math.cos(angle);
-      const tailX = cx + backX * 7;
-      const tailY = cy + backY * 7;
-      const rate = 0.02 + Math.min(speed / 18, 1) * 0.09;
-      emit += dt * (1 + speed * 0.35);
-      while (emit > rate && sparks.length < MAX_SPARKS) {
-        emit -= rate;
-        const jitter = (Math.random() - 0.5) * 3.2;
-        sparks.push({
-          x: tailX + (Math.random() - 0.5) * 2,
-          y: tailY + (Math.random() - 0.5) * 2,
-          vx: backX * (40 + Math.random() * 90) + jitter,
-          vy: backY * (40 + Math.random() * 90) + 16,
-          life: 1,
-          maxLife: 0.35 + Math.random() * 0.5,
-          size: 1.6 + Math.random() * 3.2,
-        });
-      }
+      /*
+       * Trail: a ribbon of recent positions drawn behind the rocket.
+       * No sparks, no flame - just the path it flew through, fading out.
+       */
+      trail.unshift({ x: cx, y: cy });
+      if (trail.length > TRAIL_MAX) trail.length = TRAIL_MAX;
 
-      for (let i = sparks.length - 1; i >= 0; i--) {
-        const s = sparks[i];
-        s.life -= dt / s.maxLife;
-        if (s.life <= 0) {
-          sparks.splice(i, 1);
-          continue;
+      if (trail.length > 2 && visible) {
+        // three passes: wide+dim halo, then two tighter brighter cores
+        const passes = [
+          { w: 7 * SIZE, a: 0.1 },
+          { w: 3 * SIZE, a: 0.28 },
+          { w: 1.2 * SIZE, a: 0.6 },
+        ];
+        for (const { w, a } of passes) {
+          ctx.lineCap = 'round';
+          ctx.lineJoin = 'round';
+          ctx.beginPath();
+          for (let i = 0; i < trail.length; i++) {
+            const k = 1 - i / trail.length; // newest = 1
+            const pt = trail[i];
+            // taper the stroke by drawing short segments with varying alpha
+            if (i === 0) ctx.moveTo(pt.x, pt.y);
+            else {
+              ctx.strokeStyle = `rgba(140, 170, 235, ${a * k * k})`;
+              ctx.lineWidth = w * (0.35 + k * 0.65);
+              ctx.beginPath();
+              ctx.moveTo(trail[i - 1].x, trail[i - 1].y);
+              ctx.lineTo(pt.x, pt.y);
+              ctx.stroke();
+              ctx.beginPath();
+              ctx.moveTo(pt.x, pt.y);
+            }
+          }
         }
-        s.vy += 90 * dt; // buoyancy
-        s.vx *= 1 - 1.6 * dt;
-        s.vy *= 1 - 1.1 * dt;
-        s.x += s.vx * dt;
-        s.y += s.vy * dt;
-        drawSpark(s);
       }
     }
     raf = requestAnimationFrame(frame);

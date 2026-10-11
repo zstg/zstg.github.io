@@ -12,8 +12,12 @@ import * as THREE from 'three';
  */
 
 interface Props {
-  /** Scroll distance (in viewport heights) over which the sphere expands. */
-  span?: number;
+  /**
+   * Where the sphere is at its biggest, as a fraction (0..1) of the page's
+   * total scroll range. 0 = never expands, 1 = never shrinks back.
+   * Default 0.25 -> fully expanded about a quarter of the way down.
+   */
+  peak?: number;
   /**
    * Point size in world units at rest (it grows a little as the sphere expands).
    * Also settable without touching code via the CSS custom property
@@ -26,11 +30,17 @@ interface Props {
 
 const SIZE_PROP = '--particle-size';
 const DEFAULT_SIZE = 0.052;
+const DEFAULT_PEAK = 0.25;
 
 function resolveSize(p: Props): number {
   const css = parseFloat(getComputedStyle(document.documentElement).getPropertyValue(SIZE_PROP));
   const v = p.size ?? (Number.isFinite(css) && css > 0 ? css : DEFAULT_SIZE);
   return v > 0 ? v : DEFAULT_SIZE;
+}
+
+function resolvePeak(p: Props): number {
+  const v = p.peak ?? DEFAULT_PEAK;
+  return Math.min(1, Math.max(0.001, v));
 }
 
 export default function ParticleSphere(props: Props) {
@@ -41,6 +51,7 @@ export default function ParticleSphere(props: Props) {
     const R0 = 1.2; // compact radius
     const R1 = 4.5; // expanded radius
     const baseSize = resolveSize(props);
+    const peak = resolvePeak(props);
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(52, 1, 0.1, 100);
@@ -148,20 +159,30 @@ export default function ParticleSphere(props: Props) {
     obs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'style'] });
 
     // ---- scroll drives expansion ----
-    const span = props.span ?? 0.8; // viewport heights
+    // Triangle wave over the page's full scroll range:
+    //   0 at the top  ->  1 at the peak  ->  0 at the bottom.
+    // So the sphere swells while you scroll down, then sinks back to its
+    // resting size once you keep going (and again if you scroll back up).
     let scrolled = 0;
     let ticking = false;
     function readScroll() {
       if (ticking) return;
       ticking = true;
       requestAnimationFrame(() => {
-        const max = Math.max(1, window.innerHeight * span);
-        scrolled = Math.min(1, Math.max(0, window.scrollY / max));
+        const y = Math.max(0, window.scrollY);
+        const doc = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+        // total scrollable distance
+        const total = doc;
+        const climb = Math.min(1, (y / total) / peak);
+        // once past the peak point, run back down to 0
+        const down = Math.max(0, 1 - (y / total - peak) / (1 - peak || 1));
+        scrolled = Math.min(1, Math.max(0, Math.min(climb, down)));
         ticking = false;
       });
     }
     readScroll();
     window.addEventListener('scroll', readScroll, { passive: true });
+    window.addEventListener('resize', readScroll);
 
     // ---- loop ----
     const target = () => scrolled;
@@ -175,7 +196,7 @@ export default function ParticleSphere(props: Props) {
       const t = clock.elapsedTime;
 
       // ease scroll progress
-      p += (target() - p) * Math.min(1, dt * 6);
+      p += (target() - p) * Math.min(1, dt * 4.5);
 
       const radius = R0 + (R1 - R0) * p;
       const spread = (R1 - R0) * p; // how far particles have flown out

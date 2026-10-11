@@ -9,20 +9,35 @@ const doWhat = [
 
 export default function Homepage() {
   const [scrollProgress, setScrollProgress] = createSignal(0);
+  // pixels scrolled past the point where the sticky viewport unpins
+  const [unpinSlack, setUnpinSlack] = createSignal(0);
 
   onMount(() => {
     let ticking = false;
+    function measure() {
+      const vh = window.innerHeight;
+      // the sticky child stays pinned while scrollY < wrapperHeight - vh
+      const wrapper = document.querySelector('main > astro-island > div') as HTMLElement | null;
+      const unpinAt = wrapper ? wrapper.offsetHeight - vh : Infinity;
+      setUnpinSlack(Math.max(0, window.scrollY - unpinAt));
+    }
     function onScroll() {
       if (!ticking) {
         requestAnimationFrame(() => {
           setScrollProgress(window.scrollY / window.innerHeight);
+          measure();
           ticking = false;
         });
         ticking = true;
       }
     }
     window.addEventListener('scroll', onScroll, { passive: true });
-    onCleanup(() => window.removeEventListener('scroll', onScroll));
+    window.addEventListener('resize', measure);
+    measure();
+    onCleanup(() => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', measure);
+    });
   });
 
   // Hero: fades out from 0 to 0.8
@@ -39,40 +54,50 @@ export default function Homepage() {
     return 1 - p / 0.8;
   };
 
-  // Projects: fades in 0.5->1, holds, then hides 1.2->1.7 (replaced by misc)
+  // Projects: fades in 0.5->1, then holds fully lit until 1.9,
+  // then hands off to misc over 1.9->2.35
   const projectsOpacity = () => {
     const p = scrollProgress();
     if (p < 0.5) return 0;
     if (p < 1) return (p - 0.5) * 2;
-    if (p < 1.2) return 1;
-    if (p < 1.7) return 1 - (p - 1.2) * 2;
+    if (p < 1.9) return 1;
+    if (p < 2.35) return 1 - (p - 1.9) * 2.22;
     return 0;
   };
   const projectsTransform = () => {
     const p = scrollProgress();
-    if (p < 1.2) return 'translateY(0px)';
-    if (p < 1.7) return `translateY(${-(p - 1.2) * 120}px)`;
-    return 'translateY(-60px)';
+    if (p < 1.9) return 'translateY(0px)';
+    if (p < 2.35) return `translateY(${-(p - 1.9) * 110}px)`;
+    return 'translateY(-50px)';
   };
 
-  // Misc: starts ONLY after projects fully gone (1.7), in 1.8->2.3, centered
+  // Misc: only after projects are gone (2.35), in over 2.45->2.95
   const miscOpacity = () => {
     const p = scrollProgress();
-    if (p < 1.8) return 0;
-    if (p < 2.3) return (p - 1.8) * 2;
+    if (p < 2.45) return 0;
+    if (p < 2.95) return (p - 2.45) * 2;
     return 1;
   };
+  /*
+   * The sticky viewport unpins once the wrapper's bottom reaches the viewport
+   * bottom, after which the whole layer drifts up by however far you scroll.
+   * Nudge it back down by that same amount so the group stays optically
+   * centred at rest instead of riding up under the footer.
+   */
   const miscTransform = () => {
     const p = scrollProgress();
-    if (p < 1.8) return 'translateY(60px)';
-    if (p < 2.3) return `translateY(${60 - (p - 1.8) * 120}px)`;
-    return 'translateY(0px)';
+    let base: number;
+    if (p < 2.45) base = 50;
+    else if (p < 2.95) base = 50 - (p - 2.45) * 100;
+    else base = 0;
+    return `translateY(${base + unpinSlack()}px)`;
   };
 
   const parallaxProgress = () => {
     const p = scrollProgress();
     if (p < 1) return 0;
-    return Math.min(1, (p - 1) / 0.7);
+    // finish the horizontal sweep early, well before the hand-off
+    return Math.min(1, (p - 1) / 0.55);
   };
 
   // sphere expands across the hero scroll (0 -> 0.8)
@@ -85,7 +110,7 @@ export default function Homepage() {
   void sphereProgress;
 
   return (
-    <div class="relative w-full" style={{ height: '350vh' }}>
+    <div class="relative w-full" style={{ height: '460vh' }}>
       <div
         class="sticky top-0 w-full overflow-hidden"
         style={{ height: '100vh', display: 'block' }}
@@ -108,7 +133,7 @@ export default function Homepage() {
           <p class="text-muted text-lg mt-3 italic text-center animate-[fade-in_1s_ease-out_0.3s_both]">
             developer, builder, curious
           </p>
-          <div class="flex gap-4 mt-8 text-base animate-[fade-in_1s_ease-out_0.6s_both] pointer-events-auto">
+          <div class="flex items-center gap-4 mt-8 text-base animate-[fade-in_1s_ease-out_0.6s_both] pointer-events-auto">
             <a href="/blog" class="btn">/blog</a>
             <a href="/about" class="btn-ghost">/about</a>
           </div>
