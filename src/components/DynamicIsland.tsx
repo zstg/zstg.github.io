@@ -24,9 +24,9 @@ function isActive(path: string, href: string): boolean {
 export default function DynamicIsland(props: { currentPath: string }) {
   const [open, setOpen] = createSignal(false);
   const [pinned, setPinned] = createSignal(false);
-  const [current, setCurrent] = createSignal('midnight');
+  const [current, setCurrent] = createSignal('matrix');
   const [hue, setHue] = createSignal(222);
-  const [rgbaText, setRgbaText] = createSignal('#769ff0');
+  const [rgbaText, setRgbaText] = createSignal('#75eb70');
   const [rgbaValid, setRgbaValid] = createSignal(true);
 
   let root!: HTMLDivElement;
@@ -301,7 +301,7 @@ export default function DynamicIsland(props: { currentPath: string }) {
                     onInput={onRgbaInput}
                     spellcheck={false}
                     aria-invalid={!rgbaValid()}
-                    placeholder="#769ff0 or #769ff000"
+                    placeholder="#75eb70 or #75eb7000"
                     class="m3-input min-w-0 flex-1 text-sm"
                     style={{
                       'border-radius': '10px',

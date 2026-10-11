@@ -24,8 +24,22 @@ export interface Theme {
 
 export const THEMES: Theme[] = [
   {
+    id: 'matrix',
+    name: 'Matrix',
+    kind: 'dark',
+    vars: {
+      dark: '#050805',
+      darkLight: '#0d150d',
+      accent: '#75eb70',
+      accentDim: '#57b554',
+      muted: '#6f9b6f',
+      light: '#c8ffc8',
+      onAccent: '#061206',
+    },
+  },
+  {
     id: 'midnight',
-    name: 'Midnight (default)',
+    name: 'Midnight',
     kind: 'dark',
     vars: {
       dark: '#050508',
@@ -339,12 +353,12 @@ export function onAccentFor(c: HSL): string {
 export function loadStoredTheme(): StoredTheme {
   try {
     const raw = localStorage.getItem(THEME_STORAGE_KEY);
-    if (!raw) return { theme: 'midnight' };
+    if (!raw) return { theme: 'matrix' };
     const parsed = JSON.parse(raw) as StoredTheme;
-    if (!parsed.theme) return { theme: 'midnight' };
+    if (!parsed.theme) return { theme: 'matrix' };
     return parsed;
   } catch {
-    return { theme: 'midnight' };
+    return { theme: 'matrix' };
   }
 }
 

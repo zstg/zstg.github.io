@@ -49,6 +49,15 @@
 }
 
 /* ---- Theme presets (override Tailwind v4 theme vars at runtime) ---- */
+html[data-theme="matrix"] {
+  --color-dark: #050805;
+  --color-dark-light: #0d150d;
+  --color-accent: #75eb70;
+  --color-accent-dim: #57b554;
+  --color-muted: #6f9b6f;
+  --color-light: #c8ffc8;
+  --color-on-accent: #061206;
+}
 html[data-theme="midnight"] {
   --color-dark: #050508;
   --color-dark-light: #0e0e14;

@@ -28,9 +28,9 @@ const {
     <ClientRouter />
     <script is:inline>
       try {
-        var s = JSON.parse(localStorage.getItem('wob-theme-v1') || '{"theme":"midnight"}');
+        var s = JSON.parse(localStorage.getItem('wob-theme-v1') || '{"theme":"matrix"}');
         var el = document.documentElement;
-        var id = s.theme || 'midnight';
+        var id = s.theme || 'matrix';
         el.dataset.theme = id;
         if (id === 'custom' && s.customAccent) {
           var c = s.customAccent;
@@ -46,7 +46,7 @@ const {
           var lum = 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
           el.style.setProperty('--color-on-accent', (lum > 0.42 && a > 0.35) ? '#0a0a12' : '#f2f6ff');
         }
-      } catch (e) { document.documentElement.dataset.theme = 'midnight'; }
+      } catch (e) { document.documentElement.dataset.theme = 'matrix'; }
     </script>
   </head>
   <body class="min-h-screen relative">

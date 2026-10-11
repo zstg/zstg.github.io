@@ -90,7 +90,7 @@ export default function ParticleSphere(props: Props) {
 
     const readAccent = () => {
       const v = getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim();
-      let c = new THREE.Color(0x769ff0);
+      let c = new THREE.Color(0x75eb70);
       const hex = v.match(/^#([0-9a-f]{3,8})$/i);
       // must match BOTH hsl( and hsla( - custom accents may be either
       const hsl = v.match(/hsla?\(\s*([\d.]+)[\s,]+([\d.]+)%[\s,]+([\d.]+)%/i);

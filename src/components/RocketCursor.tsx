@@ -90,7 +90,7 @@ export default function RocketCursor(props: { size?: number }) {
           Math.round(f(p, q, h - 1 / 3) * 255),
         ];
       }
-      return [118, 159, 240];
+      return [117, 235, 112];
     };
     let flame = readAccent();
     const accentObs = new MutationObserver(() => {

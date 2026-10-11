@@ -48,9 +48,9 @@ export default function MatrixRain() {
     const readAccent = () => {
       const v = getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim();
       const f = (u: number) => (u <= 0.03928 ? u / 12.92 : Math.pow((u + 0.055) / 1.055, 2.4));
-      let r = 118 / 255,
-        g = 159 / 255,
-        b = 240 / 255;
+      let r = 117 / 255,
+        g = 235 / 255,
+        b = 112 / 255;
       let a = 1;
 
       const hex = v.match(/^#([0-9a-f]{3,8})$/i);
