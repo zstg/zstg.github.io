@@ -1,0 +1,66 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import MastodonComments from '../../components/MastodonComments';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+
+<BaseLayout title={`${post.data.title} — zstg`}>
+  <article class="max-w-3xl mx-auto px-6 pt-24 pb-20 relative z-10">
+    <header class="mb-10">
+      <h1 class="text-3xl md:text-4xl font-bold text-light">{post.data.title}</h1>
+      <div class="flex items-center gap-3 mt-3 text-sm text-muted">
+        <time datetime={post.data.date.toISOString()}>
+          {post.data.date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+          })}
+        </time>
+        {post.data.series && (
+          <span class="text-accent text-xs">series: {post.data.series}</span>
+        )}
+        <span class="text-xs text-muted/60">{post.data.lang}</span>
+      </div>
+      <div class="flex flex-wrap gap-2 mt-3">
+        {post.data.tags.map((tag) => (
+          <span class="text-xs px-2 py-0.5 rounded-full bg-accent/10 text-accent">
+            {tag}
+          </span>
+        ))}
+      </div>
+    </header>
+
+    {post.data.cover && (
+      <img
+        src={post.data.cover}
+        alt={post.data.title}
+        class="w-full rounded-xl mb-8 border border-white/10"
+      />
+    )}
+
+    <div class="prose prose-invert max-w-none text-light/90 leading-relaxed
+      [&_h1]:text-light [&_h2]:text-light [&_h3]:text-light
+      [&_a]:text-accent [&_a]:no-underline hover:[&_a]:underline
+      [&_code]:bg-dark-light [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded-lg [&_code]:text-accent
+      [&_pre]:bg-dark-light [&_pre]:border [&_pre]:border-white/10 [&_pre]:rounded-xl [&_pre]:p-4
+      [&_blockquote]:border-l-accent [&_blockquote]:text-muted
+    ">
+      <Content />
+    </div>
+
+    <div class="mt-12 pt-8 border-t border-white/10">
+      <MastodonComments client:load slug={post.id} />
+    </div>
+  </article>
+</BaseLayout>

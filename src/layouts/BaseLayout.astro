@@ -1,0 +1,39 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import BackgroundSnow from '../components/BackgroundSnow';
+import SnowflakeCursor from '../components/SnowflakeCursor';
+import { ClientRouter } from 'astro:transitions';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'zstg — personal site',
+  description = 'Personal website and blog',
+} = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.cdnfonts.com" />
+    <link href="https://fonts.cdnfonts.com/css/jetbrains-mono-nerd-font" rel="stylesheet" />
+    <ClientRouter />
+  </head>
+  <body class="min-h-screen relative">
+    <BackgroundSnow client:load />
+    <SnowflakeCursor client:load />
+    <Header />
+    <main class="w-full">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

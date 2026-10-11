@@ -1,0 +1,121 @@
+@import "tailwindcss";
+
+@theme {
+  --color-dark: #050508;
+  --color-dark-light: #0e0e14;
+  --color-accent: #769ff0;
+  --color-accent-dim: #5a7cc4;
+  --color-muted: #8892b0;
+  --color-light: #ccd6f6;
+  --font-sans: "JetBrainsMono Nerd Font", ui-monospace, monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--color-dark);
+  color: var(--color-light);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
+* {
+  cursor: none !important;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-dark);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-accent-dim);
+  border-radius: 9999px;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: var(--color-dark);
+}
+
+/* Button base */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s ease-out;
+  border: 1.5px solid rgba(118, 159, 240, 0.3);
+  background: rgba(118, 159, 240, 0.08);
+  color: var(--color-accent);
+}
+
+.btn:hover {
+  border-color: var(--color-accent);
+  background: rgba(118, 159, 240, 0.15);
+  box-shadow: 0 0 20px rgba(118, 159, 240, 0.1);
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s ease-out;
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  background: transparent;
+  color: var(--color-muted);
+}
+
+.btn-ghost:hover {
+  border-color: rgba(118, 159, 240, 0.3);
+  color: var(--color-accent);
+  background: rgba(118, 159, 240, 0.05);
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* View Transitions */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root) {
+  animation: fade-out 0.25s ease-in;
+}
+
+::view-transition-new(root) {
+  animation: fade-in-up 0.3s ease-out;
+}
+
+@keyframes fade-out {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-20px); }
+}

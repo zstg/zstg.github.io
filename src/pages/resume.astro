@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="resume — zstg">
+  <section class="max-w-3xl mx-auto px-6 pt-24 pb-20 relative z-10">
+    <h1 class="text-3xl font-bold text-light mb-6">Resume</h1>
+    <p class="mb-6">
+      <a href="/resume.pdf" download class="btn">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+          <polyline points="7 10 12 15 17 10" />
+          <line x1="12" y1="15" x2="12" y2="3" />
+        </svg>
+        Download PDF
+      </a>
+    </p>
+    <div class="border border-white/10 rounded-xl overflow-hidden bg-dark-light">
+      <iframe
+        src="/resume.pdf"
+        class="w-full"
+        style="height: 80vh;"
+        title="Resume PDF"
+      >
+        <p class="p-6 text-muted">
+          Your browser doesn't support PDF embed.
+          <a href="/resume.pdf" download class="text-accent hover:underline">Download the PDF</a> instead.
+        </p>
+      </iframe>
+    </div>
+  </section>
+</BaseLayout>
