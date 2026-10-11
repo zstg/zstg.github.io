@@ -24,6 +24,7 @@ export default function MatrixRain() {
     let fontSize = 15;
     let cols = 0;
     let drops: number[] = [];
+    let speeds: number[] = [];
     let trails: { ch: string; life: number }[][] = [];
 
     const readAccent = () => {
@@ -52,6 +53,7 @@ export default function MatrixRain() {
       fontSize = Math.max(26, Math.round(W / 55));
       cols = Math.ceil(W / fontSize);
       drops = Array.from({ length: cols }, () => Math.random() * -H);
+      speeds = Array.from({ length: cols }, () => 0.55 + Math.random() * 0.9);
       trails = Array.from({ length: cols }, () => []);
     }
     build();
@@ -68,13 +70,15 @@ export default function MatrixRain() {
       const dt = Math.min((now - last) / 1000, 0.05);
       last = now;
 
-      // faint veil so old glyphs fade instead of smearing
-      ctx.fillStyle = 'rgba(5, 5, 8, 0.09)';
+      // Trail veil. This has to be strong enough that each glyph is erased well
+      // before the next one lands in the same cell - too weak and the column
+      // smears into a continuous band instead of reading as discrete glyphs.
+      ctx.fillStyle = 'rgba(5, 5, 8, 0.22)';
       ctx.fillRect(0, 0, W, H);
 
       const step = Math.min(3.2, dt * 22);
       for (let i = 0; i < cols; i++) {
-        drops[i] += step;
+        drops[i] += step * speeds[i];
         if (drops[i] * fontSize > H && Math.random() > 0.975) {
           drops[i] = Math.random() * -20;
           trails[i] = [];

@@ -90,14 +90,19 @@ export default function ParticleSphere(props: Props) {
 
     const readAccent = () => {
       const v = getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim();
-      const m = v.match(/^#([0-9a-f]{6})$/i) || v.match(/^#([0-9a-f])([0-9a-f])([0-9a-f])$/i);
       let c = new THREE.Color(0x769ff0);
-      if (m && m[1].length === 6) c = new THREE.Color(parseInt(m[1], 16));
-      else if (m) c = new THREE.Color(parseInt(m[1] + m[1], 16), parseInt(m[2] + m[2], 16), parseInt(m[3] + m[3], 16));
-      else {
-        const h = v.match(/hsl\(\s*([\d.]+)[\s,]+([\d.]+)%[\s,]+([\d.]+)%/i);
-        if (h) c.setHSL(Number(h[1]) / 360, Number(h[2]) / 100, Number(h[3]) / 100);
-      }
+      const hex6 = v.match(/^#([0-9a-f]{6})$/i);
+      const hex3 = v.match(/^#([0-9a-f])([0-9a-f])([0-9a-f])$/i);
+      // must match BOTH hsl( and hsla( - custom accents are stored as hsla
+      const hsl = v.match(/hsla?\(\s*([\d.]+)[\s,]+([\d.]+)%[\s,]+([\d.]+)%/i);
+      if (hex6) c = new THREE.Color(parseInt(hex6[1], 16));
+      else if (hex3)
+        c = new THREE.Color(
+          parseInt(hex3[1] + hex3[1], 16),
+          parseInt(hex3[2] + hex3[2], 16),
+          parseInt(hex3[3] + hex3[3], 16)
+        );
+      else if (hsl) c.setHSL(Number(hsl[1]) / 360, Number(hsl[2]) / 100, Number(hsl[3]) / 100);
       return c;
     };
     let accent = readAccent();

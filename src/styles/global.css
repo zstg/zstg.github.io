@@ -281,9 +281,9 @@ body {
  * fill plus a strong blur rather than a translucent one.
  */
 .glass-card {
-  background: color-mix(in srgb, var(--color-dark-light) 94%, var(--color-dark));
-  backdrop-filter: blur(22px) saturate(150%);
-  -webkit-backdrop-filter: blur(22px) saturate(150%);
+  background: color-mix(in srgb, var(--color-dark-light) 62%, transparent);
+  backdrop-filter: blur(26px) saturate(160%);
+  -webkit-backdrop-filter: blur(26px) saturate(160%);
 }
 
 /* ---- Material-style small buttons (island nav) ---- */

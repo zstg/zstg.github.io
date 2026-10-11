@@ -112,9 +112,43 @@ export default function RocketCursor(props: { size?: number }) {
       ty = e.clientY;
       visible = true;
     }
+    /*
+     * A focused <select> opens a native popup that renders OUTSIDE the page,
+     * which fires pointerleave. We would hide the rocket - and since the page
+     * sets `cursor: none` globally, the user would be left with no cursor at
+     * all. So while a select is focused we keep the rocket drawn (parked at
+     * the select) instead of letting it disappear.
+     */
+    let selectFocus = false;
     function onLeave() {
+      if (selectFocus) return;
       visible = false;
     }
+    function onFocusIn(e: FocusEvent) {
+      const t = e.target as HTMLElement | null;
+      if (t && (t.tagName === 'SELECT' || t.closest('select'))) {
+        selectFocus = true;
+        // park the rocket over the control so it doesn't vanish mid-click
+        const r = t.getBoundingClientRect();
+        tx = r.x + r.width / 2;
+        ty = r.y + r.height / 2;
+        cx = tx;
+        cy = ty;
+        visible = true;
+      }
+    }
+    function onFocusOut(e: FocusEvent) {
+      const t = e.target as HTMLElement | null;
+      if (t && (t.tagName === 'SELECT' || t.closest('select'))) {
+        selectFocus = false;
+      }
+    }
+    document.addEventListener('focusin', onFocusIn);
+    document.addEventListener('focusout', onFocusOut);
+    window.addEventListener('focus', () => {
+      // native popup closed and focus returned to the page
+      selectFocus = false;
+    });
     document.addEventListener('pointermove', onMove, { passive: true });
     document.addEventListener('pointerleave', onLeave);
 
@@ -265,6 +299,8 @@ export default function RocketCursor(props: { size?: number }) {
       window.removeEventListener('resize', resize);
       document.removeEventListener('pointermove', onMove);
       document.removeEventListener('pointerleave', onLeave);
+      document.removeEventListener('focusin', onFocusIn);
+      document.removeEventListener('focusout', onFocusOut);
       accentObs.disconnect();
     });
   });
