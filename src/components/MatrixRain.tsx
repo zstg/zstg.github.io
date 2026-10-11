@@ -48,7 +48,8 @@ export default function MatrixRain() {
       canvas.style.height = `${H}px`;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      fontSize = Math.max(13, Math.round(W / 110));
+      // Big glyphs => fewer, wider-spaced columns => less visual noise
+      fontSize = Math.max(26, Math.round(W / 55));
       cols = Math.ceil(W / fontSize);
       drops = Array.from({ length: cols }, () => Math.random() * -H);
       trails = Array.from({ length: cols }, () => []);
@@ -86,7 +87,7 @@ export default function MatrixRain() {
         ctx.font = `${fontSize}px "JetBrainsMono Nerd Font", ui-monospace, monospace`;
         ctx.textBaseline = 'top';
         if (accent.h !== undefined) {
-          ctx.fillStyle = `hsla(${accent.h}, ${accent.s * 100}%, ${Math.min(88, accent.l * 100 + 14)}%, 0.5)`;
+          ctx.fillStyle = `hsla(${accent.h}, ${accent.s * 100}%, ${Math.min(88, accent.l * 100 + 14)}%, 0.34)`;
         } else {
           ctx.fillStyle = `rgba(${accent.r}, ${accent.g}, ${accent.b}, 0.5)`;
         }
@@ -99,7 +100,7 @@ export default function MatrixRain() {
         for (let j = 1; j < tail.length; j++) {
           const t = tail[j];
           t.life -= dt * 1.5;
-          const a = Math.max(0, t.life) * 0.16 * (1 - j / tail.length);
+          const a = Math.max(0, t.life) * 0.085 * (1 - j / tail.length);
           if (a <= 0.004) continue;
           ctx.fillStyle =
             accent.h !== undefined
@@ -122,7 +123,7 @@ export default function MatrixRain() {
     <canvas
       ref={canvas}
       class="fixed inset-0 pointer-events-none"
-      style={{ 'z-index': '0', opacity: '0.55' }}
+      style={{ 'z-index': '0', opacity: '0.32' }}
       aria-hidden="true"
     />
   );

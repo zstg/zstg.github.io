@@ -3,9 +3,9 @@ import { onMount, onCleanup } from 'solid-js';
 /*
  * Rocket cursor.
  *
- * A rocket sprite that banks into the direction of travel, trailing a fire
- * plume: short-lived particles emitted from the tail, cooling from white-hot
- * through yellow/orange to a dark red smoke before dying.
+ * A rocket sprite that banks into the direction of travel, trailing an
+ * accent-coloured flame and a fading position ribbon. The nose tip is the
+ * hotspot, so clicks register exactly where the pointer is.
  */
 
 interface Pt {
@@ -55,6 +55,58 @@ export default function RocketCursor(props: { size?: number }) {
     const trail: Pt[] = [];
     const TRAIL_MAX = 26;
 
+    // Accent colour, so the plume re-themes with the rest of the site.
+    const readAccent = (): [number, number, number] => {
+      const v = getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim();
+      let m = v.match(/^#([0-9a-f]{6})$/i);
+      if (m) {
+        const n = parseInt(m[1], 16);
+        return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+      }
+      m = v.match(/^#([0-9a-f])([0-9a-f])([0-9a-f])$/i);
+      if (m) {
+        return [
+          parseInt(m[1] + m[1], 16),
+          parseInt(m[2] + m[2], 16),
+          parseInt(m[3] + m[3], 16),
+        ];
+      }
+      m = v.match(/hsla?\(\s*([\d.]+)[\s,]+([\d.]+)%[\s,]+([\d.]+)%/i);
+      if (m) {
+        const h = Number(m[1]) / 360;
+        const s = Number(m[2]) / 100;
+        const l = Number(m[3]) / 100;
+        const f = (p: number, q: number, t: number) => {
+          if (t < 0) t += 1;
+          if (t > 1) t -= 1;
+          if (t < 1 / 6) return p + (q - p) * 6 * t;
+          if (t < 1 / 2) return q;
+          if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+          return p;
+        };
+        const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+        const p = 2 * l - q;
+        return [
+          Math.round(f(p, q, h + 1 / 3) * 255),
+          Math.round(f(p, q, h) * 255),
+          Math.round(f(p, q, h - 1 / 3) * 255),
+        ];
+      }
+      return [118, 159, 240];
+    };
+    let flame = readAccent();
+    const accentObs = new MutationObserver(() => {
+      flame = readAccent();
+    });
+    accentObs.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme', 'style'],
+    });
+
+    // The nose tip is the hotspot: the sprite is drawn offset so its tip
+    // lands exactly on the pointer, making clicks register where you aim.
+    const NOSE_LEN = 11; // matches the body path's nose in local units
+
     function onMove(e: PointerEvent) {
       tx = e.clientX;
       ty = e.clientY;
@@ -67,15 +119,36 @@ export default function RocketCursor(props: { size?: number }) {
     document.addEventListener('pointerleave', onLeave);
 
     // Rocket geometry, drawn pointing "up" (nose at -1) in local space.
-    // `s` scales the whole sprite (body + exhaust cone) from one knob.
+    // The sprite is translated so its NOSE TIP sits on the pointer.
     function drawRocket() {
       ctx.save();
       ctx.translate(cx, cy);
       ctx.rotate(angle);
+      ctx.translate(0, NOSE_LEN * SIZE); // push body down so nose lands on cursor
       const s = SIZE;
+      const [fr, fg, fb] = flame;
+
+      // accent-tinted flame at the tail, scaled by thrust
+      const thrust = Math.min(1, speed / 16);
+      if (thrust > 0.04) {
+        const flick = 0.72 + Math.random() * 0.4;
+        const len = (7 + 10 * thrust) * flick * s;
+        const g = ctx.createLinearGradient(0, 7 * s, 0, (7 * s + len));
+        g.addColorStop(0, `rgba(255,255,255,0.9)`);
+        g.addColorStop(0.3, `rgba(${fr},${fg},${fb},0.75)`);
+        g.addColorStop(0.7, `rgba(${fr},${fg},${fb},0.3)`);
+        g.addColorStop(1, `rgba(${fr},${fg},${fb},0)`);
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.moveTo(-3.8 * s, 7 * s);
+        ctx.quadraticCurveTo(-2 * s, (11 + len / s / 2) * s, 0, (7 * s + len));
+        ctx.quadraticCurveTo(2 * s, (11 + len / s / 2) * s, 3.8 * s, 7 * s);
+        ctx.closePath();
+        ctx.fill();
+      }
 
       // fins
-      ctx.fillStyle = 'rgba(118,159,240,0.95)';
+      ctx.fillStyle = `rgba(${fr},${fg},${fb},0.95)`;
       ctx.beginPath();
       ctx.moveTo(-2.6 * s, 2 * s);
       ctx.lineTo(-6.4 * s, 8 * s);
@@ -151,35 +224,36 @@ export default function RocketCursor(props: { size?: number }) {
        * Trail: a ribbon of recent positions drawn behind the rocket.
        * No sparks, no flame - just the path it flew through, fading out.
        */
-      trail.unshift({ x: cx, y: cy });
+      // record the TAIL position, not the pointer, so the ribbon emerges
+      // from the engine rather than from under the nose
+      const backX = -Math.sin(angle);
+      const backY = Math.cos(angle);
+      const tailX = cx + backX * (NOSE_LEN + 7) * SIZE;
+      const tailY = cy + backY * (NOSE_LEN + 7) * SIZE;
+      trail.unshift({ x: tailX, y: tailY });
       if (trail.length > TRAIL_MAX) trail.length = TRAIL_MAX;
 
       if (trail.length > 2 && visible) {
+        const [tr, tg, tb] = flame;
         // three passes: wide+dim halo, then two tighter brighter cores
         const passes = [
-          { w: 7 * SIZE, a: 0.1 },
-          { w: 3 * SIZE, a: 0.28 },
-          { w: 1.2 * SIZE, a: 0.6 },
+          { w: 6 * SIZE, a: 0.12 },
+          { w: 2.6 * SIZE, a: 0.3 },
+          { w: 1.1 * SIZE, a: 0.62 },
         ];
         for (const { w, a } of passes) {
           ctx.lineCap = 'round';
           ctx.lineJoin = 'round';
-          ctx.beginPath();
-          for (let i = 0; i < trail.length; i++) {
-            const k = 1 - i / trail.length; // newest = 1
-            const pt = trail[i];
-            // taper the stroke by drawing short segments with varying alpha
-            if (i === 0) ctx.moveTo(pt.x, pt.y);
-            else {
-              ctx.strokeStyle = `rgba(140, 170, 235, ${a * k * k})`;
-              ctx.lineWidth = w * (0.35 + k * 0.65);
-              ctx.beginPath();
-              ctx.moveTo(trail[i - 1].x, trail[i - 1].y);
-              ctx.lineTo(pt.x, pt.y);
-              ctx.stroke();
-              ctx.beginPath();
-              ctx.moveTo(pt.x, pt.y);
-            }
+          for (let i = 1; i < trail.length; i++) {
+            const k = 1 - i / trail.length;
+            const a2 = a * k * k;
+            if (a2 <= 0.004) continue;
+            ctx.strokeStyle = `rgba(${tr},${tg},${tb},${a2})`;
+            ctx.lineWidth = w * (0.35 + k * 0.65);
+            ctx.beginPath();
+            ctx.moveTo(trail[i - 1].x, trail[i - 1].y);
+            ctx.lineTo(trail[i].x, trail[i].y);
+            ctx.stroke();
           }
         }
       }
@@ -191,6 +265,7 @@ export default function RocketCursor(props: { size?: number }) {
       window.removeEventListener('resize', resize);
       document.removeEventListener('pointermove', onMove);
       document.removeEventListener('pointerleave', onLeave);
+      accentObs.disconnect();
     });
   });
 

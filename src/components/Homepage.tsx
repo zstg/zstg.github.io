@@ -14,22 +14,26 @@ export default function Homepage() {
 
   onMount(() => {
     let ticking = false;
+    // Cached: the sticky child stays pinned while scrollY < unpinAt.
+    // Measured only on mount/resize — reading layout on every scroll frame
+    // caused forced reflow and made this transform lag (visible jitter).
+    let unpinAt = 0;
     function measure() {
       const vh = window.innerHeight;
-      // the sticky child stays pinned while scrollY < wrapperHeight - vh
       const wrapper = document.querySelector('main > astro-island > div') as HTMLElement | null;
-      const unpinAt = wrapper ? wrapper.offsetHeight - vh : Infinity;
+      unpinAt = wrapper ? wrapper.offsetHeight - vh : 0;
       setUnpinSlack(Math.max(0, window.scrollY - unpinAt));
     }
     function onScroll() {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          setScrollProgress(window.scrollY / window.innerHeight);
-          measure();
-          ticking = false;
-        });
-        ticking = true;
-      }
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const y = window.scrollY;
+        setScrollProgress(y / window.innerHeight);
+        // pure arithmetic against the cached value - no DOM read here
+        setUnpinSlack(Math.max(0, y - unpinAt));
+        ticking = false;
+      });
     }
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', measure);
