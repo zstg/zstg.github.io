@@ -34,12 +34,17 @@ const {
         el.dataset.theme = id;
         if (id === 'custom' && s.customAccent) {
           var c = s.customAccent;
-          var n = (c.match(/[\d.]+/g) || []).map(Number);
-          var l = n.length >= 3 ? n[2] : 0.6;          // canonical hsla: h, s, l, a
-          var a = n.length >= 4 ? n[3] : 1;
           el.style.setProperty('--color-accent', c);
           el.style.setProperty('--color-accent-dim', 'color-mix(in srgb, ' + c + ' 68%, #050508)');
-          el.style.setProperty('--color-on-accent', (l > 0.42 && a > 0.35) ? '#0a0a12' : '#f2f6ff');
+          // canonical accent is hex (#rrggbb / #rrggbbaa); pick readable text
+          var hm = c.replace('#', '');
+          var r = parseInt(hm.slice(0, 2), 16) / 255;
+          var g = parseInt(hm.slice(2, 4), 16) / 255;
+          var b = parseInt(hm.slice(4, 6), 16) / 255;
+          var a = hm.length >= 8 ? parseInt(hm.slice(6, 8), 16) / 255 : 1;
+          var lin = function (u) { return u <= 0.03928 ? u / 12.92 : Math.pow((u + 0.055) / 1.055, 2.4); };
+          var lum = 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+          el.style.setProperty('--color-on-accent', (lum > 0.42 && a > 0.35) ? '#0a0a12' : '#f2f6ff');
         }
       } catch (e) { document.documentElement.dataset.theme = 'midnight'; }
     </script>

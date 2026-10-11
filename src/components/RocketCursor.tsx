@@ -58,20 +58,18 @@ export default function RocketCursor(props: { size?: number }) {
     // Accent colour, so the plume re-themes with the rest of the site.
     const readAccent = (): [number, number, number] => {
       const v = getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim();
-      let m = v.match(/^#([0-9a-f]{6})$/i);
-      if (m) {
-        const n = parseInt(m[1], 16);
-        return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
-      }
-      m = v.match(/^#([0-9a-f])([0-9a-f])([0-9a-f])$/i);
-      if (m) {
+      // accepts #rgb, #rgba, #rrggbb and #rrggbbaa (alpha is ignored for the flame)
+      const hx = v.match(/^#([0-9a-f]{3,8})$/i);
+      if (hx) {
+        let s = hx[1];
+        if (s.length === 3 || s.length === 4) s = s.split('').map((c) => c + c).join('');
         return [
-          parseInt(m[1] + m[1], 16),
-          parseInt(m[2] + m[2], 16),
-          parseInt(m[3] + m[3], 16),
+          parseInt(s.slice(0, 2), 16),
+          parseInt(s.slice(2, 4), 16),
+          parseInt(s.slice(4, 6), 16),
         ];
       }
-      m = v.match(/hsla?\(\s*([\d.]+)[\s,]+([\d.]+)%[\s,]+([\d.]+)%/i);
+      const m = v.match(/hsla?\(\s*([\d.]+)[\s,]+([\d.]+)%[\s,]+([\d.]+)%/i);
       if (m) {
         const h = Number(m[1]) / 360;
         const s = Number(m[2]) / 100;

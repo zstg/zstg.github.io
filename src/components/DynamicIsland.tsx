@@ -26,7 +26,7 @@ export default function DynamicIsland(props: { currentPath: string }) {
   const [pinned, setPinned] = createSignal(false);
   const [current, setCurrent] = createSignal('midnight');
   const [hue, setHue] = createSignal(222);
-  const [rgbaText, setRgbaText] = createSignal('hsla(222, 75%, 68%, 1)');
+  const [rgbaText, setRgbaText] = createSignal('#769ff0');
   const [rgbaValid, setRgbaValid] = createSignal(true);
 
   let root!: HTMLDivElement;
@@ -286,7 +286,7 @@ export default function DynamicIsland(props: { currentPath: string }) {
                 </div>
 
                 <label for="wob-rgba" class="block text-xs text-muted mt-3 mb-1.5">
-                  Colour &amp; opacity
+                  Colour (hex — 8 digits adds opacity)
                 </label>
                 <div class="flex items-center gap-2">
                   <span
@@ -301,7 +301,7 @@ export default function DynamicIsland(props: { currentPath: string }) {
                     onInput={onRgbaInput}
                     spellcheck={false}
                     aria-invalid={!rgbaValid()}
-                    placeholder="hsla(222, 75%, 68%, 0.8) or #769ff0"
+                    placeholder="#769ff0 or #769ff000"
                     class="m3-input min-w-0 flex-1 text-sm"
                     style={{
                       'border-radius': '10px',
@@ -313,7 +313,7 @@ export default function DynamicIsland(props: { currentPath: string }) {
                 </div>
                 <Show when={!rgbaValid()}>
                   <p class="text-xs mt-1.5" style={{ color: '#e05561' }}>
-                    Unrecognised colour — use hex, rgb(), rgba(), hsl() or hsla().
+                    Unrecognised colour — try #rrggbb, #rrggbbaa, rgb()/rgba() or hsl()/hsla().
                   </p>
                 </Show>
               </Show>

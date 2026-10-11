@@ -282,13 +282,33 @@ export function parseColor(input: string): HSL | null {
   return rgbToHsl(norm(r), norm(g), norm(b), clamp(a, 0, 1));
 }
 
-/** Canonical, universally-supported serialization. */
+function hslToRgb(h: number, s: number, l: number): [number, number, number] {
+  const sn = s / 100;
+  const ln = l / 100;
+  const c = (1 - Math.abs(2 * ln - 1)) * sn;
+  const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+  const m = ln - c / 2;
+  let r = 0,
+    g = 0,
+    b = 0;
+  if (h < 60) [r, g, b] = [c, x, 0];
+  else if (h < 120) [r, g, b] = [x, c, 0];
+  else if (h < 180) [r, g, b] = [0, c, x];
+  else if (h < 240) [r, g, b] = [0, x, c];
+  else if (h < 300) [r, g, b] = [x, 0, c];
+  else [r, g, b] = [c, 0, x];
+  return [Math.round((r + m) * 255), Math.round((g + m) * 255), Math.round((b + m) * 255)];
+}
+
+/** Canonical hex serialization: #rrggbb, or #rrggbbaa when translucent. */
 export function toCss(c: HSL): string {
-  const h = Math.round(((c.h % 360) + 360) % 360);
-  const s = Math.round(clamp(c.s, 0, 100));
-  const l = Math.round(clamp(c.l, 0, 100));
-  const a = Number(clamp(c.a, 0, 1).toFixed(3));
-  return `hsla(${h}, ${s}%, ${l}%, ${a})`;
+  const h = ((c.h % 360) + 360) % 360;
+  const [r, g, b] = hslToRgb(h, clamp(c.s, 0, 100), clamp(c.l, 0, 100));
+  const hex = (n: number) => n.toString(16).padStart(2, '0');
+  const base = `#${hex(r)}${hex(g)}${hex(b)}`;
+  const a = clamp(c.a, 0, 1);
+  if (a >= 0.999) return base;
+  return `${base}${hex(Math.round(a * 255))}`;
 }
 
 function luma(c: HSL): number {
@@ -301,6 +321,12 @@ function luma(c: HSL): number {
   const [r, g, b] =
     h < 1 ? [c1, x, 0] : h < 2 ? [x, c1, 0] : h < 3 ? [0, c1, x] : h < 4 ? [0, x, c1] : h < 5 ? [x, 0, c1] : [c1, 0, x];
   return (0.2126 * (r + m) + 0.7152 * (g + m) + 0.0722 * (b + m));
+}
+
+/** Alpha channel of a colour string, or 1 if opaque/unparseable. */
+export function alphaOf(css: string): number {
+  const c = parseColor(css);
+  return c ? c.a : 1;
 }
 
 /** Readable text colour for a filled-accent surface (over the theme bg). */

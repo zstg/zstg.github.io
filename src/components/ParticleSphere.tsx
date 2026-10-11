@@ -91,18 +91,19 @@ export default function ParticleSphere(props: Props) {
     const readAccent = () => {
       const v = getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim();
       let c = new THREE.Color(0x769ff0);
-      const hex6 = v.match(/^#([0-9a-f]{6})$/i);
-      const hex3 = v.match(/^#([0-9a-f])([0-9a-f])([0-9a-f])$/i);
-      // must match BOTH hsl( and hsla( - custom accents are stored as hsla
+      const hex = v.match(/^#([0-9a-f]{3,8})$/i);
+      // must match BOTH hsl( and hsla( - custom accents may be either
       const hsl = v.match(/hsla?\(\s*([\d.]+)[\s,]+([\d.]+)%[\s,]+([\d.]+)%/i);
-      if (hex6) c = new THREE.Color(parseInt(hex6[1], 16));
-      else if (hex3)
+      if (hex) {
+        // accepts #rgb, #rgba, #rrggbb and #rrggbbaa
+        let hx = hex[1];
+        if (hx.length === 3 || hx.length === 4) hx = hx.split('').map((ch) => ch + ch).join('');
         c = new THREE.Color(
-          parseInt(hex3[1] + hex3[1], 16),
-          parseInt(hex3[2] + hex3[2], 16),
-          parseInt(hex3[3] + hex3[3], 16)
+          parseInt(hx.slice(0, 2), 16),
+          parseInt(hx.slice(2, 4), 16),
+          parseInt(hx.slice(4, 6), 16)
         );
-      else if (hsl) c.setHSL(Number(hsl[1]) / 360, Number(hsl[2]) / 100, Number(hsl[3]) / 100);
+      } else if (hsl) c.setHSL(Number(hsl[1]) / 360, Number(hsl[2]) / 100, Number(hsl[3]) / 100);
       return c;
     };
     let accent = readAccent();
@@ -193,6 +194,7 @@ export default function ParticleSphere(props: Props) {
     const target = () => scrolled;
     let p = scrolled;
     let raf = 0;
+    let frames = 0;
     const clock = new THREE.Clock();
 
     function frame() {
@@ -231,6 +233,17 @@ export default function ParticleSphere(props: Props) {
       py += (ty - py) * Math.min(1, dt * 3);
       points.rotation.y = t * 0.06 + px * 0.45;
       points.rotation.x = -py * 0.35;
+
+      // Belt-and-braces accent sync: the MutationObserver can miss updates
+      // (e.g. when the inline custom property is rewritten to the same
+      // string), so re-read a couple of times a second as well.
+      if (++frames % 30 === 0) {
+        const c = readAccent();
+        if (!c.equals(accent)) {
+          accent = c;
+          mat.color.copy(c);
+        }
+      }
 
       renderer.render(scene, camera);
     }
