@@ -2,7 +2,7 @@
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import ParticleSphere from '../components/ParticleSphere';
-import SnowflakeCursor from '../components/SnowflakeCursor';
+import RocketCursor from '../components/RocketCursor';
 import { ClientRouter } from 'astro:transitions';
 import '../styles/global.css';
 interface Props {
@@ -47,7 +47,7 @@ const {
     <div class="fixed inset-0 z-0 pointer-events-none">
       <ParticleSphere client:visible span={0.8} />
     </div>
-    <SnowflakeCursor client:load />
+    <RocketCursor client:load />
     <Header />
     <main class="w-full">
       <slot />

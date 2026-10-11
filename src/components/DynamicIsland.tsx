@@ -158,8 +158,7 @@ export default function DynamicIsland(props: { currentPath: string }) {
           'backdrop-filter': 'blur(22px) saturate(160%)',
           '-webkit-backdrop-filter': 'blur(22px) saturate(160%)',
           'border-radius': '12px',
-          width: open() ? '20rem' : 'max-content',
-          'max-width': 'min(20rem, 90vw)',
+          // width is driven by the children: pill when condensed, 20rem when open
           'transition-property': 'width',
           'transition-duration': '320ms',
           'transition-timing-function': 'cubic-bezier(0.2, 0, 0, 1)',
@@ -212,11 +211,14 @@ export default function DynamicIsland(props: { currentPath: string }) {
           class="grid transition-all duration-300 ease-out"
           style={{
             'grid-template-rows': open() ? '1fr' : '0fr',
+            // collapse horizontally too, so the panel hugs the pill
+            width: open() ? '20rem' : '0px',
+            'max-width': 'min(20rem, 88vw)',
             opacity: open() ? 1 : 0,
           }}
         >
           <div class="overflow-hidden">
-            <div class="px-3 pb-3">
+            <div class="px-3 pb-3 w-[min(20rem,88vw)]">
               <nav aria-label="Main">
               <ul class="flex flex-wrap items-center gap-1.5">
                 <For each={NAV}>

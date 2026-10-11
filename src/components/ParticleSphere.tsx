@@ -14,15 +14,33 @@ import * as THREE from 'three';
 interface Props {
   /** Scroll distance (in viewport heights) over which the sphere expands. */
   span?: number;
+  /**
+   * Point size in world units at rest (it grows a little as the sphere expands).
+   * Also settable without touching code via the CSS custom property
+   * `--particle-size`, e.g. in global.css:
+   *     :root { --particle-size: 0.09; }
+   * The `size` prop wins if you pass one.
+   */
+  size?: number;
+}
+
+const SIZE_PROP = '--particle-size';
+const DEFAULT_SIZE = 0.052;
+
+function resolveSize(p: Props): number {
+  const css = parseFloat(getComputedStyle(document.documentElement).getPropertyValue(SIZE_PROP));
+  const v = p.size ?? (Number.isFinite(css) && css > 0 ? css : DEFAULT_SIZE);
+  return v > 0 ? v : DEFAULT_SIZE;
 }
 
 export default function ParticleSphere(props: Props) {
   let host!: HTMLDivElement;
 
   onMount(() => {
-    const COUNT = 1800;
-    const R0 = 1.0; // compact radius
-    const R1 = 4.6; // expanded radius
+    const COUNT = 3500;
+    const R0 = 1.2; // compact radius
+    const R1 = 4.5; // expanded radius
+    const baseSize = resolveSize(props);
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(52, 1, 0.1, 100);
@@ -88,7 +106,7 @@ export default function ParticleSphere(props: Props) {
     const spriteTex = new THREE.CanvasTexture(sprite);
 
     const mat = new THREE.PointsMaterial({
-      size: 0.035,
+      size: baseSize,
       map: spriteTex,
       color: accent,
       transparent: true,
@@ -179,7 +197,7 @@ export default function ParticleSphere(props: Props) {
       geom.attributes.position.needsUpdate = true;
 
       // size/opacity: stay subtle so text over the cloud stays readable
-      mat.size = 0.03 + 0.022 * p;
+      mat.size = baseSize * (0.9 + 0.5 * p);
       mat.opacity = 0.5 + 0.28 * p;
 
       // smooth pointer tilt

@@ -33,6 +33,8 @@
 }
 
 @theme {
+  /* Particle sphere point size (world units). Raise for bigger snow. */
+  --particle-size: 0.052;
   --color-dark: #050508;
   --color-dark-light: #0e0e14;
   --color-accent: #769ff0;
