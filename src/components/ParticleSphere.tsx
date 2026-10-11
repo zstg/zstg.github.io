@@ -95,15 +95,17 @@ export default function ParticleSphere(props: Props) {
       // must match BOTH hsl( and hsla( - custom accents may be either
       const hsl = v.match(/hsla?\(\s*([\d.]+)[\s,]+([\d.]+)%[\s,]+([\d.]+)%/i);
       if (hex) {
-        // accepts #rgb, #rgba, #rrggbb and #rrggbbaa
+        // accepts #rgb, #rgba, #rrggbb and #rrggbbaa.
+        // Use setStyle/setHex so three does the sRGB->linear conversion;
+        // the 3-arg Color(r,g,b) constructor expects 0..1 working-space
+        // floats and blows out 0..255 inputs.
         let hx = hex[1];
         if (hx.length === 3 || hx.length === 4) hx = hx.split('').map((ch) => ch + ch).join('');
-        c = new THREE.Color(
-          parseInt(hx.slice(0, 2), 16),
-          parseInt(hx.slice(2, 4), 16),
-          parseInt(hx.slice(4, 6), 16)
-        );
-      } else if (hsl) c.setHSL(Number(hsl[1]) / 360, Number(hsl[2]) / 100, Number(hsl[3]) / 100);
+        c = new THREE.Color().setStyle('#' + hx.slice(0, 6));
+      } else if (hsl) {
+        c = new THREE.Color();
+        c.setHSL(Number(hsl[1]) / 360, Number(hsl[2]) / 100, Number(hsl[3]) / 100, THREE.SRGBColorSpace);
+      }
       return c;
     };
     let accent = readAccent();

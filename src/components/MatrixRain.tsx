@@ -109,6 +109,16 @@ export default function MatrixRain() {
     };
     let accent = readAccent();
 
+    // theme background, used for the trail veil
+    const readBg = () => {
+      const v = getComputedStyle(document.documentElement).getPropertyValue('--color-dark').trim();
+      const m = v.match(/^#([0-9a-f]{6})$/i) || v.match(/^#([0-9a-f]{3})$/i);
+      if (!m) return '#050508';
+      if (m[1].length === 3) return '#' + m[1].split('').map((c) => c + c).join('');
+      return '#' + m[1];
+    };
+    let bg = readBg();
+
     function build() {
       W = window.innerWidth;
       H = window.innerHeight;
@@ -118,8 +128,9 @@ export default function MatrixRain() {
       canvas.style.height = `${H}px`;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      // Big glyphs => fewer, wider-spaced columns => less visual noise
-      fontSize = Math.max(26, Math.round(W / 55));
+      // Bigger glyphs than a classic matrix, but small enough to keep a good
+      // number of columns falling at once.
+      fontSize = Math.max(20, Math.round(W / 78));
       cols = Math.ceil(W / fontSize);
       drops = Array.from({ length: cols }, () => Math.random() * -H);
       speeds = Array.from({ length: cols }, () => 0.5 + Math.random() * 0.7);
@@ -130,6 +141,7 @@ export default function MatrixRain() {
 
     const obs = new MutationObserver(() => {
       accent = readAccent();
+      bg = readBg();
     });
     obs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'style'] });
 
@@ -140,17 +152,21 @@ export default function MatrixRain() {
       const dt = Math.min((now - last) / 1000, 0.05);
       last = now;
 
-      // Trail veil. This has to be strong enough that each glyph is erased well
-      // before the next one lands in the same cell - too weak and the column
-      // smears into a continuous band instead of reading as discrete glyphs.
-      ctx.fillStyle = 'rgba(5, 5, 8, 0.22)';
+      // Trail veil. Has to be strong enough to erase a glyph before the next
+      // lands in the same cell, or the column smears into a band. The colour
+      // MUST come from the theme background - a hardcoded near-black veil
+      // paints over light themes and buries the whole rain.
+      ctx.fillStyle = `${bg}22`;
       ctx.fillRect(0, 0, W, H);
 
       // Periodic re-read in case the observer missed an accent change.
-      if (++frames % 30 === 0) accent = readAccent();
+      if (++frames % 30 === 0) {
+        accent = readAccent();
+        bg = readBg();
+      }
 
-      // Slow, calm fall. It is background texture, not a distraction.
-      const step = Math.min(1.5, dt * 7);
+      // Calm fall - slightly slower still, since there are more columns now.
+      const step = Math.min(1.1, dt * 5);
       for (let i = 0; i < cols; i++) {
         drops[i] += step * speeds[i];
         if (drops[i] * fontSize > H && Math.random() > 0.975) {
