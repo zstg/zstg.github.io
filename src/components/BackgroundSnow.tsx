@@ -15,11 +15,52 @@ interface Snowflake {
 export default function BackgroundSnow() {
   let canvas!: HTMLCanvasElement;
   let animId: number;
+  let snowRGB = '118, 159, 240';
+
+  function readAccent() {
+    const v = getComputedStyle(document.documentElement)
+      .getPropertyValue('--color-accent')
+      .trim();
+    // #rrggbb | #rgb | hsl(...) | color-mix(...) fallback
+    let m = v.match(/^#([0-9a-f]{6})$/i);
+    if (m) {
+      const n = parseInt(m[1], 16);
+      snowRGB = `${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}`;
+      return;
+    }
+    m = v.match(/^#([0-9a-f])([0-9a-f])([0-9a-f])$/i);
+    if (m) {
+      snowRGB = `${parseInt(m[1] + m[1], 16)}, ${parseInt(m[2] + m[2], 16)}, ${parseInt(m[3] + m[3], 16)}`;
+      return;
+    }
+    m = v.match(/hsl\(\s*([\d.]+)[\s,]+([\d.]+)%[\s,]+([\d.]+)%/i);
+    if (m) {
+      const h = Number(m[1]) / 360, s = Number(m[2]) / 100, l = Number(m[3]) / 100;
+      const f = (p: number, q: number, t: number) => {
+        if (t < 0) t += 1;
+        if (t > 1) t -= 1;
+        if (t < 1 / 6) return p + (q - p) * 6 * t;
+        if (t < 1 / 2) return q;
+        if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+        return p;
+      };
+      let r: number, g: number, b: number;
+      if (s === 0) {
+        r = g = b = l;
+      } else {
+        const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+        const p = 2 * l - q;
+        r = f(p, q, h + 1 / 3); g = f(p, q, h); b = f(p, q, h - 1 / 3);
+      }
+      snowRGB = `${Math.round(r * 255)}, ${Math.round(g * 255)}, ${Math.round(b * 255)}`;
+    }
+  }
 
   onMount(() => {
     const ctx = canvas.getContext('2d')!;
     let particles: Snowflake[] = [];
     const COUNT = 90;
+    readAccent();
 
     function resize() {
       canvas.width = window.innerWidth;
@@ -57,7 +98,7 @@ export default function BackgroundSnow() {
 
         ctx.beginPath();
         ctx.arc(p.x + wobbleX, p.y, p.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(118, 159, 240, ${p.opacity})`;
+        ctx.fillStyle = `rgba(${snowRGB}, ${p.opacity})`;
         ctx.fill();
 
         p.y += p.speed;
@@ -71,9 +112,19 @@ export default function BackgroundSnow() {
     }
     draw();
 
+    const observer = new MutationObserver((mutations) => {
+      for (const m of mutations) {
+        if (m.type === 'attributes' && (m.attributeName === 'data-theme' || m.attributeName === 'style')) {
+          readAccent();
+        }
+      }
+    });
+    observer.observe(document.documentElement, { attributes: true });
+
     onCleanup(() => {
       cancelAnimationFrame(animId);
       window.removeEventListener('resize', resize);
+      observer.disconnect();
     });
   });
 

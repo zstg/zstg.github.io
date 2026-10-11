@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "Thunderman";
+  src: url("/fonts/Thunderman.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
   --color-dark: #050508;
   --color-dark-light: #0e0e14;
@@ -8,6 +16,135 @@
   --color-muted: #8892b0;
   --color-light: #ccd6f6;
   --font-sans: "JetBrainsMono Nerd Font", ui-monospace, monospace;
+  --font-display: "Thunderman", "JetBrainsMono Nerd Font", ui-monospace, monospace;
+  --color-on-accent: #0a0a12;
+}
+
+/* ---- Theme presets (override Tailwind v4 theme vars at runtime) ---- */
+html[data-theme="midnight"] {
+  --color-dark: #050508;
+  --color-dark-light: #0e0e14;
+  --color-accent: #769ff0;
+  --color-accent-dim: #5a7cc4;
+  --color-muted: #8892b0;
+  --color-light: #ccd6f6;
+  --color-on-accent: #0a0a12;
+}
+html[data-theme="mocha"] {
+  --color-dark: #1e1e2e;
+  --color-dark-light: #313244;
+  --color-accent: #89b4fa;
+  --color-accent-dim: #6483c4;
+  --color-muted: #9399b2;
+  --color-light: #cdd6f4;
+  --color-on-accent: #11111b;
+}
+html[data-theme="macchiato"] {
+  --color-dark: #24273a;
+  --color-dark-light: #363a4f;
+  --color-accent: #8aadf4;
+  --color-accent-dim: #6c8cc6;
+  --color-muted: #a5adcb;
+  --color-light: #cad3f5;
+  --color-on-accent: #181926;
+}
+html[data-theme="frappe"] {
+  --color-dark: #303446;
+  --color-dark-light: #414559;
+  --color-accent: #8caaee;
+  --color-accent-dim: #6d87bd;
+  --color-muted: #a5adce;
+  --color-light: #c6d0f5;
+  --color-on-accent: #232634;
+}
+html[data-theme="latte"] {
+  --color-dark: #eff1f5;
+  --color-dark-light: #ccd0da;
+  --color-accent: #1e66f5;
+  --color-accent-dim: #1850c4;
+  --color-muted: #6c6f85;
+  --color-light: #4c4f69;
+  --color-on-accent: #ffffff;
+}
+html[data-theme="tokyo"] {
+  --color-dark: #1a1b26;
+  --color-dark-light: #24283b;
+  --color-accent: #7aa2f7;
+  --color-accent-dim: #5d7fc4;
+  --color-muted: #9aa5ce;
+  --color-light: #c0caf5;
+  --color-on-accent: #101218;
+}
+html[data-theme="gruvbox-dark"] {
+  --color-dark: #282828;
+  --color-dark-light: #3c3836;
+  --color-accent: #83a598;
+  --color-accent-dim: #668076;
+  --color-muted: #a89984;
+  --color-light: #ebdbb2;
+  --color-on-accent: #1d2021;
+}
+html[data-theme="gruvbox-light"] {
+  --color-dark: #fbf1c7;
+  --color-dark-light: #ebdbb2;
+  --color-accent: #076678;
+  --color-accent-dim: #05505f;
+  --color-muted: #7c6f64;
+  --color-light: #3c3836;
+  --color-on-accent: #fbf1c7;
+}
+html[data-theme="onedark"] {
+  --color-dark: #282c34;
+  --color-dark-light: #353b45;
+  --color-accent: #61afef;
+  --color-accent-dim: #4a88bd;
+  --color-muted: #5c6370;
+  --color-light: #abb2bf;
+  --color-on-accent: #282c34;
+}
+html[data-theme="dracula"] {
+  --color-dark: #282a36;
+  --color-dark-light: #44475a;
+  --color-accent: #bd93f9;
+  --color-accent-dim: #9370c4;
+  --color-muted: #6272a4;
+  --color-light: #f8f8f2;
+  --color-on-accent: #282a36;
+}
+html[data-theme="nord"] {
+  --color-dark: #2e3440;
+  --color-dark-light: #3b4252;
+  --color-accent: #88c0d0;
+  --color-accent-dim: #6894a3;
+  --color-muted: #8e9bb5;
+  --color-light: #eceff4;
+  --color-on-accent: #2e3440;
+}
+html[data-theme="solarized-dark"] {
+  --color-dark: #002b36;
+  --color-dark-light: #073642;
+  --color-accent: #268bd2;
+  --color-accent-dim: #1e6ea8;
+  --color-muted: #839496;
+  --color-light: #93a1a1;
+  --color-on-accent: #002b36;
+}
+html[data-theme="solarized-light"] {
+  --color-dark: #fdf6e3;
+  --color-dark-light: #eee8d5;
+  --color-accent: #268bd2;
+  --color-accent-dim: #1e6ea8;
+  --color-muted: #657b83;
+  --color-light: #586e75;
+  --color-on-accent: #fdf6e3;
+}
+/* Custom: midnight base, accent overridden inline by the picker */
+html[data-theme="custom"] {
+  --color-dark: #050508;
+  --color-dark-light: #0e0e14;
+  --color-muted: #8892b0;
+  --color-light: #ccd6f6;
+  --color-on-accent: #0a0a12;
 }
 
 html {
@@ -42,27 +179,26 @@ body {
   color: var(--color-dark);
 }
 
-/* Button base */
+/* Material You buttons: pill shape, tonal states */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0.625rem 1.25rem;
-  border-radius: 0.75rem;
+  padding: 0.625rem 1.5rem;
+  border-radius: 9999px;
   font-size: 0.875rem;
   font-weight: 500;
   text-decoration: none;
   transition: all 0.3s ease-out;
-  border: 1.5px solid rgba(118, 159, 240, 0.3);
-  background: rgba(118, 159, 240, 0.08);
-  color: var(--color-accent);
+  border: none;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
 }
 
 .btn:hover {
-  border-color: var(--color-accent);
-  background: rgba(118, 159, 240, 0.15);
-  box-shadow: 0 0 20px rgba(118, 159, 240, 0.1);
+  box-shadow: 0 0 24px color-mix(in srgb, var(--color-accent) 35%, transparent);
+  filter: brightness(1.08);
 }
 
 .btn-ghost {
@@ -70,21 +206,20 @@ body {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0.625rem 1.25rem;
-  border-radius: 0.75rem;
+  padding: 0.625rem 1.5rem;
+  border-radius: 9999px;
   font-size: 0.875rem;
   font-weight: 500;
   text-decoration: none;
   transition: all 0.3s ease-out;
-  border: 1.5px solid rgba(255, 255, 255, 0.08);
-  background: transparent;
-  color: var(--color-muted);
+  border: none;
+  background: color-mix(in srgb, var(--color-accent) 14%, transparent);
+  color: var(--color-accent);
 }
 
 .btn-ghost:hover {
-  border-color: rgba(118, 159, 240, 0.3);
-  color: var(--color-accent);
-  background: rgba(118, 159, 240, 0.05);
+  background: color-mix(in srgb, var(--color-accent) 22%, transparent);
+  box-shadow: 0 0 20px color-mix(in srgb, var(--color-accent) 15%, transparent);
 }
 
 @keyframes spin-slow {

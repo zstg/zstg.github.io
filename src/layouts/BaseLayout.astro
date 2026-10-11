@@ -5,7 +5,6 @@ import BackgroundSnow from '../components/BackgroundSnow';
 import SnowflakeCursor from '../components/SnowflakeCursor';
 import { ClientRouter } from 'astro:transitions';
 import '../styles/global.css';
-
 interface Props {
   title?: string;
   description?: string;
@@ -26,6 +25,17 @@ const {
     <link rel="preconnect" href="https://fonts.cdnfonts.com" />
     <link href="https://fonts.cdnfonts.com/css/jetbrains-mono-nerd-font" rel="stylesheet" />
     <ClientRouter />
+    <script is:inline>
+      try {
+        var stored = JSON.parse(localStorage.getItem('wob-theme-v1') || '{"theme":"midnight"}');
+        var id = stored.theme === 'custom' || !stored.theme ? (stored.theme || 'midnight') : stored.theme;
+        document.documentElement.dataset.theme = id;
+        if (id === 'custom' && stored.customAccent) {
+          document.documentElement.style.setProperty('--color-accent', stored.customAccent);
+          document.documentElement.style.setProperty('--color-accent-dim', 'color-mix(in srgb, ' + stored.customAccent + ' 68%, #050508)');
+        }
+      } catch (e) { document.documentElement.dataset.theme = 'midnight'; }
+    </script>
   </head>
   <body class="min-h-screen relative">
     <BackgroundSnow client:load />

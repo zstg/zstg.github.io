@@ -11,6 +11,7 @@ const blog = defineCollection({
     series: z.string().optional(),
     lang: z.string().default('en'),
     cover: z.string().optional(),
+    toot: z.string().url().optional(),
   }),
 });
 

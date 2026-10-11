@@ -1,17 +1,10 @@
 const S = 'url(#pg)';
-const FILL = '#17171d';
 
-// Penrose impossible tribar, viewBox 0 0 200 200.
-// Construction: three beams as filled quads; EVERY under-edge terminates
-// exactly ON an over-edge (T-junction). No extensions, no floating tips,
-// no masks. Verified intersections:
+// Penrose impossible tribar, viewBox 0 0 200 200 (wireframe: outlines only).
+// EVERY under-edge terminates exactly ON an over-edge (T-junction).
 //   A  (beam1 over beam2): O2 starts (107,49) on I1; I2 starts (100,63) on I1
 //   BR (beam2 over beam3): T3 ends (139,141) on I2; I2 ends (146,155) on B3
 //   BL (beam3 over beam1): O1 ends (47,141) on T3; I1 ends (61,141) on T3
-// Edges:
-//   O1 (100,35)->(47,141)   I1 (114,35)->(61,141)   capA (100,35)->(114,35)
-//   O2 (107,49)->(160,155)  I2 (100,63)->(146,155)
-//   T3 (40,141)->(139,141)  B3 (40,155)->(160,155)  capL (40,141)->(40,155)
 
 export default function PenroseTriangle() {
   return (
@@ -31,14 +24,8 @@ export default function PenroseTriangle() {
           dur="20s"
           repeatCount="indefinite"
         />
-        {/* fills first: beam1, beam3, beam2 (over-order at shared regions) */}
-        <g fill={FILL} stroke="none">
-          <polygon points="100,35 114,35 61,141 47,141" />
-          <polygon points="40,141 153,141 160,155 40,155" />
-          <polygon points="107,49 100,63 146,155 160,155" />
-        </g>
-        {/* edges: every under-edge butt-ends ON an over-edge */}
-        <g fill="none" stroke={S} stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round">
+        {/* wireframe: outlines only, no fills */}
+        <g fill="none" stroke={S} stroke-width="2" stroke-linejoin="round" stroke-linecap="round">
           <line x1="100" y1="35" x2="47" y2="141" />
           <line x1="114" y1="35" x2="61" y2="141" />
           <line x1="100" y1="35" x2="114" y2="35" />

@@ -52,8 +52,8 @@ export default function SnowflakeCursor() {
         'z-index': '9999',
         opacity: visible() ? 0.8 : 0,
         'font-size': '18px',
-        color: '#769ff0',
-        filter: 'drop-shadow(0 0 4px rgba(118, 159, 240, 0.4))',
+        color: 'var(--color-accent)',
+        filter: 'drop-shadow(0 0 4px var(--color-accent))',
       }}
     >
       ❄

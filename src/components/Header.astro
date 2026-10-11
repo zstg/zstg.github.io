@@ -1,4 +1,6 @@
 ---
+import ThemePicker from './ThemePicker';
+
 const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/blog', label: 'Blog' },
@@ -29,6 +31,9 @@ const currentPath = Astro.url.pathname;
           </a>
         </li>
       ))}
+      <li class="ml-2 flex items-center">
+        <ThemePicker client:load />
+      </li>
     </ul>
   </nav>
 </header>

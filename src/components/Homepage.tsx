@@ -40,44 +40,44 @@ export default function Homepage() {
     return 1 - p / 0.8;
   };
 
-  // Projects: fades in 0.5->1, holds, then hides 1.3->1.8 (replaced by misc)
+  // Projects: fades in 0.5->1, holds, then hides 1.2->1.7 (replaced by misc)
   const projectsOpacity = () => {
     const p = scrollProgress();
     if (p < 0.5) return 0;
     if (p < 1) return (p - 0.5) * 2;
-    if (p < 1.3) return 1;
-    if (p < 1.8) return 1 - (p - 1.3) * 2;
+    if (p < 1.2) return 1;
+    if (p < 1.7) return 1 - (p - 1.2) * 2;
     return 0;
   };
   const projectsTransform = () => {
     const p = scrollProgress();
-    if (p < 1.3) return 'translateY(0px)';
-    if (p < 1.8) return `translateY(${-(p - 1.3) * 120}px)`;
+    if (p < 1.2) return 'translateY(0px)';
+    if (p < 1.7) return `translateY(${-(p - 1.2) * 120}px)`;
     return 'translateY(-60px)';
   };
 
-  // Misc: fades in 1.3->1.8 rising to CENTER, stays to the end
+  // Misc: starts ONLY after projects fully gone (1.7), in 1.8->2.3, centered
   const miscOpacity = () => {
     const p = scrollProgress();
-    if (p < 1.3) return 0;
-    if (p < 1.8) return (p - 1.3) * 2;
+    if (p < 1.8) return 0;
+    if (p < 2.3) return (p - 1.8) * 2;
     return 1;
   };
   const miscTransform = () => {
     const p = scrollProgress();
-    if (p < 1.3) return 'translateY(60px)';
-    if (p < 1.8) return `translateY(${60 - (p - 1.3) * 120}px)`;
+    if (p < 1.8) return 'translateY(60px)';
+    if (p < 2.3) return `translateY(${60 - (p - 1.8) * 120}px)`;
     return 'translateY(0px)';
   };
 
   const parallaxProgress = () => {
     const p = scrollProgress();
     if (p < 1) return 0;
-    return Math.min(1, (p - 1) * 1.2);
+    return Math.min(1, (p - 1) / 0.7);
   };
 
   return (
-    <div class="relative w-full" style={{ height: '300vh' }}>
+    <div class="relative w-full" style={{ height: '350vh' }}>
       <div
         class="sticky top-0 w-full overflow-hidden"
         style={{ height: '100vh', display: 'block' }}
@@ -96,15 +96,15 @@ export default function Homepage() {
           <div class="flex justify-center animate-[fade-in_1s_ease-out]">
             <PenroseTriangle />
           </div>
-          <h1 class="text-4xl md:text-5xl font-bold text-light mt-8 text-center animate-[fade-in_1s_ease-out_0.2s_both]">
+          <h1 class="font-display text-5xl md:text-6xl font-bold text-light mt-8 text-center animate-[fade-in_1s_ease-out_0.2s_both]">
             zstg
           </h1>
-          <p class="text-muted text-base mt-3 italic text-center animate-[fade-in_1s_ease-out_0.3s_both]">
+          <p class="text-muted text-lg mt-3 italic text-center animate-[fade-in_1s_ease-out_0.3s_both]">
             developer, builder, curious
           </p>
-          <div class="flex gap-6 mt-8 text-sm animate-[fade-in_1s_ease-out_0.6s_both]">
-            <a href="/blog" class="text-muted hover:text-accent transition-colors">/blog</a>
-            <a href="/about" class="text-muted hover:text-accent transition-colors">/about</a>
+          <div class="flex gap-4 mt-8 text-base animate-[fade-in_1s_ease-out_0.6s_both]">
+            <a href="/blog" class="btn">/blog</a>
+            <a href="/about" class="btn-ghost">/about</a>
           </div>
         </div>
 
@@ -119,7 +119,7 @@ export default function Homepage() {
           }}
         >
           <div class="w-full max-w-5xl mx-auto px-6">
-            <h2 class="text-2xl font-semibold text-light mb-2 text-center">Projects</h2>
+            <h2 class="font-display text-3xl font-semibold text-light mb-2 text-center">Projects</h2>
             <p class="text-muted text-sm mb-8 text-center">scroll to explore</p>
             <ParallaxProjects scrollProgress={parallaxProgress()} />
           </div>
@@ -136,7 +136,7 @@ export default function Homepage() {
           }}
         >
           <div class="w-full max-w-4xl mx-auto px-6">
-            <h2 class="text-2xl font-semibold text-light mb-8 text-center">What I Do</h2>
+            <h2 class="font-display text-3xl font-semibold text-light mb-8 text-center">What I Do</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
               {doWhat.map((item) => (
                 <div class="bg-dark-light/80 backdrop-blur border border-white/10 rounded-xl p-6 text-center">

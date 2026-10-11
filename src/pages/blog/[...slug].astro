@@ -60,7 +60,7 @@ const { Content } = await render(post);
     </div>
 
     <div class="mt-12 pt-8 border-t border-white/10">
-      <MastodonComments client:load slug={post.id} />
+      <MastodonComments client:load toot={post.data.toot} />
     </div>
   </article>
 </BaseLayout>
