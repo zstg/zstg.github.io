@@ -1,5 +1,6 @@
 import { createSignal, onMount, onCleanup, Show, For } from 'solid-js';
 import { THEMES, loadStoredTheme, applyTheme, parseColor, toCss } from '../data/themes';
+import { syncM3Scheme } from '../lib/m3-scheme';
 
 const SPECTRUM =
   'linear-gradient(to right, hsl(0 85% 60%), hsl(60 85% 60%), hsl(120 85% 60%), hsl(180 85% 60%), hsl(240 85% 60%), hsl(300 85% 60%), hsl(360 85% 60%))';
@@ -121,6 +122,9 @@ export default function DynamicIsland(props: { currentPath: string }) {
     } else if (stored.theme === 'custom') {
       commitColor(`hsla(${hue()}, 75%, 68%, 1)`);
     }
+    // Preset themes already have their M3 palette in CSS. A custom accent has
+    // no stylesheet entry, so generate its roles from the seed here.
+    syncM3Scheme();
 
     function onDocClick(e: MouseEvent) {
       if (root && !root.contains(e.target as Node)) {

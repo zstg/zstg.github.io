@@ -9,6 +9,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "gen:m3": "node scripts/gen-m3-presets.mjs",
     "astro": "astro"
   },
   "dependencies": {

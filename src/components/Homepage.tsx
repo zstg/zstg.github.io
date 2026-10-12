@@ -100,8 +100,10 @@ export default function Homepage() {
   const parallaxProgress = () => {
     const p = scrollProgress();
     if (p < 1) return 0;
-    // finish the horizontal sweep early, well before the hand-off
-    return Math.min(1, (p - 1) / 0.55);
+    // Walk the projects one at a time, finishing just before the hand-off to
+    // the misc section at 1.9. This is the whole scroll budget the projects
+    // get, so each one is on screen for ~0.17 of a viewport of scrolling.
+    return Math.min(1, (p - 1) / 0.86);
   };
 
   // sphere expands across the hero scroll (0 -> 0.8)

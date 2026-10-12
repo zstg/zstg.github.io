@@ -1,3 +1,5 @@
+import { syncM3Scheme } from '../lib/m3-scheme';
+
 export interface HSL {
   h: number;
   s: number;
@@ -382,6 +384,7 @@ export function applyTheme(id: string, customAccent?: string): boolean {
     } catch {
       /* ignore quota / private mode */
     }
+    syncM3Scheme(root);
     return true;
   }
 
@@ -396,5 +399,6 @@ export function applyTheme(id: string, customAccent?: string): boolean {
   } catch {
     /* ignore */
   }
+  syncM3Scheme(root);
   return true;
 }
