@@ -198,8 +198,9 @@ html[data-theme="custom"] {
  * Shared shape + M3 colour-role tokens.
  *
  * One place to change every corner radius, so buttons, fields and surfaces
- * stay consistent. `--radius-btn` is the M3 "full" button shape; set it to
- * `12px` for M3's "medium" shape instead if you ever want squarer buttons.
+ * stay consistent. `--radius-btn` is M3's "medium" shape (12dp), which also
+ * matches the island, cards and fields; set it to `9999px` for M3's "full"
+ * pill shape instead if you want the fully rounded buttons back.
  *
  * The `--md-*` roles are the Material You colour system, derived from the
  * active theme so they follow the accent automatically. Buttons are built
@@ -207,7 +208,7 @@ html[data-theme="custom"] {
  * than from raw accent blends.
  */
 :root {
-  --radius-btn: 9999px;   /* M3 "full" */
+  --radius-btn: 12px;       /* M3 "medium" shape */
   --radius-field: 12px;   /* inputs / selects */
   --radius-surface: 12px; /* island, cards */
 
@@ -341,6 +342,19 @@ body {
 .btn-outlined {
   box-shadow: inset 0 0 0 1px var(--md-outline);
   color: var(--md-primary);
+}
+
+/*
+ * The non-filled buttons have no opaque container of their own, so the
+ * particle sphere and the rain sit directly behind their label and wreck
+ * the contrast. Frost them: a light blur plus a faint surface fill, which
+ * is the M3 "elevated surface" treatment and keeps the shape unchanged.
+ */
+.btn-outlined,
+.btn-ghost {
+  background: color-mix(in srgb, var(--color-dark) 32%, transparent);
+  backdrop-filter: blur(12px) saturate(130%);
+  -webkit-backdrop-filter: blur(12px) saturate(130%);
 }
 
 /* text button */
