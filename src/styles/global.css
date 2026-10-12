@@ -520,7 +520,7 @@ body {
   align-items: center;
   gap: 0.15rem;
   padding: 0.4rem 0.55rem 0.25rem;
-  border-radius: 10px;
+  border-radius: var(--radius-btn);
   color: var(--color-accent);
   text-decoration: none;
   transform: translateY(calc(var(--lift) * -6px)) scale(calc(1 + var(--lift) * 0.12));
@@ -600,7 +600,9 @@ body {
   justify-content: center;
   width: 1.5rem;
   height: 1.5rem;
-  border-radius: 9999px;
+  /* A 24px tile at the shared 12px radius is still a perfect circle, so
+     this matches the rest of the UI without changing how it looks. */
+  border-radius: var(--radius-btn);
   color: var(--color-accent);
   text-decoration: none;
   font-size: 0.625rem;
@@ -636,7 +638,7 @@ body {
   gap: 0.3rem;
   max-width: 11rem;
   padding: 0.3rem 0.5rem;
-  border-radius: 10px;
+  border-radius: var(--radius-btn);
   color: var(--color-accent);
   text-decoration: none;
   font-size: 0.6875rem;

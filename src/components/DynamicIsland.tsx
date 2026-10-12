@@ -347,7 +347,7 @@ export default function DynamicIsland(props: { currentPath: string }) {
                 </label>
                 <div class="flex items-center gap-2">
                   <span
-                    class="w-8 h-8 shrink-0 rounded-lg border border-white/15"
+                    class="w-8 h-8 shrink-0 rounded-xl border border-white/15"
                     style={{ background: 'var(--color-accent)' }}
                     aria-hidden="true"
                   />
