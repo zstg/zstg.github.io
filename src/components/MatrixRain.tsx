@@ -145,11 +145,14 @@ export default function MatrixRain() {
     build();
     window.addEventListener('resize', build);
 
-    const obs = new MutationObserver(() => {
+    const retheme = () => {
       accent = readAccent();
       bg = readBg();
-    });
+    };
+    const obs = new MutationObserver(retheme);
     obs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'style'] });
+    // Immediate notification from the theme picker (polling remains a backstop).
+    window.addEventListener('wob:themechange', retheme);
 
     let last = performance.now();
     let frames = 0;
@@ -210,6 +213,7 @@ export default function MatrixRain() {
       cancelAnimationFrame(raf);
       window.removeEventListener('resize', build);
       obs.disconnect();
+      window.removeEventListener('wob:themechange', retheme);
     });
   });
 

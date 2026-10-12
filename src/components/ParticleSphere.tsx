@@ -174,11 +174,14 @@ export default function ParticleSphere(props: Props) {
     }
     window.addEventListener('pointermove', onMove, { passive: true });
 
-    const obs = new MutationObserver(() => {
+    const retheme = () => {
       accent = readAccent();
       mat.color.copy(accent);
-    });
+    };
+    const obs = new MutationObserver(retheme);
     obs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'style'] });
+    // Immediate notification from the theme picker (polling remains a backstop).
+    window.addEventListener('wob:themechange', retheme);
 
     // ---- scroll drives expansion ----
     // Triangle wave over the page's full scroll range:
@@ -281,6 +284,7 @@ export default function ParticleSphere(props: Props) {
       window.removeEventListener('scroll', readScroll);
       window.removeEventListener('pointermove', onMove);
       obs.disconnect();
+      window.removeEventListener('wob:themechange', retheme);
       geom.dispose();
       mat.dispose();
       spriteTex.dispose();

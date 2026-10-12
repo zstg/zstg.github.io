@@ -181,13 +181,8 @@ export default function DynamicIsland(props: { currentPath: string }) {
           }}
           aria-expanded={open()}
           aria-label={open() ? 'Collapse header' : 'Expand header'}
-          class="m3-btn m-1 font-medium transition-all duration-300 flex justify-center items-center gap-2 w-full"
-          style={{
-            background: open()
-              ? 'color-mix(in srgb, var(--color-accent) 16%, transparent)'
-              : 'var(--color-accent)',
-            color: open() ? 'var(--color-accent)' : 'var(--color-on-accent)',
-          }}
+          data-open={open() ? 'true' : 'false'}
+          class="m3-btn island-toggle font-medium transition-all duration-300 flex justify-center items-center gap-2 w-full"
         >
           <span class="whitespace-nowrap">{labelFor(props.currentPath)}</span>
           <svg

@@ -105,13 +105,16 @@ export default function RocketCursor(props: { size?: number; idleFlame?: number 
       return [117, 235, 112];
     };
     let flame = readAccent();
-    const accentObs = new MutationObserver(() => {
+    const retheme = () => {
       flame = readAccent();
-    });
+    };
+    const accentObs = new MutationObserver(retheme);
     accentObs.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ['data-theme', 'style'],
     });
+    // Immediate, explicit notification from the theme picker.
+    window.addEventListener('wob:themechange', retheme);
 
     // The nose tip is the hotspot: the sprite is drawn offset so its tip
     // lands exactly on the pointer, making clicks register where you aim.
@@ -235,10 +238,15 @@ export default function RocketCursor(props: { size?: number; idleFlame?: number 
     }
 
     let last = performance.now();
+    let frames = 0;
     function frame(now: number) {
       raf = requestAnimationFrame(frame);
       const dt = Math.min((now - last) / 1000, 0.05);
       last = now;
+
+      // Backstop: re-read a couple of times a second so the plume can never
+      // stay on a stale accent.
+      if (++frames % 30 === 0) retheme();
 
       ctx.clearRect(0, 0, W, H);
       if (!visible) return;
@@ -313,6 +321,7 @@ export default function RocketCursor(props: { size?: number; idleFlame?: number 
       document.removeEventListener('focusin', onFocusIn);
       document.removeEventListener('focusout', onFocusOut);
       accentObs.disconnect();
+      window.removeEventListener('wob:themechange', retheme);
     });
   });
 

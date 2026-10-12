@@ -3,25 +3,27 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout title="about — zstg">
-  <section class="max-w-3xl mx-auto px-6 pt-24 pb-20 relative z-10">
-    <h1 class="text-3xl font-bold text-light mb-6">About</h1>
-    <div class="space-y-4 text-muted leading-relaxed">
-      <p>
-        Hi, I'm zstg. I build things for the web and enjoy exploring
-        new technologies. This is my personal corner of the internet
-        where I write about projects, ideas, and things I'm learning.
-      </p>
-      <p>
-        This site is built with
-        <a href="https://astro.build" class="text-accent hover:underline">Astro</a>,
-        <a href="https://www.solidjs.com" class="text-accent hover:underline">SolidJS</a>, and
-        <a href="https://tailwindcss.com" class="text-accent hover:underline">Tailwind CSS</a>.
-      </p>
-    </div>
-    <div class="mt-8">
-      <a href="/resume" class="btn">
-        View Resume
-      </a>
+  <section class="max-w-3xl mx-auto px-4 sm:px-6 pt-24 pb-20 relative z-10">
+    <div class="glass-card border border-white/10 rounded-xl p-6 sm:p-10">
+      <h1 class="text-3xl font-bold text-light mb-6">About</h1>
+      <div class="space-y-4 text-muted leading-relaxed">
+        <p>
+          Hi, I'm zstg. I build things for the web and enjoy exploring
+          new technologies. This is my personal corner of the internet
+          where I write about projects, ideas, and things I'm learning.
+        </p>
+        <p>
+          This site is built with
+          <a href="https://astro.build" class="text-accent hover:underline">Astro</a>,
+          <a href="https://www.solidjs.com" class="text-accent hover:underline">SolidJS</a>, and
+          <a href="https://tailwindcss.com" class="text-accent hover:underline">Tailwind CSS</a>.
+        </p>
+      </div>
+      <div class="mt-8">
+        <a href="/resume" class="btn">
+          View Resume
+        </a>
+      </div>
     </div>
   </section>
 </BaseLayout>

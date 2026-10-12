@@ -400,5 +400,10 @@ export function applyTheme(id: string, customAccent?: string): boolean {
     /* ignore */
   }
   syncM3Scheme(root);
+  // Tell the canvas components (sphere / rain / rocket) to re-read the
+  // accent immediately. They also poll every 30 frames as a backstop, but
+  // relying on a MutationObserver alone meant they could lag a change and
+  // only catch up on a later repaint.
+  window.dispatchEvent(new CustomEvent('wob:themechange'));
   return true;
 }

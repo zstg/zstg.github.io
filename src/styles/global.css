@@ -480,29 +480,60 @@ body {
 /*
  * Dynamic Island.
  *
- * Transparent heavy-blur glass with a thin accent stroke. On hover the
- * stroke is dropped and the accent takes over as the foreground tint, the
- * way a Control Centre surface lights up, with a short jiggle.
+ * At rest it is completely transparent: no fill, no visible border, just a
+ * heavy blur over whatever is behind it. The border token is kept as
+ * `transparent` rather than removed so the box size never shifts on hover.
  *
- * Corner radius = button radius + the toggle's 4px inset, so the outer and
- * inner corner arcs stay concentric instead of clipping unevenly.
+ * On hover the surface flips, Control Centre style: the accent becomes the
+ * background and every child inverts to on-accent, plus a short jiggle.
+ *
+ * Radius matches the project cards / blog / about surfaces (--radius-btn),
+ * and the toggle is flush (no inset margin) so its corners line up exactly
+ * with the island's own.
  */
 .island {
   background: transparent;
-  border: 1px solid color-mix(in srgb, var(--color-accent) 55%, transparent);
-  border-radius: calc(var(--radius-btn) + 0.25rem);
+  border: 1px solid transparent;
+  border-radius: var(--radius-btn);
   backdrop-filter: blur(34px) saturate(170%);
   -webkit-backdrop-filter: blur(34px) saturate(170%);
   transition:
-    border-color var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard),
     background-color var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard),
+    border-color var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard),
     box-shadow var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard);
 }
 .island:hover {
-  border-color: transparent;
-  background: color-mix(in srgb, var(--color-accent) 12%, transparent);
-  box-shadow: 0 4px 24px color-mix(in srgb, var(--color-accent) 18%, transparent);
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  box-shadow: 0 6px 28px color-mix(in srgb, var(--color-accent) 25%, transparent);
   animation: island-jiggle 0.5s var(--md-sys-motion-easing-standard);
+}
+
+/* flip foreground -> background for everything inside the island */
+.island:hover :is(.m3-btn, .m3-input, .m3-select) {
+  color: var(--color-on-accent);
+  background: transparent;
+}
+.island:hover .island-toggle,
+.island:hover .m3-btn--active,
+.island:hover .m3-btn[aria-current='page'] {
+  background: var(--color-on-accent);
+  color: var(--color-accent);
+}
+.island:hover .m3-select {
+  border-color: color-mix(in srgb, var(--color-on-accent) 45%, transparent);
+  box-shadow: none;
+}
+
+/* collapsed = filled accent; expanded = tonal. (was inline styles, so that
+   the hover flip above can override it) */
+.island-toggle[data-open='false'] {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+.island-toggle[data-open='true'] {
+  background: color-mix(in srgb, var(--color-accent) 16%, transparent);
+  color: var(--color-accent);
 }
 
 @keyframes island-jiggle {
