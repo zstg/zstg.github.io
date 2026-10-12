@@ -1,0 +1,59 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+/**
+ * Prev/next post paging, rendered into the dock's slot on post pages.
+ *
+ * `prev` is the newer post and `next` the older one, matching the
+ * newest-first ordering used in getStaticPaths.
+ */
+interface Props {
+  prev?: CollectionEntry<'blog'> | null;
+  next?: CollectionEntry<'blog'> | null;
+}
+
+const { prev, next } = Astro.props;
+---
+
+{
+  (prev || next) && (
+    <div class="dock-page">
+      {next && (
+        <a href={`/blog/${next.id}`} title={next.data.title} rel="prev">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            width="12"
+            height="12"
+            aria-hidden="true"
+          >
+            <polyline points="15 5 8 12 15 19" />
+          </svg>
+          <span>{next.data.title}</span>
+        </a>
+      )}
+      {prev && (
+        <a href={`/blog/${prev.id}`} title={prev.data.title} rel="next">
+          <span>{prev.data.title}</span>
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            width="12"
+            height="12"
+            aria-hidden="true"
+          >
+            <polyline points="9 5 16 12 9 19" />
+          </svg>
+        </a>
+      )}
+    </div>
+  )
+}

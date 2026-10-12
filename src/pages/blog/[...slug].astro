@@ -1,21 +1,37 @@
 ---
-import { getCollection, render } from 'astro:content';
+import { getCollection, render, type CollectionEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import MastodonComments from '../../components/MastodonComments';
+import DockPager from '../../components/DockPager.astro';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
-  return posts.map((post) => ({
+  // Order once, by date, so "previous"/"next" mean previous/next in reading
+  // order rather than whatever order the loader happened to return.
+  const ordered = [...posts].sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+  return ordered.map((post, i) => ({
     params: { slug: post.id },
-    props: { post },
+    props: {
+      post,
+      // Neighbours are resolved here, in getStaticPaths, because the page
+      // component only ever receives its own `post` - there is no way to look
+      // up siblings from inside the template at build time.
+      prev: i > 0 ? (ordered[i - 1] as CollectionEntry<'blog'>) : null,
+      next: i < ordered.length - 1 ? (ordered[i + 1] as CollectionEntry<'blog'>) : null,
+    },
   }));
 }
 
-const { post } = Astro.props;
+const { post, prev, next } = Astro.props;
 const { Content } = await render(post);
 ---
 
 <BaseLayout title={`${post.data.title} — zstg`}>
+  <Fragment slot="dock">
+    <DockPager prev={prev} next={next} />
+  </Fragment>
+
   <article class="max-w-4xl mx-auto px-4 sm:px-6 pt-24 pb-20 relative z-10">
     <div class="glass-reader rounded-xl p-6 sm:p-10">
     <header class="mb-10">

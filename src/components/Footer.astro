@@ -1,11 +1,84 @@
 ---
 import FediverseFollow from './FediverseFollow.astro';
+import { WEBRING } from '../data/webring';
+
+/*
+  Dock.
+  A fixed bottom bar rather than a footer in the flow, so it stays reachable
+  from anywhere on the page like an OS dock. `.dock-spacer` reserves the
+  height so the end of the content is never hidden underneath it.
+
+  The `dock` slot is filled by pages that want something in the middle -
+  DockPager puts post paging there on blog posts.
+*/
 ---
-<footer class="glass border-t border-white/5 mt-20 rounded-t-xl">
-  <div class="max-w-5xl mx-auto px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-    <p class="text-muted text-sm">
-      &copy; {new Date().getFullYear()} zstg
-    </p>
+
+<div class="dock-spacer" aria-hidden="true"></div>
+
+<footer class="dock" role="contentinfo">
+  <div class="dock-inner">
+    <nav class="dock-group" aria-label="Primary">
+      <a href="/" class="dock-item" aria-label="Home" title="Home" aria-current={Astro.url.pathname === '/' ? 'page' : undefined}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 10.5 12 3l9 7.5" />
+          <path d="M5.5 9.5V20h13V9.5" />
+        </svg>
+        <span class="dock-label">home</span>
+      </a>
+
+      <a href="/blog" class="dock-item" aria-label="Blog" title="Blog" aria-current={Astro.url.pathname.startsWith('/blog') ? 'page' : undefined}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="4" y="3.5" width="16" height="17" rx="2.5" />
+          <path d="M8 8.5h8M8 12h8M8 15.5h5" />
+        </svg>
+        <span class="dock-label">blog</span>
+      </a>
+
+      <a href="/about" class="dock-item" aria-label="About" title="About" aria-current={Astro.url.pathname.startsWith('/about') ? 'page' : undefined}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="8.5" r="3.5" />
+          <path d="M5 20a7 7 0 0 1 14 0" />
+        </svg>
+        <span class="dock-label">about</span>
+      </a>
+
+      <a href="/resume" class="dock-item" aria-label="Resume" title="Resume" aria-current={Astro.url.pathname.startsWith('/resume') ? 'page' : undefined}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" />
+          <path d="M14 3v5h5M9 13h6M9 16.5h4" />
+        </svg>
+        <span class="dock-label">resume</span>
+      </a>
+    </nav>
+
+    <div class="dock-centre">
+      <slot name="dock" />
+
+      <nav class="dock-webring" aria-label="Webring">
+        <span class="dock-copy">ring:</span>
+        {
+          WEBRING.map((m) => (
+            <a href={m.url} title={m.name} rel="nofollow noopener" target="_blank">
+              {m.initials}
+            </a>
+          ))
+        }
+        <a
+          href={WEBRING[Math.floor(Math.random() * WEBRING.length)]?.url ?? '/'}
+          title="Random webring site"
+          rel="nofollow noopener"
+          target="_blank"
+          aria-label="Random webring site"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="11" height="11" aria-hidden="true">
+            <polyline points="16 3 21 8 16 13" />
+            <polyline points="8 21 3 16 8 11" />
+            <line x1="21" y1="8" x2="3" y2="16" />
+          </svg>
+        </a>
+      </nav>
+    </div>
+
     <FediverseFollow />
   </div>
 </footer>

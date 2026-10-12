@@ -61,7 +61,10 @@ const {
     <main class="w-full">
       <slot />
     </main>
-    <Footer />
+    <Footer>
+      {/* pages can drop something into the dock's middle slot */}
+      <slot name="dock" slot="dock" />
+    </Footer>
     <script is:inline>
       /*
        * Material-You ripple. A pointer-down spawns a scaling span inside the
