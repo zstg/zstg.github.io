@@ -1,4 +1,5 @@
 import { onMount, onCleanup } from 'solid-js';
+import { setRocket } from '../lib/rocket';
 
 /*
  * Rocket cursor.
@@ -272,6 +273,9 @@ export default function RocketCursor(props: { size?: number; idleFlame?: number 
       }
 
       drawRocket();
+
+      // Background effects spot-light the rocket, not the raw cursor.
+      setRocket(cx, cy, tx, ty, visible);
 
       /*
        * Trail: a ribbon of recent positions drawn behind the rocket.

@@ -1,3 +1,5 @@
+import { globeClearFraction } from './globe';
+
 /*
  * Keep-out zone for the background effects.
  *
@@ -11,9 +13,8 @@
  * rather than as a hole.
  */
 
-/** Radius of the hard exclusion, as a fraction of the short edge. */
-export const GLOBE_CLEAR = 0.34;
-/** Width of the feathered edge outside that, same units. */
+/** Width of the feathered edge outside the exclusion, as a fraction of the
+ *  short edge. The radius itself tracks the globe (see lib/globe.ts). */
 export const GLOBE_FEATHER = 0.12;
 
 /**
@@ -36,7 +37,7 @@ export function globeOpen(x: number, y: number, W: number, H: number): number {
  */
 export function globeOpenAtDistance(d: number, W: number, H: number): number {
   const short = Math.min(W, H);
-  const clearR = short * GLOBE_CLEAR;
+  const clearR = short * globeClearFraction();
   const feather = short * GLOBE_FEATHER;
   if (d <= clearR) return 0;
   if (d >= clearR + feather) return 1;

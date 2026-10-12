@@ -1,5 +1,6 @@
 import { createSignal, onMount, onCleanup } from 'solid-js';
 import * as THREE from 'three';
+import { setGlobeExpansion } from '../lib/globe';
 
 /*
  * Particle sphere.
@@ -233,6 +234,9 @@ export default function ParticleSphere(props: Props) {
 
       const radius = R0 + (R1 - R0) * p;
       const spread = (R1 - R0) * p; // how far particles have flown out
+      // Let the background effects keep a constant gap around the globe as it
+      // grows and shrinks with scroll.
+      setGlobeExpansion(p);
 
       for (let i = 0; i < COUNT; i++) {
         const bx = base[i * 3],

@@ -15,7 +15,25 @@ import { WEBRING } from '../data/webring';
 
 <div class="dock-spacer" aria-hidden="true"></div>
 
-<footer class="dock" role="contentinfo">
+<!--
+  Reveal zone: the dock slides up when the pointer comes within this many px of
+  the bottom edge, and hides `data-close-delay` ms after it leaves. Both are
+  data attributes so they can be retuned without touching the script.
+-->
+<button
+  class="dock-handle"
+  type="button"
+  aria-label="Show the dock"
+  data-dock-toggle
+></button>
+
+<footer
+  class="dock"
+  role="contentinfo"
+  data-dock
+  data-edge="90"
+  data-close-delay="500"
+>
   <div class="dock-inner">
     <nav class="dock-group" aria-label="Primary">
       <a href="/" class="dock-item" aria-label="Home" title="Home" aria-current={Astro.url.pathname === '/' ? 'page' : undefined}>
@@ -82,3 +100,52 @@ import { WEBRING } from '../data/webring';
     <FediverseFollow />
   </div>
 </footer>
+<script>
+  /*
+   * Dock auto-hide.
+   *
+   * Behaves like a desktop dock: hidden until the pointer approaches the
+   * bottom edge, stays while hovered or focused, then slides away after a
+   * grace period so crossing it on the way to something else doesn't feel
+   * twitchy. The handle stays on screen so the dock's presence is never a
+   * surprise.
+   *
+   * Guarded so it only wires up once, even across view-transition navigations.
+   */
+  const dock = document.querySelector<HTMLElement>('[data-dock]');
+  const handle = document.querySelector<HTMLElement>('[data-dock-toggle]');
+  if (dock && handle && !dock.dataset.dockReady) {
+    dock.dataset.dockReady = '1';
+
+    const edge = Number(dock.dataset.edge ?? 90);
+    const closeDelay = Number(dock.dataset.closeDelay ?? 500);
+    let hideTimer: number | undefined;
+
+    const reveal = () => {
+      if (hideTimer !== undefined) window.clearTimeout(hideTimer);
+      dock.classList.add('is-visible');
+    };
+    const scheduleHide = () => {
+      if (hideTimer !== undefined) window.clearTimeout(hideTimer);
+      hideTimer = window.setTimeout(() => {
+        dock.classList.remove('is-visible');
+      }, closeDelay);
+    };
+
+    window.addEventListener(
+      'pointermove',
+      (e) => {
+        if (e.clientY >= window.innerHeight - edge) reveal();
+        else if (!dock.contains(e.target as Node)) scheduleHide();
+      },
+      { passive: true }
+    );
+    dock.addEventListener('pointerenter', reveal);
+    dock.addEventListener('pointerleave', scheduleHide);
+    // keyboard users tabbing into the dock need to be able to see it
+    dock.addEventListener('focusin', reveal);
+    handle.addEventListener('click', () => {
+      dock.classList.toggle('is-visible');
+    });
+  }
+</script>

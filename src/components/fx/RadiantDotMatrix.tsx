@@ -2,6 +2,7 @@ import { onMount, onCleanup } from 'solid-js';
 import { subscribeFx, sizeCanvas } from '../../lib/fx-ticker';
 import { readAccent, onThemeChange } from '../../lib/theme-colors';
 import { globeOpen } from '../../lib/fx-globe';
+import { rocket } from '../../lib/rocket';
 
 /*
  * Radiant pixel field.
@@ -31,6 +32,8 @@ const CELLS_PER_NOISE = 9;
  *  rocket rather than flood a third of the screen. */
 const CURSOR_CELLS = 7;
 const BLOOM_LIFE = 0.9;
+/** How far ahead of the rocket the glow leads, in px. */
+const LEAD_PX = 26;
 
 
 function buildNoise(seed: number) {
@@ -145,12 +148,21 @@ export default function RadiantDotMatrix(props: { cell?: number }) {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
-    // pointer: never smoothed, only its strength eases
-    const pointer = { x: -1e4, y: -1e4 };
+    /*
+     * The glow follows the ROCKET, not the raw pointer. The system cursor is
+     * hidden site-wide, so the rocket is what the user is actually looking at;
+     * it eases toward the pointer and lags slightly, and a glow locked to the
+     * raw event reads as detached from the sprite.
+     *
+     * The glow centre also leads the rocket slightly along its direction of
+     * travel, so the dots light the space it is heading into - a spotlight
+     * just ahead of it rather than a halo pinned behind it.
+     */
     let strength = 0;
     let targetStrength = 0;
     let blooms: Bloom[] = [];
-    let holding: { x: number; y: number; start: number } | null = null;
+    let prevX = -1e4;
+    let prevY = -1e4;
 
     const locate = (e: PointerEvent) => {
       const box = canvas.getBoundingClientRect();
@@ -159,44 +171,17 @@ export default function RadiantDotMatrix(props: { cell?: number }) {
       return { inside, x: e.clientX - box.left, y: e.clientY - box.top };
     };
 
-    const onMove = (e: PointerEvent) => {
-      if (!finePointer) return;
-      const { inside, x, y } = locate(e);
-      targetStrength = inside ? 1 : 0;
-      if (!inside) return;
-      pointer.x = x;
-      pointer.y = y;
-    };
     const onDown = (e: PointerEvent) => {
       const { inside, x, y } = locate(e);
       if (!inside) return;
-      pointer.x = x;
-      pointer.y = y;
       targetStrength = 0;
-      holding = { x, y, start: performance.now() };
-    };
-    const onUp = (e: PointerEvent) => {
-      if (!holding) return;
-      const { inside, x, y } = locate(e);
-      if (inside) {
-        pointer.x = x;
-        pointer.y = y;
-        const charge = Math.min((performance.now() - holding.start) / 1000 / 1.1, 1);
-        blooms = [...blooms.slice(-3), { x, y, born: performance.now() }];
-        // a longer hold blooms wider
-        blooms[blooms.length - 1].charge = charge;
-      }
-      holding = null;
-      if (finePointer) targetStrength = inside ? 1 : 0;
+      blooms = [...blooms.slice(-3), { x, y, born: performance.now(), charge: 0 }];
     };
     const onCancel = () => {
-      holding = null;
       targetStrength = 0;
     };
 
-    if (finePointer) window.addEventListener('pointermove', onMove, { passive: true });
     window.addEventListener('pointerdown', onDown, { passive: true });
-    window.addEventListener('pointerup', onUp, { passive: true });
     window.addEventListener('pointercancel', onCancel, { passive: true });
     window.addEventListener('pointerleave', onCancel, { passive: true });
 
@@ -204,7 +189,26 @@ export default function RadiantDotMatrix(props: { cell?: number }) {
 
     const stop = subscribeFx((_dt, t) => {
       const now = performance.now();
+      targetStrength = rocket.visible ? 1 : 0;
       strength += (targetStrength - strength) * 0.3;
+
+      // lead the glow slightly along the rocket's direction of travel
+      const rx = rocket.x;
+      const ry = rocket.y;
+      let leadX = 0;
+      let leadY = 0;
+      const vx = rx - prevX;
+      const vy = ry - prevY;
+      const speed = Math.hypot(vx, vy);
+      if (speed > 0.4) {
+        const lead = Math.min(LEAD_PX, speed * 14);
+        leadX = (vx / speed) * lead;
+        leadY = (vy / speed) * lead;
+      }
+      prevX = rx;
+      prevY = ry;
+      const glowX = rx + leadX;
+      const glowY = ry + leadY;
 
       blooms = (blooms as B[]).filter((b) => (now - b.born) / 1000 < BLOOM_LIFE) as B[];
 
@@ -255,8 +259,8 @@ export default function RadiantDotMatrix(props: { cell?: number }) {
           // cursor glow: quadratic falloff, like the original
           let glow = 0;
           if (strength > 0.01) {
-            const dx = cx - pointer.x;
-            const dy = cy - pointer.y;
+            const dx = cx - glowX;
+            const dy = cy - glowY;
             const dist = Math.sqrt(dx * dx + dy * dy);
             if (dist < reach) {
               const falloff = 1 - dist / reach;
@@ -309,7 +313,6 @@ export default function RadiantDotMatrix(props: { cell?: number }) {
       stop();
       offTheme();
       window.removeEventListener('resize', resize);
-      window.removeEventListener('pointermove', onMove);
       window.removeEventListener('pointerdown', onDown);
       window.removeEventListener('pointerup', onUp);
       window.removeEventListener('pointercancel', onCancel);

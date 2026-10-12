@@ -45,13 +45,16 @@ export default function DynamicIsland(props: { currentPath: string }) {
     typeof window !== 'undefined' && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
   /*
-   * How long the pointer must rest on the island before it opens.
+   * How long the pointer must rest before the island opens, and how long it
+   * may be gone before it closes. The same value by default so the two feel
+   * symmetrical; retune either one on its own to bias just that direction.
    *
    * Hovering is a weak signal - people sweep the cursor across the top of the
    * page on their way somewhere else - so opening waits. A click is a
    * deliberate instruction and skips the wait entirely via showNow().
    */
-  const OPEN_DELAY = 500;
+  const OPEN_DELAY = 350;
+  const CLOSE_DELAY = OPEN_DELAY;
 
   function clearTimer() {
     if (closeTimer !== undefined) {
@@ -89,7 +92,7 @@ export default function DynamicIsland(props: { currentPath: string }) {
     clearTimer();
     closeTimer = window.setTimeout(() => {
       if (!pinned()) setOpen(false);
-    }, 140);
+    }, CLOSE_DELAY);
   }
 
   /** Push a colour (any supported format) into the live theme. */

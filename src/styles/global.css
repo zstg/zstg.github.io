@@ -487,7 +487,8 @@ body {
   position: fixed;
   left: 50%;
   bottom: 0;
-  transform: translateX(-50%);
+  transform: translateX(-50%) translateY(calc(100% + 0.75rem));
+  opacity: 0;
   z-index: 40;
   width: min(46rem, calc(100vw - 1.5rem));
   border: 1px solid color-mix(in srgb, var(--color-accent) 35%, transparent);
@@ -496,6 +497,44 @@ body {
   background: color-mix(in srgb, var(--color-dark) 62%, transparent);
   backdrop-filter: blur(28px) saturate(170%);
   -webkit-backdrop-filter: blur(28px) saturate(170%);
+  transition:
+    transform var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard),
+    opacity var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard);
+}
+
+/* revealed, either by approaching the bottom edge or by focusing it */
+.dock.is-visible {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+/*
+ * The handle is the dock's only permanent presence while it is hidden - the
+ * small line a real dock leaves at the edge of the screen. Clicking it pops
+ * the dock out; hovering widens and brightens it.
+ */
+.dock-handle {
+  position: fixed;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  z-index: 41;
+  width: 3.25rem;
+  height: 3px;
+  border: 0;
+  padding: 0;
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--color-accent) 55%, transparent);
+  cursor: pointer;
+  transition:
+    width var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard),
+    background-color var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard);
+}
+.dock-handle:hover,
+.dock-handle:focus-visible {
+  width: 5rem;
+  background: var(--color-accent);
+  outline: none;
 }
 
 .dock-inner {
@@ -719,14 +758,16 @@ body {
 }
 
 /*
- * Hover (and the current-page item) invert: the accent becomes the
- * background and the label knocks out to the theme's on-accent ink - which is
- * near-black on the dark themes, so the label stays legible instead of
- * vanishing into its own background.
+ * Hovering inverts: the accent becomes the background and the label knocks out
+ * to the theme's on-accent ink - which is near-black on the dark themes, so
+ * the label stays legible instead of vanishing into its own background.
+ *
+ * There is deliberately NO rule for `.island .m3-btn[aria-current='page']`
+ * here. The collapsed pill already names the page you're on, so filling the
+ * matching nav item as well just repeats it. The attribute stays in the
+ * markup for assistive tech; it just carries no visual weight in the island.
  */
-.island :is(.m3-btn, .m3-input, .m3-select):hover,
-.island .m3-btn--active,
-.island .m3-btn[aria-current='page'] {
+.island :is(.m3-btn, .m3-input, .m3-select):hover {
   background: var(--color-accent);
   color: var(--color-on-accent);
   border-color: var(--color-accent);
@@ -738,9 +779,7 @@ body {
  * inverted explicitly - otherwise they inherit nothing and sit accent-on-
  * accent, which is invisible.
  */
-.island :is(.m3-btn, .m3-input, .m3-select):hover > *,
-.island .m3-btn--active > *,
-.island .m3-btn[aria-current='page'] > * {
+.island :is(.m3-btn, .m3-input, .m3-select):hover > * {
   color: var(--color-on-accent);
 }
 
