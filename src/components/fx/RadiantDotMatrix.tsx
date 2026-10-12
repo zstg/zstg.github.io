@@ -1,7 +1,8 @@
 import { onMount, onCleanup } from 'solid-js';
 import { subscribeFx, sizeCanvas } from '../../lib/fx-ticker';
 import { readAccent, onThemeChange } from '../../lib/theme-colors';
-import { globeOpen } from '../../lib/fx-globe';
+import { GLOBE_FEATHER } from '../../lib/fx-globe';
+import { globeClearFraction } from '../../lib/globe';
 import { rocket } from '../../lib/rocket';
 
 /*
@@ -105,12 +106,19 @@ function sample(field: Float32Array, x: number, y: number) {
 
 type Bloom = { x: number; y: number; born: number };
 
-export default function RadiantDotMatrix(props: { cell?: number }) {
+export default function RadiantDotMatrix(props: { cell?: number; offsetX?: number }) {
   let canvas!: HTMLCanvasElement;
 
   onMount(() => {
     const ctx = canvas.getContext('2d')!;
-    const CELL = props.cell ?? 10;
+    // Smaller cells, so many more of them fill the same area.
+    const CELL = props.cell ?? 7;
+    /*
+     * Nudge the whole field to the right, as a fraction of the viewport
+     * width. Optical balance only - the globe keep-out stays centred on the
+     * sphere, so the circular gap around it is unaffected. Set to 0 to undo.
+     */
+    const OFFSET_X = props.offsetX ?? 0.03;
 
     let W = 0,
       H = 0;
@@ -125,6 +133,7 @@ export default function RadiantDotMatrix(props: { cell?: number }) {
 
     let cols = 0;
     let rows = 0;
+    let shift = 0;
     let ramp = new Float32Array(0);
 
     function resize() {
@@ -215,6 +224,14 @@ export default function RadiantDotMatrix(props: { cell?: number }) {
       ctx.clearRect(0, 0, W, H);
 
       const reach = CURSOR_CELLS * CELL;
+
+      // globe keep-out geometry, resolved once per frame
+      const short = Math.min(W, H);
+      const clearR = short * globeClearFraction();
+      const feather = short * GLOBE_FEATHER;
+      const clearR2 = clearR * clearR;
+      const outerR2 = (clearR + feather) * (clearR + feather);
+      const invFeather = 1 / (feather || 1);
       // bloom wavefronts
       const stamps = blooms.map((b) => {
         const age = (now - b.born) / 1000 / BLOOM_LIFE;
@@ -237,11 +254,16 @@ export default function RadiantDotMatrix(props: { cell?: number }) {
         const y = r * CELL;
         const cy = y + CELL / 2;
         for (let c = 0; c < cols; c++) {
-          const x = c * CELL;
+          const x = c * CELL + shift;
           const cx = x + CELL / 2;
 
           // 0 inside the sphere, feathering to 1 as it clears the centre.
-          const open = globeOpen(cx, cy, W, H);
+          // The radii are hoisted out of the loop; see clearR/invFeather.
+          const gdx = cx - W / 2;
+          const gdy = cy - H / 2;
+          const gd2 = gdx * gdx + gdy * gdy;
+          if (gd2 <= clearR2) continue;
+          const open = gd2 >= outerR2 ? 1 : (Math.sqrt(gd2) - clearR) * invFeather;
           if (open <= 0) continue;
 
           // resting field: drifting noise + a slow twinkle
@@ -261,6 +283,7 @@ export default function RadiantDotMatrix(props: { cell?: number }) {
           if (strength > 0.01) {
             const dx = cx - glowX;
             const dy = cy - glowY;
+            // sqrt rather than hypot: this runs for every cell, every frame.
             const dist = Math.sqrt(dx * dx + dy * dy);
             if (dist < reach) {
               const falloff = 1 - dist / reach;

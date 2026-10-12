@@ -25,8 +25,11 @@ export function getGlobeExpansion(): number {
 
 /**
  * Keep-out radius as a fraction of the viewport's short edge, tracking the
- * globe: ~0.20 when it is compact, ~0.64 when fully spread.
+ * globe: ~0.30 when it is compact, ~0.80 when fully spread.
+ *
+ * Always concentric with the sphere, so the gap around it is uniform on every
+ * side at every scroll position.
  */
 export function globeClearFraction(): number {
-  return 0.2 + 0.44 * expansion;
+  return 0.3 + 0.5 * expansion;
 }
