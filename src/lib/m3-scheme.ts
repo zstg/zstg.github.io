@@ -1,117 +1,94 @@
-import { schemeColors, hctFromInt } from './m3-engine.js';
+import { schemeColors, hctFromInt } from '../../reference/m3-engine.js';
 
 /*
- * Material 3 colour roles, generated from the active accent.
+ * Thin adapter over the provided Material 3 engine (reference/m3-engine.js).
  *
- * Rather than hand-mixing accent tints (which is what makes a UI look
- * "almost Material"), this runs the real HCT solver: the accent is read as a
- * seed (hue + chroma), a full tonal palette is generated, and every M3 role
- * (primary, onPrimary, secondaryContainer, surfaceContainer…, ~53 in all) is
- * mapped onto a tone exactly as material-color-utilities does.
+ * The engine does all the actual colour science: HCT seed extraction
+ * (`hctFromInt`) and the full tonal-palette/role mapping (`schemeColors`).
+ * None of that is reimplemented here. The only glue is what the engine
+ * deliberately leaves to the caller:
  *
- * The scheme is then published as `--md-sys-color-*` on :root, so the
- * stylesheet can use genuine M3 tokens.
+ *   1. pack a hex accent into the ARGB int `hctFromInt` expects,
+ *   2. decide light vs dark from the theme's own background,
+ *   3. publish the returned roles as `--md-sys-color-*` on :root.
  *
- * Variant: "vibrant". TonalSpot mutes a light seed badly (primary lands at
- * tone 80, and at that tone green can only carry ~48 chroma, so #75eb70
- * comes back as a washed #afcfa6). Vibrant keeps the accent's vividness
- * while still being a real HCT-derived scheme.
+ * This is the same job `reference/m3-head.js` does at runtime, minus its
+ * localStorage bootstrap. We don't inline that file because it is a ~130 kB
+ * blocking script that would have to run on every page just to produce the
+ * same values that `src/styles/m3-presets.css` already ships as plain CSS
+ * (generated from this same engine by scripts/gen-m3-presets.mjs). That
+ * path renders the correct palette pre-paint, with no JS and no flash.
+ * This adapter only runs for custom accents, which have no CSS entry.
  */
 
+/*
+ * Variant: "vibrant".
+ * TonalSpot mutes a light seed badly - M3 dark `primary` sits at tone 80, and
+ * green cannot carry much chroma there, so #75eb70 came back as #afcfa6.
+ * Vibrant keeps the accent's vividness and is still a real HCT scheme.
+ */
 const VARIANT = 'vibrant';
 
-/** "#rgb" | "#rrggbb" -> packed ARGB int. Returns null if unparseable. */
 function hexToArgb(hex: string): number | null {
   const m = hex.trim().match(/^#?([0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})$/i);
   if (!m) return null;
   let h = m[1];
   if (h.length === 3 || h.length === 4) h = h.split('').map((c) => c + c).join('');
   return (
-    ((1 << 24) | 0) +
-    (parseInt(h.slice(0, 2), 16) << 16) +
-    (parseInt(h.slice(2, 4), 16) << 8) +
-    parseInt(h.slice(4, 6), 16)
-  ) >>> 0;
+    (((1 << 24) | 0) +
+      (parseInt(h.slice(0, 2), 16) << 16) +
+      (parseInt(h.slice(2, 4), 16) << 8) +
+      parseInt(h.slice(4, 6), 16)) >>>
+    0
+  );
 }
 
-const camelToKebab = (s: string) => s.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
+/** Same kebab mapping the engine's own head bootstrap uses. */
+const kebab = (s: string) => s.replace(/([A-Z])/g, (m) => '-' + m.toLowerCase());
 
-/** Read a CSS custom property, resolved through any var() indirection. */
-function cssVar(name: string, el: HTMLElement): string {
-  return getComputedStyle(el).getPropertyValue(name).trim();
-}
-
-/**
- * True when the theme's background is dark, so the scheme is generated for
- * dark mode. Light themes (latte, solarized-light) get the light scheme.
- */
+/** Dark when the theme's background is dark, so we build a dark scheme. */
 function rootIsDark(el: HTMLElement): boolean {
-  const v = cssVar('--color-dark', el);
-  const argb = hexToArgb(v);
+  const argb = hexToArgb(getComputedStyle(el).getPropertyValue('--color-dark').trim());
   if (argb == null) return true;
-  const r = (argb >> 16) & 255,
-    g = (argb >> 8) & 255,
-    b = argb & 255;
-  // relative luminance
   const lin = (u: number) => {
     const c = u / 255;
     return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
   };
-  return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b) < 0.4;
+  return 0.2126 * lin((argb >> 16) & 255) + 0.7152 * lin((argb >> 8) & 255) + 0.0722 * lin(argb & 255) < 0.4;
 }
 
-export interface M3SchemeOptions {
-  /** Scheme variant; defaults to "vibrant" (see note above). */
-  variant?: string;
-  /** Overrides auto-detection from the theme background. */
-  isDark?: boolean;
-}
+let last = '';
 
 /**
- * Build `--md-sys-color-*` declarations for a seed colour.
- * Returns a flat object of custom property name -> hex.
+ * Regenerate `--md-sys-color-*` from whatever accent is currently on :root.
+ * No-op when the accent and mode are unchanged.
  */
-export function m3ColorVars(accent: string, opts: M3SchemeOptions = {}): Record<string, string> {
+export function syncM3Scheme(el: HTMLElement = document.documentElement): void {
+  const accent = getComputedStyle(el).getPropertyValue('--color-accent').trim();
+  if (!accent) return;
   const argb = hexToArgb(accent);
-  if (argb == null) return {};
+  if (argb == null) return;
+
+  const isDark = rootIsDark(el);
+  const signature = `${accent}|${isDark}`;
+  if (signature === last) return;
+  last = signature;
+
   const { hue, chroma, tone } = hctFromInt(argb);
-  const isDark = opts.isDark ?? true;
   const scheme = schemeColors({
     hue,
     chroma,
     tone,
-    variant: (opts.variant ?? VARIANT) as never,
+    variant: VARIANT as never,
     isDark,
     specVersion: '2025',
   });
 
-  const out: Record<string, string> = {};
-  for (const [key, value] of Object.entries(scheme)) {
+  for (const key in scheme) {
+    const value = scheme[key];
     if (typeof value === 'string' && value.startsWith('#')) {
-      out['--md-sys-color-' + camelToKebab(key)] = value;
+      el.style.setProperty('--md-sys-color-' + kebab(key), value);
     }
   }
-  return out;
-}
-
-let lastApplied = '';
-
-/**
- * Regenerate the M3 roles from whatever accent is currently on :root and
- * publish them. Safe to call repeatedly; it is a no-op if nothing changed.
- */
-export function syncM3Scheme(el: HTMLElement = document.documentElement): void {
-  const accent = cssVar('--color-accent', el);
-  if (!accent) return;
-  const isDark = rootIsDark(el);
-  const signature = `${accent}|${isDark}`;
-  if (signature === lastApplied) return;
-  lastApplied = signature;
-
-  const vars = m3ColorVars(accent, { isDark });
-  for (const [name, value] of Object.entries(vars)) {
-    el.style.setProperty(name, value);
-  }
-  // let CSS colour-scheme / native widgets follow the generated scheme
   el.style.colorScheme = isDark ? 'dark' : 'light';
 }

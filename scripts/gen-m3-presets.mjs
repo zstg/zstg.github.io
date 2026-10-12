@@ -8,7 +8,7 @@
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
-import { schemeColors, hctFromInt, stateLayer } from '../src/lib/m3-engine.js';
+import { schemeColors, hctFromInt, stateLayer } from '../reference/m3-engine.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = resolve(here, '..');
