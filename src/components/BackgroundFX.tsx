@@ -3,7 +3,6 @@ import MatrixRain from './MatrixRain';
 import DotMatrix from './fx/DotMatrix';
 import RadiantDotMatrix from './fx/RadiantDotMatrix';
 import ShapeMorph from './fx/ShapeMorph';
-import DataStream from './fx/DataStream';
 import Constellation from './fx/Constellation';
 import Honeycomb from './fx/Honeycomb';
 import CircuitTrace from './fx/CircuitTrace';
@@ -52,9 +51,6 @@ export default function BackgroundFX() {
       </Match>
       <Match when={id() === 'shapes'}>
         <ShapeMorph />
-      </Match>
-      <Match when={id() === 'stream'}>
-        <DataStream />
       </Match>
       <Match when={id() === 'nodes'}>
         <Constellation />
