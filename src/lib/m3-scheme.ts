@@ -58,12 +58,29 @@ function rootIsDark(el: HTMLElement): boolean {
 }
 
 let last = '';
+let applied: string[] = [];
 
 /**
  * Regenerate `--md-sys-color-*` from whatever accent is currently on :root.
- * No-op when the accent and mode are unchanged.
+ *
+ * Preset themes get their palette from src/styles/m3-presets.css, so there is
+ * nothing to do for them — and in fact we must NOT leave inline values behind:
+ * an inline custom property outranks the `html[data-theme="..."]` stylesheet
+ * block, so once a custom accent had written them inline, switching back to a
+ * preset would leave the buttons wearing the old custom palette.
  */
 export function syncM3Scheme(el: HTMLElement = document.documentElement): void {
+  const isPreset = !!el.dataset.theme && el.dataset.theme !== 'custom';
+
+  if (isPreset) {
+    if (applied.length) {
+      for (const prop of applied) el.style.removeProperty(prop);
+      applied = [];
+    }
+    last = '';
+    return;
+  }
+
   const accent = getComputedStyle(el).getPropertyValue('--color-accent').trim();
   if (!accent) return;
   const argb = hexToArgb(accent);
@@ -87,7 +104,9 @@ export function syncM3Scheme(el: HTMLElement = document.documentElement): void {
   for (const key in scheme) {
     const value = scheme[key];
     if (typeof value === 'string' && value.startsWith('#')) {
-      el.style.setProperty('--md-sys-color-' + kebab(key), value);
+      const prop = '--md-sys-color-' + kebab(key);
+      el.style.setProperty(prop, value);
+      applied.push(prop);
     }
   }
   el.style.colorScheme = isDark ? 'dark' : 'light';

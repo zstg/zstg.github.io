@@ -44,6 +44,13 @@
   /* Rocket cursor overall scale (1 = default, 2 = twice as big). */
   --rocket-size: 2.0;
   /*
+   * Matrix rain glyph size, in px. Leave as `auto` for the responsive
+   * default (max(22px, viewport/70)). Set an explicit px value to override
+   * by hand, e.g. `--rain-font-size: 28;` for noticeably bigger glyphs
+   * (bigger glyphs = fewer columns).
+   */
+  --rain-font-size: auto;
+  /*
    * Idle flame floor (0..1). The rocket keeps this much plume at rest so the
    * flame never goes out while the cursor is still. 0 = flame only when moving.
    */
@@ -467,6 +474,53 @@ body {
   to {
     transform: scale(2.6);
     opacity: 0;
+  }
+}
+
+/*
+ * Dynamic Island.
+ *
+ * Transparent heavy-blur glass with a thin accent stroke. On hover the
+ * stroke is dropped and the accent takes over as the foreground tint, the
+ * way a Control Centre surface lights up, with a short jiggle.
+ *
+ * Corner radius = button radius + the toggle's 4px inset, so the outer and
+ * inner corner arcs stay concentric instead of clipping unevenly.
+ */
+.island {
+  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--color-accent) 55%, transparent);
+  border-radius: calc(var(--radius-btn) + 0.25rem);
+  backdrop-filter: blur(34px) saturate(170%);
+  -webkit-backdrop-filter: blur(34px) saturate(170%);
+  transition:
+    border-color var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard),
+    background-color var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard),
+    box-shadow var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard);
+}
+.island:hover {
+  border-color: transparent;
+  background: color-mix(in srgb, var(--color-accent) 12%, transparent);
+  box-shadow: 0 4px 24px color-mix(in srgb, var(--color-accent) 18%, transparent);
+  animation: island-jiggle 0.5s var(--md-sys-motion-easing-standard);
+}
+
+@keyframes island-jiggle {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  20% {
+    transform: translate(-2px, -1px);
+  }
+  45% {
+    transform: translate(2px, 0.5px);
+  }
+  70% {
+    transform: translate(-1px, 0);
+  }
+  85% {
+    transform: translate(0.5px, 0);
   }
 }
 

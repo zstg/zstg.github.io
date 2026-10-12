@@ -58,12 +58,12 @@ export default function Homepage() {
     return 1 - p / 0.8;
   };
 
-  // Projects: fades in 0.5->1, then holds fully lit until 2.15,
+  // Projects: fades in 0.35->0.85, then holds fully lit until 2.15,
   // then hands off to misc over 2.15->2.6
   const projectsOpacity = () => {
     const p = scrollProgress();
-    if (p < 0.5) return 0;
-    if (p < 1) return (p - 0.5) * 2;
+    if (p < 0.35) return 0;
+    if (p < 0.85) return (p - 0.35) * 2;
     if (p < 2.15) return 1;
     if (p < 2.6) return 1 - (p - 2.15) * (1 / 0.45);
     return 0;
@@ -99,12 +99,12 @@ export default function Homepage() {
 
   const parallaxProgress = () => {
     const p = scrollProgress();
-    if (p < 1) return 0;
+    if (p < 0.85) return 0;
     // Walk the projects one at a time. This runs all the way to just before
-    // the hand-off at 2.15, so each of the six cards gets ~0.22 of a viewport
+    // the hand-off at 2.15, so each of the six cards gets ~0.21 of a viewport
     // of scrolling — ParallaxProjects then spends most of that holding the
     // card centred rather than gliding.
-    return Math.min(1, (p - 1) / 1.1);
+    return Math.min(1, (p - 0.85) / 1.25);
   };
 
   // sphere expands across the hero scroll (0 -> 0.8)

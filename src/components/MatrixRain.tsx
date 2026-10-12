@@ -128,9 +128,15 @@ export default function MatrixRain() {
       canvas.style.height = `${H}px`;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      // Bigger glyphs than a classic matrix, but small enough to keep a good
-      // number of columns falling at once.
-      fontSize = Math.max(20, Math.round(W / 78));
+      // Glyph size. `--rain-font-size` (in :root, global.css) overrides this
+    // entirely — set it to a px value to dial the glyphs in by hand. Left as
+    // `auto` (or unset) we use the responsive size below.
+    const explicit = parseFloat(
+      getComputedStyle(document.documentElement).getPropertyValue('--rain-font-size')
+    );
+    // Bigger glyphs than a classic matrix, but small enough to keep a good
+    // number of columns falling at once.
+    fontSize = Number.isFinite(explicit) && explicit > 0 ? explicit : Math.max(22, Math.round(W / 70));
       cols = Math.ceil(W / fontSize);
       drops = Array.from({ length: cols }, () => Math.random() * -H);
       speeds = Array.from({ length: cols }, () => 0.5 + Math.random() * 0.7);
