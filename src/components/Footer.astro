@@ -124,11 +124,15 @@ import { WEBRING } from '../data/webring';
     const reveal = () => {
       if (hideTimer !== undefined) window.clearTimeout(hideTimer);
       dock.classList.add('is-visible');
+      // the handle stretches into the dock's shape and fades out
+      handle.classList.add('is-open');
     };
     const scheduleHide = () => {
       if (hideTimer !== undefined) window.clearTimeout(hideTimer);
       hideTimer = window.setTimeout(() => {
         dock.classList.remove('is-visible');
+        // ...and collapses back into the line
+        handle.classList.remove('is-open');
       }, closeDelay);
     };
 
@@ -145,7 +149,12 @@ import { WEBRING } from '../data/webring';
     // keyboard users tabbing into the dock need to be able to see it
     dock.addEventListener('focusin', reveal);
     handle.addEventListener('click', () => {
-      dock.classList.toggle('is-visible');
+      if (dock.classList.contains('is-visible')) {
+        dock.classList.remove('is-visible');
+        handle.classList.remove('is-open');
+      } else {
+        reveal();
+      }
     });
   }
 </script>

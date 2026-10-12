@@ -235,6 +235,26 @@ html[data-theme="custom"] {
   --radius-field: var(--md-sys-shape-corner-medium);
   --radius-surface: var(--md-sys-shape-corner-medium);
 
+  /*
+   * The "shadow circle" - the gap the background effects leave around the
+   * particle sphere so they never wash it out. Hand-adjustable; no code needed.
+   *
+   *   --globe-clear-base   radius while the sphere is compact  (x short edge)
+   *   --globe-clear-growth  extra radius once the sphere is fully expanded
+   *   --globe-feather       width of the soft edge outside the hard radius
+   *   --globe-offset-x      nudge the whole circle horizontally, px
+   *   --globe-offset-y      nudge it vertically, px
+   *
+   * If it looks off-centre, set the offsets. The circle is centred on the
+   * viewport middle, which is where the sphere sits; nudging either offset
+   * moves the hole without touching the sphere itself.
+   */
+  --globe-clear-base: 0.3;
+  --globe-clear-growth: 0.5;
+  --globe-feather: 0.12;
+  --globe-offset-x: 0px;
+  --globe-offset-y: 0px;
+
   /* Motion */
   --md-sys-motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);
   --md-sys-motion-duration-short: 150ms;
@@ -509,9 +529,13 @@ body {
 }
 
 /*
- * The handle is the dock's only permanent presence while it is hidden - the
- * small line a real dock leaves at the edge of the screen. Clicking it pops
- * the dock out; hovering widens and brightens it.
+ * The handle is the dock's collapsed form. While the dock is hidden the handle
+ * is all you see; when it appears the handle widens to exactly the dock's
+ * footprint while fading out, and the dock slides up underneath it - so the
+ * line reads as stretching into the dock rather than as a separate widget
+ * blinking out.
+ *
+ * Both use the same width and centring, so the two shapes line up exactly.
  */
 .dock-handle {
   position: fixed;
@@ -526,8 +550,10 @@ body {
   border-radius: 9999px;
   background: color-mix(in srgb, var(--color-accent) 55%, transparent);
   cursor: pointer;
+  opacity: 1;
   transition:
-    width var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard),
+    width var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard),
+    opacity var(--md-sys-motion-duration-short) linear,
     background-color var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard);
 }
 .dock-handle:hover,
@@ -535,6 +561,11 @@ body {
   width: 9rem;
   background: var(--color-accent);
   outline: none;
+}
+/* mid-morph: stretched across the dock's footprint, invisible */
+.dock-handle.is-open {
+  width: min(54rem, calc(100vw - 1.5rem));
+  opacity: 0;
 }
 
 .dock-inner {

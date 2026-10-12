@@ -1,8 +1,7 @@
 import { onMount, onCleanup } from 'solid-js';
 import { subscribeFx, sizeCanvas } from '../../lib/fx-ticker';
 import { readAccent, onThemeChange } from '../../lib/theme-colors';
-import { GLOBE_FEATHER } from '../../lib/fx-globe';
-import { globeClearFraction } from '../../lib/globe';
+import { globeClearFraction, globeFeather, globeOffset } from '../../lib/globe';
 import { rocket } from '../../lib/rocket';
 
 /*
@@ -228,10 +227,12 @@ export default function RadiantDotMatrix(props: { cell?: number; offsetX?: numbe
       // globe keep-out geometry, resolved once per frame
       const short = Math.min(W, H);
       const clearR = short * globeClearFraction();
-      const feather = short * GLOBE_FEATHER;
+      const feather = short * globeFeather();
       const clearR2 = clearR * clearR;
       const outerR2 = (clearR + feather) * (clearR + feather);
       const invFeather = 1 / (feather || 1);
+      const gox = W / 2 + globeOffset().x;
+      const goy = H / 2 + globeOffset().y;
       // bloom wavefronts
       const stamps = blooms.map((b) => {
         const age = (now - b.born) / 1000 / BLOOM_LIFE;
@@ -259,8 +260,8 @@ export default function RadiantDotMatrix(props: { cell?: number; offsetX?: numbe
 
           // 0 inside the sphere, feathering to 1 as it clears the centre.
           // The radii are hoisted out of the loop; see clearR/invFeather.
-          const gdx = cx - W / 2;
-          const gdy = cy - H / 2;
+          const gdx = cx - gox;
+          const gdy = cy - goy;
           const gd2 = gdx * gdx + gdy * gdy;
           if (gd2 <= clearR2) continue;
           const open = gd2 >= outerR2 ? 1 : (Math.sqrt(gd2) - clearR) * invFeather;

@@ -1,4 +1,4 @@
-import { globeClearFraction } from './globe';
+import { globeClearFraction, globeFeather, globeOffset } from './globe';
 
 /*
  * Keep-out zone for the background effects.
@@ -11,19 +11,16 @@ import { globeClearFraction } from './globe';
  * for a 0..1 weight and scale their ink by it: 0 inside the sphere, 1 well
  * outside, with a soft feather between so the exclusion reads as deliberate
  * rather than as a hole.
+ *
+ * The radius and the centring are configurable from CSS - see the property
+ * list in lib/globe.ts. That is the manual lever if the mask ever looks
+ * off-centre: set `--globe-offset-x` / `--globe-offset-y`.
  */
 
-/** Width of the feathered edge outside the exclusion, as a fraction of the
- *  short edge. The radius itself tracks the globe (see lib/globe.ts). */
-export const GLOBE_FEATHER = 0.12;
-
-/**
- * How much ink an effect may lay down at (x, y).
- * 0 = entirely inside the sphere, 1 = clear of it.
- */
 export function globeOpen(x: number, y: number, W: number, H: number): number {
-  const dx = x - W / 2;
-  const dy = y - H / 2;
+  const off = globeOffset();
+  const dx = x - (W / 2 + off.x);
+  const dy = y - (H / 2 + off.y);
   return globeOpenAtDistance(Math.sqrt(dx * dx + dy * dy), W, H);
 }
 
@@ -38,7 +35,7 @@ export function globeOpen(x: number, y: number, W: number, H: number): number {
 export function globeOpenAtDistance(d: number, W: number, H: number): number {
   const short = Math.min(W, H);
   const clearR = short * globeClearFraction();
-  const feather = short * GLOBE_FEATHER;
+  const feather = short * globeFeather();
   if (d <= clearR) return 0;
   if (d >= clearR + feather) return 1;
   return (d - clearR) / feather;
