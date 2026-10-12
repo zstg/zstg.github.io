@@ -538,11 +538,11 @@ body {
 .dock-item:focus-visible {
   --lift: 1;
   background: var(--color-accent);
-  color: transparent;
+  color: var(--color-on-accent);
 }
 .dock-item:hover .dock-label,
 .dock-item:focus-visible .dock-label {
-  color: transparent;
+  color: var(--color-on-accent);
 }
 .dock-item:active {
   --lift: 0.5;
@@ -615,8 +615,12 @@ body {
 .dock-webring-item:hover,
 .dock-webring-item:focus-visible {
   background: var(--color-accent);
-  color: transparent;
+  color: var(--color-on-accent);
   transform: scale(1.12);
+}
+.dock-webring a:hover svg,
+.dock-webring-item:hover svg {
+  stroke: var(--color-on-accent);
 }
 
 /* prev / next post paging */
@@ -643,7 +647,7 @@ body {
 .dock-page a:hover,
 .dock-page a:focus-visible {
   background: var(--color-accent);
-  color: transparent;
+  color: var(--color-on-accent);
 }
 .dock-page span {
   overflow: hidden;
@@ -714,16 +718,28 @@ body {
 
 /*
  * Hover (and the current-page item) invert: the accent becomes the
- * background and the label is knocked out to transparent. Same two colours,
- * swapped - the Material control-centre behaviour.
+ * background and the label knocks out to the theme's on-accent ink - which is
+ * near-black on the dark themes, so the label stays legible instead of
+ * vanishing into its own background.
  */
 .island :is(.m3-btn, .m3-input, .m3-select):hover,
 .island .m3-btn--active,
 .island .m3-btn[aria-current='page'] {
   background: var(--color-accent);
-  color: transparent;
+  color: var(--color-on-accent);
   border-color: var(--color-accent);
   animation: island-jump 340ms var(--md-sys-motion-easing-standard);
+}
+
+/*
+ * Children carry their own colour from the rule above, so they have to be
+ * inverted explicitly - otherwise they inherit nothing and sit accent-on-
+ * accent, which is invisible.
+ */
+.island :is(.m3-btn, .m3-input, .m3-select):hover > *,
+.island .m3-btn--active > *,
+.island .m3-btn[aria-current='page'] > * {
+  color: var(--color-on-accent);
 }
 
 /* the panel sizes itself; the container width is measured and animated */
