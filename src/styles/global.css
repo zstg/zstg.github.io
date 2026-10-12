@@ -35,8 +35,18 @@
 @theme {
   /* Particle sphere point size (world units). Raise for bigger snow. */
   --particle-size: 0.052;
+  /*
+   * Extra brightness the sphere has at the very top of the page, faded to 0
+   * by the time the sphere reaches its expansion peak. 0 disables the boost.
+   */
+  --sphere-bright-boost: 0.5;
   /* Rocket cursor overall scale (1 = default, 2 = twice as big). */
   --rocket-size: 2.0;
+  /*
+   * Idle flame floor (0..1). The rocket keeps this much plume at rest so the
+   * flame never goes out while the cursor is still. 0 = flame only when moving.
+   */
+  --rocket-idle-flame: 0.22;
   --color-dark: #050508;
   --color-dark-light: #0e0e14;
   --color-accent: #769ff0;
@@ -184,6 +194,19 @@ html[data-theme="custom"] {
   --color-on-accent: #0a0a12;
 }
 
+/*
+ * Shared shape tokens.
+ *
+ * One place to change every corner radius, so buttons, fields and surfaces
+ * stay consistent. `--radius-btn` is the M3 "full" button shape; set it to
+ * `12px` for M3's "medium" shape instead if you ever want squarer buttons.
+ */
+:root {
+  --radius-btn: 9999px;   /* M3 "full" */
+  --radius-field: 12px;   /* inputs / selects */
+  --radius-surface: 12px; /* island, cards */
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -216,72 +239,194 @@ body {
   color: var(--color-dark);
 }
 
-/* Material You buttons: pill shape, tonal states */
-/* Material You buttons: pill shape, soft tonal states, no hard outline */
-.btn {
+/* ============================================================
+   Material You buttons (M3)
+   Shared base for every button on the site. The shape comes from
+   `--radius-btn` so rounding can never drift between variants.
+   State layers follow M3: hover 8%, focus 10%, pressed 10%,
+   plus a pointer-down ripple inserted by BaseLayout.
+   ============================================================ */
+:is(.btn, .btn-tonal, .btn-outlined, .btn-ghost, .m3-btn) {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
   padding: 0.625rem 1.5rem;
-  border-radius: 9999px;
-  font-size: 0.875rem;
+  border-radius: var(--radius-btn);
+  font-size: 0.875rem; /* label-large */
   font-weight: 500;
+  line-height: 1.25rem;
+  letter-spacing: 0.1px;
   text-decoration: none;
-  transition: background 0.2s ease-out, color 0.2s ease-out, box-shadow 0.2s ease-out;
-  border: none;
-  outline: none;
-  background: color-mix(in srgb, var(--color-accent) 20%, transparent);
-  color: var(--color-accent);
-}
-
-.btn:hover {
-  background: color-mix(in srgb, var(--color-accent) 30%, transparent);
-}
-
-.btn:active {
-  background: color-mix(in srgb, var(--color-accent) 38%, transparent);
-}
-
-.btn-ghost {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.625rem 1.5rem;
-  border-radius: 9999px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  text-decoration: none;
-  transition: background 0.2s ease-out, color 0.2s ease-out;
+  white-space: nowrap;
   border: none;
   outline: none;
   background: transparent;
-  color: var(--color-muted);
+  color: var(--color-accent);
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    box-shadow 0.2s cubic-bezier(0.2, 0, 0, 1),
+    background-color 0.2s cubic-bezier(0.2, 0, 0, 1),
+    color 0.2s cubic-bezier(0.2, 0, 0, 1);
 }
 
-.btn-ghost:hover {
-  background: color-mix(in srgb, var(--color-accent) 14%, transparent);
+/* the M3 state layer */
+:is(.btn, .btn-tonal, .btn-outlined, .btn-ghost, .m3-btn)::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: currentColor;
+  opacity: 0;
+  transition: opacity 0.15s cubic-bezier(0.2, 0, 0, 1);
+  pointer-events: none;
+}
+:is(.btn, .btn-tonal, .btn-outlined, .btn-ghost, .m3-btn):hover::after {
+  opacity: 0.08;
+}
+:is(.btn, .btn-tonal, .btn-outlined, .btn-ghost, .m3-btn):focus-visible::after {
+  opacity: 0.1;
+}
+:is(.btn, .btn-tonal, .btn-outlined, .btn-ghost, .m3-btn):active::after {
+  opacity: 0.1;
+}
+
+/* filled - the primary action */
+.btn {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+.btn:hover {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+.btn:active {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* tonal - secondary action */
+.btn-tonal {
+  background: color-mix(in srgb, var(--color-accent) 26%, var(--color-dark));
+  color: var(--color-accent);
+  box-shadow: none;
+}
+.btn-tonal:hover {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* outlined */
+.btn-outlined {
+  border: 1px solid color-mix(in srgb, var(--color-accent) 60%, transparent);
   color: var(--color-accent);
 }
 
-/* ---- Gaussian blur surfaces (site-wide) ---- */
+/* text / ghost */
+.btn-ghost {
+  color: var(--color-muted);
+}
+.btn-ghost:hover,
+.btn-ghost:focus-visible {
+  color: var(--color-accent);
+}
+
+/* Island nav buttons: compact M3 tonal pills, selected = filled */
+.m3-btn {
+  padding: 0.4rem 0.95rem;
+  font-size: 0.8125rem;
+  background: color-mix(in srgb, var(--color-accent) 12%, transparent);
+}
+
+.m3-btn--active,
+.m3-btn[aria-current='page'] {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  box-shadow: 0 2px 12px color-mix(in srgb, var(--color-accent) 30%, transparent);
+}
+
+/* pressed ripple (M3) - element injected on pointerdown */
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  transform: scale(0);
+  background: currentColor;
+  opacity: 0.18;
+  pointer-events: none;
+  animation: m3-ripple 0.5s cubic-bezier(0.2, 0, 0, 1) forwards;
+}
+@keyframes m3-ripple {
+  to {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+
+/* ---- Reading progress rail (top of viewport) ---- */
+.read-rail {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 60;
+  display: flex;
+  gap: 1px;
+  height: 6px;
+  padding: 0 2px;
+  pointer-events: none;
+  /* Hidden at rest; only shown while the page is actually scrolling. */
+  opacity: 0;
+  transform: translateY(-2px);
+  transition: opacity 0.28s ease-out, transform 0.28s ease-out;
+}
+.read-rail.is-scrolling {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.read-cell {
+  flex: 1 1 0;
+  min-width: 1px;
+  border-radius: 1px;
+  background: color-mix(in srgb, var(--color-light) 14%, transparent);
+  transition: background-color 0.12s linear, box-shadow 0.12s linear;
+}
+
+.read-cell[data-on="true"] {
+  background: var(--color-accent);
+  box-shadow: 0 0 6px color-mix(in srgb, var(--color-accent) 60%, transparent);
+}
+
+/* Vertical scrollbar is hidden; the rail is the scroll indicator. */
+html {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
 .glass {
   background: color-mix(in srgb, var(--color-dark) 72%, transparent);
-  backdrop-filter: blur(14px) saturate(150%);
-  -webkit-backdrop-filter: blur(14px) saturate(150%);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
 }
 
 .glass-soft {
   background: color-mix(in srgb, var(--color-dark-light) 58%, transparent);
-  backdrop-filter: blur(10px) saturate(140%);
-  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
 }
 
 .glass-strong {
   background: color-mix(in srgb, var(--color-dark) 55%, transparent);
-  backdrop-filter: blur(28px) saturate(180%) brightness(1.15);
-  -webkit-backdrop-filter: blur(28px) saturate(180%) brightness(1.15);
+  backdrop-filter: blur(44px) saturate(180%) brightness(1.15);
+  -webkit-backdrop-filter: blur(44px) saturate(180%) brightness(1.15);
 }
 
 /*
@@ -291,36 +436,19 @@ body {
  */
 .glass-card {
   background: color-mix(in srgb, var(--color-dark-light) 62%, transparent);
-  backdrop-filter: blur(26px) saturate(160%);
-  -webkit-backdrop-filter: blur(26px) saturate(160%);
+  backdrop-filter: blur(36px) saturate(160%);
+  -webkit-backdrop-filter: blur(36px) saturate(160%);
 }
 
-/* ---- Material-style small buttons (island nav) ---- */
-.m3-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.4rem 0.95rem;
-  font-size: 0.8125rem;
-  font-weight: 500;
-  text-decoration: none;
-  cursor: pointer;
-  border: none;
-  color: var(--color-accent);
-  background: color-mix(in srgb, var(--color-accent) 12%, transparent);
-  transition: background 0.25s ease-out, color 0.25s ease-out, box-shadow 0.25s ease-out;
-}
-
-.m3-btn:hover {
-  background: color-mix(in srgb, var(--color-accent) 22%, transparent);
-  box-shadow: 0 2px 10px color-mix(in srgb, var(--color-accent) 18%, transparent);
-}
-
-.m3-btn--active,
-.m3-btn[aria-current="page"] {
-  background: var(--color-accent);
-  color: var(--color-on-accent);
-  box-shadow: 0 2px 12px color-mix(in srgb, var(--color-accent) 30%, transparent);
+/*
+ * Reader panel: a heavy-blur rectangle that wraps a long text column on
+ * blog posts. It sits over the sphere + rain and blurs them hard enough
+ * that body copy stays comfortable, without hiding them entirely.
+ */
+.glass-reader {
+  background: color-mix(in srgb, var(--color-dark) 84%, transparent);
+  backdrop-filter: blur(52px) saturate(130%);
+  -webkit-backdrop-filter: blur(52px) saturate(130%);
 }
 
 /* ---- Material-style inputs ---- */
@@ -333,6 +461,7 @@ body {
   color: var(--color-light);
   background: color-mix(in srgb, var(--color-dark-light) 62%, transparent);
   border: 1.5px solid color-mix(in srgb, var(--color-accent) 30%, transparent);
+  border-radius: var(--radius-field);
   outline: none;
   transition: border-color 0.25s ease-out, box-shadow 0.25s ease-out;
   font-family: inherit;

@@ -4,6 +4,7 @@ import Footer from '../components/Footer.astro';
 import ParticleSphere from '../components/ParticleSphere';
 import MatrixRain from '../components/MatrixRain';
 import RocketCursor from '../components/RocketCursor';
+import ReadProgress from '../components/ReadProgress';
 import { ClientRouter } from 'astro:transitions';
 import '../styles/global.css';
 interface Props {
@@ -55,10 +56,42 @@ const {
       <ParticleSphere client:visible peak={0.25} />
     </div>
     <RocketCursor client:load />
+    <ReadProgress client:load />
     <Header />
     <main class="w-full">
       <slot />
     </main>
     <Footer />
+    <script is:inline>
+      /*
+       * Material-You ripple. A pointer-down spawns a scaling span inside the
+       * pressed button. Guarded so the listener is only ever registered once,
+       * even across view-transition navigations.
+       */
+      if (!window.__wobRipple) {
+        window.__wobRipple = true;
+        var M3 = '.btn, .btn-tonal, .btn-outlined, .btn-ghost, .m3-btn';
+        document.addEventListener(
+          'pointerdown',
+          function (e) {
+            var el = e.target && e.target.closest ? e.target.closest(M3) : null;
+            if (!el) return;
+            var r = el.getBoundingClientRect();
+            var d = Math.max(r.width, r.height) * 1.4;
+            var s = document.createElement('span');
+            s.className = 'ripple';
+            s.style.width = d + 'px';
+            s.style.height = d + 'px';
+            s.style.left = e.clientX - r.left - d / 2 + 'px';
+            s.style.top = e.clientY - r.top - d / 2 + 'px';
+            el.appendChild(s);
+            s.addEventListener('animationend', function () {
+              s.remove();
+            });
+          },
+          { passive: true }
+        );
+      }
+    </script>
   </body>
 </html>

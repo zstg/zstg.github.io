@@ -155,9 +155,9 @@ export default function DynamicIsland(props: { currentPath: string }) {
         class="overflow-hidden"
         style={{
           background: 'color-mix(in srgb, var(--color-dark) 88%, var(--color-accent))',
-          'backdrop-filter': 'blur(22px) saturate(160%)',
-          '-webkit-backdrop-filter': 'blur(22px) saturate(160%)',
-          'border-radius': '12px',
+          'backdrop-filter': 'blur(30px) saturate(160%)',
+          '-webkit-backdrop-filter': 'blur(30px) saturate(160%)',
+          'border-radius': 'var(--radius-surface)',
           // width is driven by the children: pill when condensed, 20rem when open
           'transition-property': 'width',
           'transition-duration': '320ms',
@@ -183,7 +183,6 @@ export default function DynamicIsland(props: { currentPath: string }) {
           aria-label={open() ? 'Collapse header' : 'Expand header'}
           class="m3-btn m-1 font-medium transition-all duration-300 flex justify-center items-center gap-2 w-full"
           style={{
-            'border-radius': '10px',
             background: open()
               ? 'color-mix(in srgb, var(--color-accent) 16%, transparent)'
               : 'var(--color-accent)',
@@ -230,7 +229,6 @@ export default function DynamicIsland(props: { currentPath: string }) {
                         class={
                           'm3-btn' + (isActive(props.currentPath, href) ? ' m3-btn--active' : '')
                         }
-                        style={{ 'border-radius': '10px' }}
                       >
                         {label}
                       </a>
@@ -249,7 +247,6 @@ export default function DynamicIsland(props: { currentPath: string }) {
                 value={current()}
                 onChange={onSelect}
                 class="m3-select w-full text-sm"
-                style={{ 'border-radius': '10px' }}
               >
                 <For each={THEMES}>{(t) => <option value={t.id}>{t.name}</option>}</For>
                 <option value="custom">Custom…</option>
@@ -304,7 +301,6 @@ export default function DynamicIsland(props: { currentPath: string }) {
                     placeholder="#75eb70 or #75eb7000"
                     class="m3-input min-w-0 flex-1 text-sm"
                     style={{
-                      'border-radius': '10px',
                       'border-color': rgbaValid()
                         ? 'color-mix(in srgb, var(--color-accent) 35%, transparent)'
                         : '#e05561',

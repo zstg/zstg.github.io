@@ -31,11 +31,24 @@ interface Props {
 const SIZE_PROP = '--particle-size';
 const DEFAULT_SIZE = 0.052;
 const DEFAULT_PEAK = 0.25;
+/*
+ * Extra brightness applied at the very top of the page, faded out as the
+ * page is scrolled. The sphere reads a little brighter on first paint and
+ * settles back to its normal level once content starts sharing the screen.
+ * Configure with `--sphere-bright-boost` (0 = no boost, current behaviour).
+ */
+const BRIGHT_PROP = '--sphere-bright-boost';
+const DEFAULT_BOOST = 0.5;
 
 function resolveSize(p: Props): number {
   const css = parseFloat(getComputedStyle(document.documentElement).getPropertyValue(SIZE_PROP));
   const v = p.size ?? (Number.isFinite(css) && css > 0 ? css : DEFAULT_SIZE);
   return v > 0 ? v : DEFAULT_SIZE;
+}
+
+function resolveBoost(): number {
+  const css = parseFloat(getComputedStyle(document.documentElement).getPropertyValue(BRIGHT_PROP));
+  return Number.isFinite(css) ? Math.max(0, css) : DEFAULT_BOOST;
 }
 
 function resolvePeak(p: Props): number {
@@ -52,6 +65,7 @@ export default function ParticleSphere(props: Props) {
     const R1 = 4.5; // expanded radius
     const baseSize = resolveSize(props);
     const peak = resolvePeak(props);
+    const boost = resolveBoost();
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(52, 1, 0.1, 100);
@@ -172,6 +186,10 @@ export default function ParticleSphere(props: Props) {
     // So the sphere swells while you scroll down, then sinks back to its
     // resting size once you keep going (and again if you scroll back up).
     let scrolled = 0;
+    // Monotonic 0..1 brightness decay: 1 at the very top, 0 by the expansion
+    // peak. Unlike `scrolled` it never climbs back, so the sphere does not
+    // re-brighten at the bottom of the page.
+    let brightTarget = 1 + boost;
     let ticking = false;
     function readScroll() {
       if (ticking) return;
@@ -181,10 +199,12 @@ export default function ParticleSphere(props: Props) {
         const doc = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
         // total scrollable distance
         const total = doc;
-        const climb = Math.min(1, (y / total) / peak);
+        const frac = y / total;
+        const climb = Math.min(1, frac / peak);
         // once past the peak point, run back down to 0
-        const down = Math.max(0, 1 - (y / total - peak) / (1 - peak || 1));
+        const down = Math.max(0, 1 - (frac - peak) / (1 - peak || 1));
         scrolled = Math.min(1, Math.max(0, Math.min(climb, down)));
+        brightTarget = 1 + boost * (1 - climb);
         ticking = false;
       });
     }
@@ -195,6 +215,7 @@ export default function ParticleSphere(props: Props) {
     // ---- loop ----
     const target = () => scrolled;
     let p = scrolled;
+    let bright = brightTarget; // start at the boosted level (first paint)
     let raf = 0;
     let frames = 0;
     const clock = new THREE.Clock();
@@ -227,8 +248,11 @@ export default function ParticleSphere(props: Props) {
       geom.attributes.position.needsUpdate = true;
 
       // size/opacity: stay subtle so text over the cloud stays readable
+      bright += (brightTarget - bright) * Math.min(1, dt * 3);
       mat.size = baseSize * (0.9 + 0.5 * p);
-      mat.opacity = 0.5 + 0.28 * p;
+      // `bright` is >1 only near the top of the page, so the sphere opens a
+      // little brighter and settles back to its normal level as you scroll.
+      mat.opacity = Math.min(1, (0.5 + 0.28 * p) * bright);
 
       // smooth pointer tilt
       px += (tx - px) * Math.min(1, dt * 3);

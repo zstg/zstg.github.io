@@ -167,7 +167,11 @@ export default function Homepage() {
           style={{
             opacity: miscOpacity(),
             transform: miscTransform(),
-            transition: 'opacity 300ms ease-out, transform 300ms ease-out',
+            // NO transform transition here: this transform is rewritten every
+            // scroll frame to cancel the sticky unpin drift. Easing it makes
+            // the rendered position lag the true one, which reads as jitter.
+            // Opacity is still eased.
+            transition: 'opacity 300ms ease-out',
             'pointer-events': miscOpacity() < 0.1 ? 'none' : 'auto',
           }}
         >

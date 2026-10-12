@@ -13,7 +13,7 @@ interface Pt {
   y: number;
 }
 
-export default function RocketCursor(props: { size?: number }) {
+export default function RocketCursor(props: { size?: number; idleFlame?: number }) {
   let canvas!: HTMLCanvasElement;
   let raf = 0;
 
@@ -28,6 +28,18 @@ export default function RocketCursor(props: { size?: number }) {
     );
     const SIZE =
       props.size ?? (Number.isFinite(cssSize) && cssSize > 0 ? cssSize : 1);
+
+    /*
+     * Idle flame floor (0..1). The plume never fully goes out: at rest the
+     * engine keeps this fraction of thrust, so the rocket always has a small
+     * flame instead of a dead tail. Configure with `--rocket-idle-flame` in
+     * CSS, or the `idleFlame` prop.
+     */
+    const cssIdle = parseFloat(
+      getComputedStyle(document.documentElement).getPropertyValue('--rocket-idle-flame')
+    );
+    const IDLE =
+      props.idleFlame ?? (Number.isFinite(cssIdle) ? Math.min(1, Math.max(0, cssIdle)) : 0.22);
 
     let W = 0;
     let H = 0;
@@ -160,9 +172,10 @@ export default function RocketCursor(props: { size?: number }) {
       const s = SIZE;
       const [fr, fg, fb] = flame;
 
-      // accent-tinted flame at the tail, scaled by thrust
-      const thrust = Math.min(1, speed / 16);
-      if (thrust > 0.04) {
+      // accent-tinted flame at the tail. Never drops to zero - the idle
+      // floor keeps a small plume burning while the cursor is at rest.
+      const thrust = IDLE + (1 - IDLE) * Math.min(1, speed / 16);
+      if (thrust > 0.02) {
         const flick = 0.72 + Math.random() * 0.4;
         const len = (7 + 10 * thrust) * flick * s;
         const g = ctx.createLinearGradient(0, 7 * s, 0, (7 * s + len));

@@ -16,7 +16,8 @@ const { Content } = await render(post);
 ---
 
 <BaseLayout title={`${post.data.title} — zstg`}>
-  <article class="max-w-3xl mx-auto px-6 pt-24 pb-20 relative z-10">
+  <article class="max-w-3xl mx-auto px-4 sm:px-6 pt-24 pb-20 relative z-10">
+    <div class="glass-reader border border-white/10 rounded-xl p-6 sm:p-10">
     <header class="mb-10">
       <h1 class="text-3xl md:text-4xl font-bold text-light">{post.data.title}</h1>
       <div class="flex items-center gap-3 mt-3 text-sm text-muted">
@@ -61,6 +62,7 @@ const { Content } = await render(post);
 
     <div class="mt-12 pt-8 border-t border-white/10">
       <MastodonComments client:load toot={post.data.toot} />
+    </div>
     </div>
   </article>
 </BaseLayout>
