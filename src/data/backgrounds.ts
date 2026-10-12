@@ -17,8 +17,10 @@ export const BACKGROUNDS: BackgroundOption[] = [
   { id: 'dots', name: 'Dot matrix', hint: 'lights up behind the cursor' },
   { id: 'honeycomb', name: 'Honeycomb', hint: 'drifting hex lattice' },
   { id: 'circuit', name: 'Circuit tracing', hint: 'pulses along PCB traces' },
-  { id: 'contour', name: 'Contour lines', hint: 'topographic bands' },
-  { id: 'mesh', name: 'Mesh gradient', hint: 'slow colour bleed' },
+  { id: 'radiant', name: 'Radiant dots', hint: 'rings rippling from the cursor' },
+  { id: 'shapes', name: 'Shape morph', hint: 'drifting M3 shapes' },
+  { id: 'stream', name: 'Data stream', hint: 'flickering blocks' },
+  { id: 'nodes', name: 'Constellation', hint: 'linked drifting nodes' },
   { id: 'none', name: 'None', hint: 'just the sphere' },
 ];
 

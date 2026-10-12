@@ -1,10 +1,12 @@
 import { createSignal, onMount, onCleanup, Switch, Match } from 'solid-js';
 import MatrixRain from './MatrixRain';
 import DotMatrix from './fx/DotMatrix';
+import RadiantDotMatrix from './fx/RadiantDotMatrix';
+import ShapeMorph from './fx/ShapeMorph';
+import DataStream from './fx/DataStream';
+import Constellation from './fx/Constellation';
 import Honeycomb from './fx/Honeycomb';
 import CircuitTrace from './fx/CircuitTrace';
-import ContourLines from './fx/ContourLines';
-import MeshGradient from './fx/MeshGradient';
 import { loadBackground, BG_CHANGE_EVENT, DEFAULT_BACKGROUND } from '../data/backgrounds';
 
 /**
@@ -45,11 +47,17 @@ export default function BackgroundFX() {
       <Match when={id() === 'circuit'}>
         <CircuitTrace />
       </Match>
-      <Match when={id() === 'contour'}>
-        <ContourLines />
+      <Match when={id() === 'radiant'}>
+        <RadiantDotMatrix />
       </Match>
-      <Match when={id() === 'mesh'}>
-        <MeshGradient />
+      <Match when={id() === 'shapes'}>
+        <ShapeMorph />
+      </Match>
+      <Match when={id() === 'stream'}>
+        <DataStream />
+      </Match>
+      <Match when={id() === 'nodes'}>
+        <Constellation />
       </Match>
     </Switch>
   );

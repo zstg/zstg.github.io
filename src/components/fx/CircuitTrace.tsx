@@ -10,15 +10,9 @@ import { readAccent, hsl, onThemeChange } from '../../lib/theme-colors';
  * are dim accent; pulses are near-white accent, which reads as energised.
  */
 
-/** Small deterministic PRNG so the board looks the same across resizes. */
-function mulberry32(seed: number) {
-  return function () {
-    seed |= 0;
-    seed = (seed + 0x6d2b79f5) | 0;
-    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
+/** Random per generation, so the board is different every time it is built. */
+function rnd() {
+  return Math.random();
 }
 
 interface Trace {
@@ -33,8 +27,8 @@ export default function CircuitTrace(props: { traces?: number }) {
 
   onMount(() => {
     const ctx = canvas.getContext('2d')!;
-    const COUNT = props.traces ?? 16;
-    const GRID = 26;
+    const COUNT = props.traces ?? 64;
+    const GRID = 22;
 
     let W = 0,
       H = 0;
@@ -46,22 +40,24 @@ export default function CircuitTrace(props: { traces?: number }) {
     let traces: Trace[] = [];
 
     function generate() {
-      const rnd = mulberry32(0x5eed);
       traces = [];
-      const cols = Math.ceil(W / GRID) + 2;
-      const rows = Math.ceil(H / GRID) + 2;
+      // oversample the start points so the board covers the viewport evenly
+      // rather than clumping; every trace still starts somewhere random.
+      const cols = Math.ceil(W / GRID) + 4;
+      const rows = Math.ceil(H / GRID) + 4;
       for (let n = 0; n < COUNT; n++) {
-        let ci = Math.floor(rnd() * cols);
-        let ri = Math.floor(rnd() * rows);
+        const ci = Math.floor(rnd() * cols);
+        const ri = Math.floor(rnd() * rows);
         let x = ci * GRID;
         let y = ri * GRID;
         const pts = [{ x, y }];
         let len = 0;
-        const segs = 3 + Math.floor(rnd() * 5);
+        // mix of long runs and short stubs -> reads as a real board
+        const segs = 2 + Math.floor(rnd() * 7);
         for (let s = 0; s < segs; s++) {
           const horiz = rnd() < 0.5;
           const dir = rnd() < 0.5 ? -1 : 1;
-          const steps = 2 + Math.floor(rnd() * 6);
+          const steps = 1 + Math.floor(rnd() * 7);
           if (horiz) x += dir * GRID * steps;
           else y += dir * GRID * steps;
           pts.push({ x, y });

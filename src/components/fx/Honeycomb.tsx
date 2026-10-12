@@ -33,16 +33,20 @@ export default function Honeycomb(props: { cell?: number }) {
     resize();
     window.addEventListener('resize', resize);
 
-    // cells lit up, chosen once per resize so the pattern stays stable
-    let lit = new Set<string>();
-    function seed() {
-      lit = new Set();
-      const cols = Math.ceil(W / w) + 2;
-      const rows = Math.ceil(H / h) + 2;
-      for (let j = 0; j < rows; j++)
-        for (let i = 0; i < cols; i++) if (Math.random() < 0.09) lit.add(i + ':' + j);
-    }
-    seed();
+    /*
+     * Per-cell lighting.
+     *
+     * Cells used to be lit/unlit from a Set chosen once, which froze the
+     * pattern. Now every cell derives a stable phase from its lattice
+     * coordinates via a hash, so it keeps the same identity across frames
+     * (no flicker) while breathing on its own cycle. Only a minority are
+     * bright at any moment, so the lattice reads as alive rather than
+     * uniformly lit.
+     */
+    const hash = (i: number, j: number) => {
+      const n = Math.sin(i * 127.1 + j * 311.7) * 43758.5453;
+      return n - Math.floor(n); // 0..1
+    };
 
     // bees: wander between neighbouring hex centres
     const BEES = 7;
@@ -72,34 +76,55 @@ export default function Honeycomb(props: { cell?: number }) {
       ctx.lineWidth = 1;
 
       const drift = t * 6;
-      const cols = Math.ceil(W / w) + 3;
-      const rows = Math.ceil(H / h) + 3;
       const dx = drift % w;
       const dy = (drift * 0.6) % h;
 
-      // lattice
-      ctx.strokeStyle = hsl(accent, 0.09, accent.l * 0.9);
+      // lattice: outline every hex, brightening where that cell is charged
+      const cols = Math.ceil(W / w) + 3;
+      const rows = Math.ceil(H / h) + 3;
+
+      const cellCentre = (i: number, j: number) => ({
+        x: i * w + (j % 2 === 0 ? 0 : w / 2) - dx,
+        y: j * h - dy,
+      });
+
+      /*
+       * Two passes so a cell can be brightened without redrawing the whole
+       * lattice stroke colour per cell: stroke everything dim, then fill the
+       * charged cells on top.
+       */
+      ctx.strokeStyle = hsl(accent, 0.08, accent.l * 0.9);
       for (let j = -1; j < rows; j++) {
-        const offset = j % 2 === 0 ? 0 : w / 2;
         for (let i = -1; i < cols; i++) {
-          const x = i * w + offset - dx;
-          const y = j * h - dy;
+          const { x, y } = cellCentre(i, j);
           hexPath(x, y);
           ctx.stroke();
         }
       }
 
-      // filled cells, breathing subtly
-      const pulse = 0.05 + 0.035 * (0.5 + 0.5 * Math.sin(t * 0.7));
-      ctx.fillStyle = hsl(accent, pulse);
-      for (const key of lit) {
-        const [i, j] = key.split(':').map(Number);
-        const offset = j % 2 === 0 ? 0 : w / 2;
-        const x = i * w + offset - dx;
-        const y = j * h - dy;
-        hexPath(x, y);
-        ctx.fill();
+      // charged cells, each on its own cycle
+      for (let j = -1; j < rows; j++) {
+        for (let i = -1; i < cols; i++) {
+          const r1 = hash(i, j);
+          const r2 = hash(j + 91.3, i - 17.7);
+          // ~45% of cells ever charge; the rest stay as plain outline
+          if (r1 > 0.45) continue;
+          // each cell has its own speed and offset
+          const cycle = Math.sin(t * (0.35 + r2 * 0.75) + r2 * Math.PI * 2);
+          if (cycle <= 0.15) continue;
+          const charge = Math.pow((cycle - 0.15) / 0.85, 1.7);
+
+          const { x, y } = cellCentre(i, j);
+          hexPath(x, y);
+          ctx.fillStyle = hsl(accent, 0.04 + charge * 0.24, accent.l + charge * 0.08);
+          ctx.fill();
+
+          // the outline itself lights up too
+          ctx.strokeStyle = hsl(accent, 0.06 + charge * 0.3, accent.l + charge * 0.1);
+          ctx.stroke();
+        }
       }
+      ctx.strokeStyle = hsl(accent, 0.08, accent.l * 0.9);
 
       // bees
       for (const b of bees) {
