@@ -1,6 +1,7 @@
 import { onMount, onCleanup } from 'solid-js';
 import { subscribeFx, sizeCanvas } from '../../lib/fx-ticker';
 import { readAccent, hsl, onThemeChange } from '../../lib/theme-colors';
+import { globeOpenAtDistance } from '../../lib/fx-globe';
 
 /*
  * Shape morph.
@@ -108,13 +109,27 @@ export default function ShapeMorph(props: { shapes?: number }) {
         const r = half * (1 - m * 0.94);
         const breathe = 0.5 + 0.5 * Math.sin(t * sh.speed * 0.7 + sh.phase * 1.7);
 
+        const cx = sh.x * W;
+        const cy = sh.y * H;
+        // Fade out over the sphere so the globe and hero copy stay legible.
+        // Uses the shape's NEAREST point, not its centre: these forms are up
+        // to 300px across and would otherwise reach well inside the zone
+        // while their origin sits outside it.
+        const dCentre = Math.hypot(cx - W / 2, cy - H / 2);
+        const open = globeOpenAtDistance(Math.max(0, dCentre - half * 1.45), W, H);
+        if (open <= 0.03) continue;
+
         ctx.save();
-        ctx.translate(sh.x * W, sh.y * H);
+        ctx.translate(cx, cy);
         ctx.rotate(sh.rot);
         roundedSquare(ctx, half, r);
-        ctx.fillStyle = hsl(accent, 0.03 + 0.035 * breathe, accent.l);
+        ctx.fillStyle = hsl(accent, (0.02 + 0.022 * breathe) * open, accent.l);
         ctx.fill();
-        ctx.strokeStyle = hsl(accent, 0.07 + 0.15 * breathe * sh.weight, accent.l + 0.04);
+        ctx.strokeStyle = hsl(
+          accent,
+          (0.045 + 0.085 * breathe * sh.weight) * open,
+          accent.l + 0.04
+        );
         ctx.stroke();
         ctx.restore();
       }

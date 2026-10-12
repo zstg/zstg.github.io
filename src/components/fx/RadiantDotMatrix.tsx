@@ -1,6 +1,7 @@
 import { onMount, onCleanup } from 'solid-js';
 import { subscribeFx, sizeCanvas } from '../../lib/fx-ticker';
 import { readAccent, onThemeChange } from '../../lib/theme-colors';
+import { globeOpen } from '../../lib/fx-globe';
 
 /*
  * Radiant pixel field.
@@ -31,13 +32,6 @@ const CELLS_PER_NOISE = 9;
 const CURSOR_CELLS = 7;
 const BLOOM_LIFE = 0.9;
 
-/**
- * The particle sphere owns the middle of the viewport, and that is also where
- * the hero copy sits. The field yields to it: nothing is drawn inside this
- * fraction of the short edge, then feathers back in over the next tenth.
- */
-const GLOBE_CLEAR = 0.34;
-const GLOBE_FEATHER = 0.12;
 
 function buildNoise(seed: number) {
   const size = NOISE_SIZE;
@@ -235,11 +229,6 @@ export default function RadiantDotMatrix(props: { cell?: number }) {
       )}%, 1)`;
 
       // Keep clear of the sphere (and the hero copy) in the middle.
-      const gx = W / 2;
-      const gy = H / 2;
-      const clearR = Math.min(W, H) * GLOBE_CLEAR;
-      const feather = Math.min(W, H) * GLOBE_FEATHER;
-
       for (let r = 0; r < rows; r++) {
         const y = r * CELL;
         const cy = y + CELL / 2;
@@ -247,11 +236,8 @@ export default function RadiantDotMatrix(props: { cell?: number }) {
           const x = c * CELL;
           const cx = x + CELL / 2;
 
-          // 1 outside the sphere, feathering to 0 as it approaches the centre.
-          const gdx = cx - gx;
-          const gdy = cy - gy;
-          const gd = Math.sqrt(gdx * gdx + gdy * gdy);
-          const open = gd <= clearR ? 0 : gd >= clearR + feather ? 1 : (gd - clearR) / feather;
+          // 0 inside the sphere, feathering to 1 as it clears the centre.
+          const open = globeOpen(cx, cy, W, H);
           if (open <= 0) continue;
 
           // resting field: drifting noise + a slow twinkle

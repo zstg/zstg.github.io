@@ -1,6 +1,7 @@
 import { onMount, onCleanup } from 'solid-js';
 import { subscribeFx, sizeCanvas } from '../../lib/fx-ticker';
 import { readAccent, hsl, onThemeChange } from '../../lib/theme-colors';
+import { globeOpen } from '../../lib/fx-globe';
 
 /*
  * Honeycomb.
@@ -91,12 +92,15 @@ export default function Honeycomb(props: { cell?: number }) {
       /*
        * Two passes so a cell can be brightened without redrawing the whole
        * lattice stroke colour per cell: stroke everything dim, then fill the
-       * charged cells on top.
+       * charged cells on top. Every alpha is scaled by `open` so the lattice
+       * fades out over the sphere instead of drawing through it.
        */
-      ctx.strokeStyle = hsl(accent, 0.08, accent.l * 0.9);
       for (let j = -1; j < rows; j++) {
         for (let i = -1; i < cols; i++) {
           const { x, y } = cellCentre(i, j);
+          const open = globeOpen(x, y, W, H);
+          if (open <= 0.02) continue;
+          ctx.strokeStyle = hsl(accent, 0.05 * open, accent.l * 0.9);
           hexPath(x, y);
           ctx.stroke();
         }
@@ -115,18 +119,20 @@ export default function Honeycomb(props: { cell?: number }) {
           const charge = Math.pow((cycle - 0.15) / 0.85, 1.7);
 
           const { x, y } = cellCentre(i, j);
+          const open = globeOpen(x, y, W, H);
+          if (open <= 0.02) continue;
           hexPath(x, y);
-          ctx.fillStyle = hsl(accent, 0.04 + charge * 0.24, accent.l + charge * 0.08);
+          ctx.fillStyle = hsl(accent, (0.025 + charge * 0.15) * open, accent.l + charge * 0.08);
           ctx.fill();
 
           // the outline itself lights up too
-          ctx.strokeStyle = hsl(accent, 0.06 + charge * 0.3, accent.l + charge * 0.1);
+          ctx.strokeStyle = hsl(accent, (0.04 + charge * 0.18) * open, accent.l + charge * 0.1);
           ctx.stroke();
         }
       }
-      ctx.strokeStyle = hsl(accent, 0.08, accent.l * 0.9);
+      ctx.strokeStyle = hsl(accent, 0.05, accent.l * 0.9);
 
-      // bees
+      // bees - dimmed, and they steer clear of the sphere too
       for (const b of bees) {
         b.a += b.turn * dt;
         b.x += Math.cos(b.a) * b.s * dt;
@@ -139,18 +145,20 @@ export default function Honeycomb(props: { cell?: number }) {
 
         const x = b.x * W + Math.cos(t * 1.6 + b.phase) * 6;
         const y = b.y * H + Math.sin(t * 1.3 + b.phase) * 6;
+        const open = globeOpen(x, y, W, H);
+        if (open <= 0.03) continue;
 
-        const g = ctx.createRadialGradient(x, y, 0, x, y, 11);
-        g.addColorStop(0, hsl(accent, 0.55, Math.min(1, accent.l + 0.2)));
+        const g = ctx.createRadialGradient(x, y, 0, x, y, 9);
+        g.addColorStop(0, hsl(accent, 0.34 * open, Math.min(1, accent.l + 0.16)));
         g.addColorStop(1, hsl(accent, 0));
         ctx.fillStyle = g;
         ctx.beginPath();
-        ctx.arc(x, y, 11, 0, Math.PI * 2);
+        ctx.arc(x, y, 9, 0, Math.PI * 2);
         ctx.fill();
 
-        ctx.fillStyle = hsl(accent, 0.85, Math.min(1, accent.l + 0.25));
+        ctx.fillStyle = hsl(accent, 0.6 * open, Math.min(1, accent.l + 0.2));
         ctx.beginPath();
-        ctx.arc(x, y, 1.7, 0, Math.PI * 2);
+        ctx.arc(x, y, 1.6, 0, Math.PI * 2);
         ctx.fill();
       }
     }, 30);
