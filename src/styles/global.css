@@ -492,56 +492,84 @@ body {
  * with the island's own.
  */
 .island {
-  /* At rest: genuinely transparent heavy-blur glass, outlined in the accent. */
+  /*
+   * Two colours only: transparent and the accent. No border - the heavy blur
+   * is what separates the island from the page, not an outline.
+   */
   background: transparent;
-  border: 1px solid color-mix(in srgb, var(--color-accent) 60%, transparent);
+  border: 0;
   border-radius: var(--radius-btn);
   backdrop-filter: blur(34px) saturate(170%);
   -webkit-backdrop-filter: blur(34px) saturate(170%);
   transition:
+    width var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard),
     background-color var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard),
-    border-color var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard),
-    box-shadow var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard),
     color var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard);
 }
 
-/*
- * On hover the border is removed and the accent takes over as the FOREGROUND
- * (Control Centre style): nothing fills in, the contents simply switch to the
- * accent colour, with a soft accent glow standing in for the lost outline.
- */
 .island:hover {
-  background: transparent;
-  border-color: transparent;
-  box-shadow: 0 6px 30px color-mix(in srgb, var(--color-accent) 22%, transparent);
   animation: island-jiggle 0.5s var(--md-sys-motion-easing-standard);
 }
 
-/* accent becomes the foreground for everything inside the island */
-.island:hover :is(.m3-btn, .m3-input, .m3-select) {
-  color: var(--color-accent);
+/*
+ * Everything inside is accent-on-transparent at rest. These selectors carry
+ * two classes so they beat the shared single-class button rules.
+ */
+.island :is(.m3-btn, .m3-input, .m3-select),
+.island :is(.m3-btn, .m3-input, .m3-select) > * {
   background: transparent;
-}
-.island:hover .m3-btn--active,
-.island:hover .m3-btn[aria-current='page'] {
-  /* keep the current page readable once its filled pill is gone */
-  background: color-mix(in srgb, var(--color-accent) 16%, transparent);
   color: var(--color-accent);
+  border-color: transparent;
 }
-.island:hover .m3-select {
-  border-color: color-mix(in srgb, var(--color-accent) 45%, transparent);
-  box-shadow: none;
+.island :is(.m3-input, .m3-select) {
+  /* still the accent, just a lighter touch of it */
+  border-color: color-mix(in srgb, var(--color-accent) 40%, transparent);
 }
 
-/* The collapsed island IS the toggle: transparent at rest, label in the normal
-   foreground tone, flipping to the accent on hover (above). */
-.island-toggle[data-open='false'] {
-  background: transparent;
-  color: var(--color-light);
+/*
+ * Hover (and the current-page item) invert: the accent becomes the
+ * background and the label is knocked out to transparent. Same two colours,
+ * swapped - the Material control-centre behaviour.
+ */
+.island :is(.m3-btn, .m3-input, .m3-select):hover,
+.island .m3-btn--active,
+.island .m3-btn[aria-current='page'] {
+  background: var(--color-accent);
+  color: transparent;
+  border-color: var(--color-accent);
+  animation: island-jump 340ms var(--md-sys-motion-easing-standard);
+}
+
+/* the panel sizes itself; the container width is measured and animated */
+.island-panel {
+  transition: opacity var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard);
+}
+.island-inner {
+  width: max-content;
+  max-width: min(26rem, 88vw);
 }
 .island-toggle[data-open='true'] {
-  color : transparent;
-  background: var(--color-on-accent);
+  color : var(--color-accent);
+  background: transparent;
+}
+
+/*
+ * The mild hop an element makes when it swaps foreground and background.
+ * Kept small and quick so it reads as a nudge rather than a bounce.
+ */
+@keyframes island-jump {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  35% {
+    transform: translateY(-2px) scale(1.05);
+  }
+  70% {
+    transform: translateY(0.5px) scale(0.99);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
 }
 
 @keyframes island-jiggle {

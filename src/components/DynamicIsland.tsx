@@ -1,4 +1,4 @@
-import { createSignal, onMount, onCleanup, Show, For } from 'solid-js';
+import { createSignal, createEffect, onMount, onCleanup, Show, For } from 'solid-js';
 import { THEMES, loadStoredTheme, applyTheme, parseColor, toCss } from '../data/themes';
 import { syncM3Scheme } from '../lib/m3-scheme';
 import { BACKGROUNDS, loadBackground, saveBackground } from '../data/backgrounds';
@@ -33,8 +33,12 @@ export default function DynamicIsland(props: { currentPath: string }) {
   const [background, setBackground] = createSignal(loadBackground());
 
   let root!: HTMLDivElement;
+  let islandEl!: HTMLDivElement;
+  let panelEl!: HTMLDivElement;
   let toggleBtn!: HTMLButtonElement;
   let strip!: HTMLDivElement;
+  let closedW = 0;
+  let openW = 0;
   let closeTimer: number | undefined;
   const canHover = () =>
     typeof window !== 'undefined' && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
@@ -149,9 +153,14 @@ export default function DynamicIsland(props: { currentPath: string }) {
     }
     document.addEventListener('click', onDocClick);
     document.addEventListener('keydown', onKey);
+    // The island's natural width depends on the font and the viewport, so
+    // re-measure rather than trusting a width captured at mount.
+    window.addEventListener('resize', measure);
+    measure();
     onCleanup(() => {
       document.removeEventListener('click', onDocClick);
       document.removeEventListener('keydown', onKey);
+      window.removeEventListener('resize', measure);
       clearTimer();
     });
   });
@@ -161,16 +170,51 @@ export default function DynamicIsland(props: { currentPath: string }) {
     return p ? p.a : 1;
   };
 
+  /*
+   * Horizontal expansion.
+   *
+   * The panel used to carry a fixed width, which pinned the container to that
+   * width whether it was open or not - so it could only ever unfold
+   * vertically, like a scroll. Now the panel sizes itself (`island-inner` is
+   * `width: max-content`) and we measure the two natural widths: the pill on
+   * its own, and the pill plus its full panel. The container animates between
+   * them, so it grows in both axes and refits itself whenever the content
+   * changes (nav wraps, a custom-colour field appears, the viewport resizes).
+   */
+  function applyWidth() {
+    if (!islandEl || !closedW || !openW) return;
+    islandEl.style.width = `${open() ? openW : closedW}px`;
+  }
+
+  function measure() {
+    if (!islandEl || !panelEl) return;
+    const prevTransition = islandEl.style.transition;
+    const prevWidth = islandEl.style.width;
+    // Measure at the content's natural width, with transitions off so the
+    // reads are the real values rather than mid-animation ones.
+    islandEl.style.transition = 'none';
+    islandEl.style.width = 'max-content';
+    panelEl.style.display = 'none';
+    closedW = islandEl.offsetWidth;
+    panelEl.style.display = '';
+    openW = islandEl.offsetWidth;
+    islandEl.style.transition = prevTransition;
+    islandEl.style.width = prevWidth;
+    applyWidth();
+  }
+
+  createEffect(() => {
+    // re-run whenever the island opens, so a resize lands on the right width
+    open();
+    if (!closedW || !openW) measure();
+    else applyWidth();
+  });
+
   return (
     <div ref={root} class="fixed top-4 left-1/2 -translate-x-1/2 z-50">
       <div
+        ref={islandEl}
         class="island overflow-hidden"
-        style={{
-          // width is driven by the children: pill when condensed, 20rem when open
-          'transition-property': 'width',
-          'transition-duration': '320ms',
-          'transition-timing-function': 'cubic-bezier(0.2, 0, 0, 1)',
-        }}
         onPointerEnter={() => canHover() && show()}
         onPointerLeave={() => canHover() && collapseSoon()}
       >
@@ -210,17 +254,15 @@ export default function DynamicIsland(props: { currentPath: string }) {
 
         {/* expanded content */}
         <div
-          class="grid transition-all duration-300 ease-out"
+          ref={panelEl}
+          class="grid island-panel transition-all duration-300 ease-out"
           style={{
             'grid-template-rows': open() ? '1fr' : '0fr',
-            // collapse horizontally too, so the panel hugs the pill
-            width: open() ? '20rem' : '0px',
-            'max-width': 'min(20rem, 88vw)',
             opacity: open() ? 1 : 0,
           }}
         >
           <div class="overflow-hidden">
-            <div class="px-3 pb-3 w-[min(20rem,88vw)]">
+            <div class="island-inner px-3 pb-3">
               <nav aria-label="Main">
               <ul class="flex flex-wrap items-center gap-1.5">
                 <For each={NAV}>
