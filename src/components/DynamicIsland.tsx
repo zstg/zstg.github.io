@@ -161,7 +161,7 @@ export default function DynamicIsland(props: { currentPath: string }) {
           background: 'color-mix(in srgb, var(--color-dark) 88%, var(--color-accent))',
           'backdrop-filter': 'blur(30px) saturate(160%)',
           '-webkit-backdrop-filter': 'blur(30px) saturate(160%)',
-          'border-radius': 'var(--radius-surface)',
+          'border-radius': 'calc(var(--radius-btn) + 0.25rem)',
           // width is driven by the children: pill when condensed, 20rem when open
           'transition-property': 'width',
           'transition-duration': '320ms',

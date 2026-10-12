@@ -426,23 +426,31 @@ body {
 }
 
 /*
- * Island nav items. M3 navigation: the selected item gets a tonal
- * indicator container, the rest are labels with a state layer.
+ * Island nav items.
+ *
+ * Colours use the theme accent itself rather than the M3 muted / container
+ * roles - those sit several tones darker and read as a different colour to
+ * the accent used everywhere else (sphere, rain, buttons). Selected = filled
+ * accent, which matches the collapsed pill.
+ *
+ * Shape: the toggle sits inset by 4px inside the island, so the island's own
+ * radius is `button radius + inset` (set inline in DynamicIsland). That keeps
+ * the two corner arcs concentric instead of clipping each other unevenly.
  */
 .m3-btn {
   min-height: 2rem; /* compact */
   padding: 0.4rem 0.95rem;
   font-size: 0.8125rem;
-  color: var(--md-sys-color-on-surface-variant);
+  color: var(--color-accent);
   background: transparent;
 }
 .m3-btn:hover {
-  color: var(--md-sys-color-on-surface);
+  background: color-mix(in srgb, var(--color-accent) 14%, transparent);
 }
 .m3-btn--active,
 .m3-btn[aria-current='page'] {
-  background: var(--md-sys-color-secondary-container);
-  color: var(--md-sys-color-on-secondary-container);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
 }
 
 /* pressed ripple (M3) - element injected on pointerdown */
