@@ -139,7 +139,7 @@ export default function Homepage() {
           </p>
           <div class="flex items-center gap-4 mt-8 text-base animate-[fade-in_1s_ease-out_0.6s_both] pointer-events-auto">
             <a href="/blog" class="btn">/blog</a>
-            <a href="/about" class="btn-ghost">/about</a>
+            <a href="/about" class="btn-outlined">/about</a>
           </div>
           </div>
         </div>
