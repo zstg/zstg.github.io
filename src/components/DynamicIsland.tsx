@@ -40,19 +40,44 @@ export default function DynamicIsland(props: { currentPath: string }) {
   let closedW = 0;
   let openW = 0;
   let closeTimer: number | undefined;
+  let openTimer: number | undefined;
   const canHover = () =>
     typeof window !== 'undefined' && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  /*
+   * How long the pointer must rest on the island before it opens.
+   *
+   * Hovering is a weak signal - people sweep the cursor across the top of the
+   * page on their way somewhere else - so opening waits. A click is a
+   * deliberate instruction and skips the wait entirely via showNow().
+   */
+  const OPEN_DELAY = 500;
 
   function clearTimer() {
     if (closeTimer !== undefined) {
       window.clearTimeout(closeTimer);
       closeTimer = undefined;
     }
+    if (openTimer !== undefined) {
+      window.clearTimeout(openTimer);
+      openTimer = undefined;
+    }
   }
 
-  function show() {
+  /** Open immediately - used when the island is clicked and pinned. */
+  function showNow() {
     clearTimer();
     setOpen(true);
+  }
+
+  /** Open once the pointer has lingered for OPEN_DELAY. */
+  function show() {
+    clearTimer();
+    if (open()) return; // already open: don't restart the countdown
+    openTimer = window.setTimeout(() => {
+      openTimer = undefined;
+      setOpen(true);
+    }, OPEN_DELAY);
   }
 
   function hide() {
@@ -228,7 +253,9 @@ export default function DynamicIsland(props: { currentPath: string }) {
               hide();
             } else {
               setPinned(true);
-              show();
+              // a click is an explicit request, so it opens without the
+              // hover dwell
+              showNow();
             }
           }}
           aria-expanded={open()}
