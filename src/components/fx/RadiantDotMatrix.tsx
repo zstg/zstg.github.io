@@ -26,8 +26,18 @@ const BAYER = [
 
 const NOISE_SIZE = 128;
 const CELLS_PER_NOISE = 9;
-const CURSOR_CELLS = 13;
+/** Cursor reach, in cells. Deliberately tight: the highlight should hug the
+ *  rocket rather than flood a third of the screen. */
+const CURSOR_CELLS = 7;
 const BLOOM_LIFE = 0.9;
+
+/**
+ * The particle sphere owns the middle of the viewport, and that is also where
+ * the hero copy sits. The field yields to it: nothing is drawn inside this
+ * fraction of the short edge, then feathers back in over the next tenth.
+ */
+const GLOBE_CLEAR = 0.34;
+const GLOBE_FEATHER = 0.12;
 
 function buildNoise(seed: number) {
   const size = NOISE_SIZE;
@@ -215,17 +225,20 @@ export default function RadiantDotMatrix(props: { cell?: number }) {
         return { x: b.x, y: b.y, r, amp: Math.pow(1 - age, 1.7) };
       });
 
-      // Ink ramp derived from the accent: ember -> lit -> crest.
-      const dim = `hsl(${accent.h}, ${Math.round(accent.s * 100)}%, 30%, 1)`;
+      // Ink ramp derived from the accent: ember -> lit.
+      const dim = `hsl(${accent.h}, ${Math.round(accent.s * 100)}%, 26%, 1)`;
       const mid = `hsl(${accent.h}, ${Math.round(accent.s * 100)}%, ${Math.round(
         accent.l * 100
       )}%, 1)`;
       const lit = `hsl(${accent.h}, ${Math.round(accent.s * 100)}%, ${Math.round(
-        Math.min(0.9, accent.l + 0.16) * 100
+        Math.min(0.88, accent.l + 0.14) * 100
       )}%, 1)`;
-      const crest = `hsl(${accent.h}, ${Math.round(accent.s * 100)}%, ${Math.round(
-        Math.min(0.97, accent.l + 0.33) * 100
-      )}%, 1)`;
+
+      // Keep clear of the sphere (and the hero copy) in the middle.
+      const gx = W / 2;
+      const gy = H / 2;
+      const clearR = Math.min(W, H) * GLOBE_CLEAR;
+      const feather = Math.min(W, H) * GLOBE_FEATHER;
 
       for (let r = 0; r < rows; r++) {
         const y = r * CELL;
@@ -233,6 +246,13 @@ export default function RadiantDotMatrix(props: { cell?: number }) {
         for (let c = 0; c < cols; c++) {
           const x = c * CELL;
           const cx = x + CELL / 2;
+
+          // 1 outside the sphere, feathering to 0 as it approaches the centre.
+          const gdx = cx - gx;
+          const gdy = cy - gy;
+          const gd = Math.sqrt(gdx * gdx + gdy * gdy);
+          const open = gd <= clearR ? 0 : gd >= clearR + feather ? 1 : (gd - clearR) / feather;
+          if (open <= 0) continue;
 
           // resting field: drifting noise + a slow twinkle
           const u = c / CELLS_PER_NOISE;
@@ -290,8 +310,9 @@ export default function RadiantDotMatrix(props: { cell?: number }) {
           const pw = Math.round((x + CELL) * dpr) - px;
           const ph = Math.round((y + CELL) * dpr) - py;
           ctx.fillStyle = heat > 0.34 ? lit : heat > 0.1 ? mid : dim;
-          // fade the resting embers so they stay background, not noise
-          ctx.globalAlpha = heat > 0.1 ? 1 : 0.62;
+          // Resting embers are background texture, not content, and the
+          // field must never compete with the copy over it.
+          ctx.globalAlpha = open * (heat > 0.1 ? 0.5 + heat * 0.35 : 0.3);
           ctx.fillRect(px, py, pw, ph);
         }
       }
