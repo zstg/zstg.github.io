@@ -36,8 +36,29 @@ export default function ParallaxProjects(props: Props) {
   // continuous position in "card" units: 0 = first card centred, N-1 = last
   const [pos, setPos] = createSignal(0);
 
+  /*
+   * Dwell easing.
+   *
+   * A purely linear mapping spends the entire scroll budget moving, so each
+   * card is only centred for an instant and reads as a flicker. Instead each
+   * card gets a HOLD slice of the scroll where it sits still and centred and
+   * is fully readable, and the remainder is a smoothstep glide to the next
+   * one. The result reads as "one project at a time" rather than "a strip
+   * flying past".
+   */
+  const HOLD = 0.68; // share of each card's scroll spent parked
+  const smoothstep = (t: number) => t * t * (3 - 2 * t);
+
   createEffect(() => {
-    setPos(props.scrollProgress * (N - 1));
+    const p = Math.min(1, Math.max(0, props.scrollProgress));
+    const raw = p * (N - 1);
+    if (N <= 1) {
+      setPos(0);
+      return;
+    }
+    const seg = Math.min(N - 2, Math.floor(raw));
+    const f = raw - seg;
+    setPos(f < HOLD ? seg : seg + smoothstep((f - HOLD) / (1 - HOLD)));
   });
 
   /** Per-card transform/opacity from its distance to the current position. */
@@ -60,7 +81,8 @@ export default function ParallaxProjects(props: Props) {
     const x = d * 82; // % of the card's own width
     const y = ad * 24; // px, a slight downward drift off-centre
     const scale = 1 - Math.min(ad, 1) * 0.14;
-    const opacity = Math.max(0, 1 - ad * 1.6);
+    // Fade out over the glide only; the dwell keeps this at full opacity.
+    const opacity = Math.max(0, 1 - ad * 1.9);
 
     return {
       transform: `translate(${x}%, ${y}px) scale(${scale})`,

@@ -58,28 +58,28 @@ export default function Homepage() {
     return 1 - p / 0.8;
   };
 
-  // Projects: fades in 0.5->1, then holds fully lit until 1.9,
-  // then hands off to misc over 1.9->2.35
+  // Projects: fades in 0.5->1, then holds fully lit until 2.15,
+  // then hands off to misc over 2.15->2.6
   const projectsOpacity = () => {
     const p = scrollProgress();
     if (p < 0.5) return 0;
     if (p < 1) return (p - 0.5) * 2;
-    if (p < 1.9) return 1;
-    if (p < 2.35) return 1 - (p - 1.9) * 2.22;
+    if (p < 2.15) return 1;
+    if (p < 2.6) return 1 - (p - 2.15) * (1 / 0.45);
     return 0;
   };
   const projectsTransform = () => {
     const p = scrollProgress();
-    if (p < 1.9) return 'translateY(0px)';
-    if (p < 2.35) return `translateY(${-(p - 1.9) * 110}px)`;
-    return 'translateY(-50px)';
+    if (p < 2.15) return 'translateY(0px)';
+    if (p < 2.6) return `translateY(${-(p - 2.15) * 90}px)`;
+    return 'translateY(-40px)';
   };
 
-  // Misc: only after projects are gone (2.35), in over 2.45->2.95
+  // Misc: only after projects are gone (2.6), in over 2.7->3.2
   const miscOpacity = () => {
     const p = scrollProgress();
-    if (p < 2.45) return 0;
-    if (p < 2.95) return (p - 2.45) * 2;
+    if (p < 2.7) return 0;
+    if (p < 3.2) return (p - 2.7) * 2;
     return 1;
   };
   /*
@@ -91,8 +91,8 @@ export default function Homepage() {
   const miscTransform = () => {
     const p = scrollProgress();
     let base: number;
-    if (p < 2.45) base = 50;
-    else if (p < 2.95) base = 50 - (p - 2.45) * 100;
+    if (p < 2.7) base = 50;
+    else if (p < 3.2) base = 50 - (p - 2.7) * 100;
     else base = 0;
     return `translateY(${base + unpinSlack()}px)`;
   };
@@ -100,10 +100,11 @@ export default function Homepage() {
   const parallaxProgress = () => {
     const p = scrollProgress();
     if (p < 1) return 0;
-    // Walk the projects one at a time, finishing just before the hand-off to
-    // the misc section at 1.9. This is the whole scroll budget the projects
-    // get, so each one is on screen for ~0.17 of a viewport of scrolling.
-    return Math.min(1, (p - 1) / 0.86);
+    // Walk the projects one at a time. This runs all the way to just before
+    // the hand-off at 2.15, so each of the six cards gets ~0.22 of a viewport
+    // of scrolling — ParallaxProjects then spends most of that holding the
+    // card centred rather than gliding.
+    return Math.min(1, (p - 1) / 1.1);
   };
 
   // sphere expands across the hero scroll (0 -> 0.8)
