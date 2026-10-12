@@ -2,7 +2,7 @@
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import ParticleSphere from '../components/ParticleSphere';
-import MatrixRain from '../components/MatrixRain';
+import BackgroundFX from '../components/BackgroundFX';
 import RocketCursor from '../components/RocketCursor';
 import ReadProgress from '../components/ReadProgress';
 import { ClientRouter } from 'astro:transitions';
@@ -52,7 +52,7 @@ const {
   </head>
   <body class="min-h-screen relative">
     <div class="fixed inset-0 z-0 pointer-events-none">
-      <MatrixRain client:idle />
+      <BackgroundFX client:load />
       <ParticleSphere client:visible peak={0.25} />
     </div>
     <RocketCursor client:load />

@@ -1,6 +1,7 @@
 import { createSignal, onMount, onCleanup, Show, For } from 'solid-js';
 import { THEMES, loadStoredTheme, applyTheme, parseColor, toCss } from '../data/themes';
 import { syncM3Scheme } from '../lib/m3-scheme';
+import { BACKGROUNDS, loadBackground, saveBackground } from '../data/backgrounds';
 
 const SPECTRUM =
   'linear-gradient(to right, hsl(0 85% 60%), hsl(60 85% 60%), hsl(120 85% 60%), hsl(180 85% 60%), hsl(240 85% 60%), hsl(300 85% 60%), hsl(360 85% 60%))';
@@ -29,6 +30,7 @@ export default function DynamicIsland(props: { currentPath: string }) {
   const [hue, setHue] = createSignal(222);
   const [rgbaText, setRgbaText] = createSignal('#75eb70');
   const [rgbaValid, setRgbaValid] = createSignal(true);
+  const [background, setBackground] = createSignal(loadBackground());
 
   let root!: HTMLDivElement;
   let toggleBtn!: HTMLButtonElement;
@@ -92,6 +94,12 @@ export default function DynamicIsland(props: { currentPath: string }) {
     }
     applyTheme(id);
     setCurrent(id);
+  }
+
+  function onBackgroundSelect(e: Event & { currentTarget: HTMLSelectElement }) {
+    const id = e.currentTarget.value;
+    saveBackground(id); // persists + broadcasts, so the effect swaps in place
+    setBackground(id);
   }
 
   function hueFromEvent(e: PointerEvent): number {
@@ -246,6 +254,21 @@ export default function DynamicIsland(props: { currentPath: string }) {
                 <For each={THEMES}>{(t) => <option value={t.id}>{t.name}</option>}</For>
                 <option value="custom">Custom…</option>
               </select>
+
+              <label for="wob-bg-select" class="block text-xs text-muted mt-3 mb-2">
+                Background
+              </label>
+              <select
+                id="wob-bg-select"
+                value={background()}
+                onChange={onBackgroundSelect}
+                class="m3-select w-full text-sm"
+              >
+                <For each={BACKGROUNDS}>{(b) => <option value={b.id}>{b.name}</option>}</For>
+              </select>
+              <p class="text-xs text-muted mt-1.5">
+                {BACKGROUNDS.find((b) => b.id === background())?.hint}
+              </p>
 
               <Show when={current() === 'custom'}>
                 <p class="text-xs text-muted mt-3 mb-2">Click or drag the spectrum</p>

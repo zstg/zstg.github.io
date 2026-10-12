@@ -541,7 +541,7 @@ body {
 }
 .island-toggle[data-open='true'] {
   color : transparent;
-  background: var(--color-accent);
+  background: var(--color-on-accent);
 }
 
 @keyframes island-jiggle {
