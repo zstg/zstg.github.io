@@ -2,6 +2,7 @@ import { createSignal, createEffect, onMount, onCleanup, Show, For } from 'solid
 import { THEMES, loadStoredTheme, applyTheme, parseColor, toCss } from '../data/themes';
 import { syncM3Scheme } from '../lib/m3-scheme';
 import { BACKGROUNDS, DEFAULT_BACKGROUND, loadBackground, saveBackground } from '../data/backgrounds';
+import IslandSearch from './IslandSearch';
 
 const SPECTRUM =
   'linear-gradient(to right, hsl(0 85% 60%), hsl(60 85% 60%), hsl(120 85% 60%), hsl(180 85% 60%), hsl(240 85% 60%), hsl(300 85% 60%), hsl(360 85% 60%))';
@@ -208,6 +209,17 @@ export default function DynamicIsland(props: { currentPath: string }) {
   };
 
   /*
+   * Close the island as part of navigating away. The document click listener
+   * only fires for clicks outside the island, so picking a search result (or a
+   * nav link) has to close it explicitly - otherwise it stays pinned open over
+   * the page you just landed on.
+   */
+  function closeForNavigation() {
+    setPinned(false);
+    hide();
+  }
+
+  /*
    * Horizontal expansion.
    *
    * The panel used to carry a fixed width, which pinned the container to that
@@ -302,6 +314,8 @@ export default function DynamicIsland(props: { currentPath: string }) {
         >
           <div class="overflow-hidden">
             <div class="island-inner px-3 pb-3">
+              <IslandSearch onRefit={measure} onNavigate={closeForNavigation} />
+
               <nav aria-label="Main">
               <ul class="flex flex-wrap items-center gap-1.5">
                 <For each={NAV}>

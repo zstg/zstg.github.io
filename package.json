@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && pagefind --site dist",
     "preview": "astro preview",
     "gen:m3": "node scripts/gen-m3-presets.mjs",
     "astro": "astro"
@@ -20,5 +20,8 @@
     "solid-js": "^1.9.14",
     "tailwindcss": "^4.3.3",
     "three": "^0.186.1"
+  },
+  "devDependencies": {
+    "pagefind": "^1.5.2"
   }
 }

@@ -4,6 +4,7 @@ date: 2026-10-11
 tags: ["web", "astro", "design", "notes"]
 series: "writing workflow"
 lang: "en"
+toot: https://fedia.social/notes/asa0xcjzg874o6e1
 ---
 
 Every personal site begins the same way: a burst of enthusiasm, a weekend of

@@ -58,7 +58,12 @@ const {
     <RocketCursor client:load />
     <ReadProgress client:load />
     <Header />
-    <main class="w-full">
+    <!--
+      data-pagefind-body scopes the search index to the page's content.
+      Without it Pagefind indexes the whole document, which drags the header
+      island's theme/background option lists into every excerpt.
+    -->
+    <main class="w-full" data-pagefind-body>
       <slot />
     </main>
     <Footer>

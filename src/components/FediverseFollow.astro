@@ -1,11 +1,15 @@
 ---
+import { fediverseProfileUrl, fediverseInstance, fediverseHandle } from '../data/fediverse';
+
+const profileUrl = fediverseProfileUrl();
+const label = `Follow ${fediverseHandle()} on ${fediverseInstance()}`;
 ---
 <a
-  href="https://fedia.social/@zstg"
+  href={profileUrl}
   rel="me"
   class="dock-webring-item"
-  aria-label="Follow on Mastodon"
-  title="Follow on Mastodon"
+  aria-label={label}
+  title={label}
   target="_blank"
 >
   <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14" aria-hidden="true">
