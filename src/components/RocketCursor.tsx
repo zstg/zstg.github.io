@@ -191,22 +191,23 @@ export default function RocketCursor(props: { size?: number; idleFlame?: number 
     /*
      * Hotspot.
      *
-     * The sprite's nose is at local y = -NOSE and its tail at +TAIL, so its
-     * bounding box spans -NOSE..TAIL and its middle sits at (TAIL - NOSE) / 2.
-     * The draw call shifts the sprite by the negative of that, which lands the
-     * MIDDLE of the body on the pointer.
+     * The sprite's nose sits at local y = -NOSE and its tail at +TAIL. The
+     * translate below shifts by +NOSE, which lands the NOSE TIP exactly on the
+     * pointer - and since the pointer is where clicks register, that is the
+     * focus point.
      *
-     * This used to hang the nose off the pointer instead. That reads fine on
-     * its own, but it means the pointer is ~19px from the middle of the thing
-     * the user is aiming with: clicking "on the rocket" landed behind it, the
-     * dock handle could not be aimed at reliably, and the radiant glow sat off
-     * to one side of the body instead of around it.
+     * This is what makes it behave as a cursor: the leading edge of the thing
+     * you are aiming is the thing that clicks. The alternative, centring the
+     * bounding box on the pointer, leaves the pointer ~19px behind the nose,
+     * so aiming a thin target with the *tip* misses on the side the body is
+     * hanging off - which is why the dock handle and small links were so hard
+     * to hit.
      *
-     * Note the negation: translating by (TAIL - NOSE) / 2 would shift the
-     * sprite the *wrong* way and leave the middle 3 units short of the
-     * pointer - a subtle 2px error that still reads as "slightly off".
+     * The consequence is that the whole sprite trails behind the pointer. That
+     * is correct for a cursor, and it is what the trail, the flame and the
+     * glow's anchor are all measured against.
      */
-    const HOTSPOT_OFFSET = ((NOSE - TAIL) / 2) * SIZE;
+    const HOTSPOT_OFFSET = NOSE * SIZE;
 
     function onMove(e: PointerEvent) {
       tx = e.clientX;
@@ -253,13 +254,13 @@ export default function RocketCursor(props: { size?: number; idleFlame?: number 
     document.addEventListener('pointermove', onMove, { passive: true });
     document.addEventListener('pointerleave', onLeave);
 
-    // Rocket geometry, drawn pointing "up" (nose at -1) in local space.
-    // The sprite is translated so its NOSE TIP sits on the pointer.
+    // The sprite is drawn in its own local space; drawRocket's transforms move
+    // it so the nose tip lands on the pointer (see HOTSPOT_OFFSET).
     function drawRocket() {
       ctx.save();
       ctx.translate(cx, cy);
       ctx.rotate(angle);
-      ctx.translate(0, HOTSPOT_OFFSET); // put the body's middle on the cursor
+      ctx.translate(0, HOTSPOT_OFFSET); // put the nose tip on the cursor
       const s = SIZE;
       const [fr, fg, fb] = flame;
 
@@ -343,12 +344,15 @@ export default function RocketCursor(props: { size?: number; idleFlame?: number 
      * Local +y maps to world (-sin, cos) under the rotation applied above,
      * which is what turns the along-axis offset into a screen position.
      *
-     * HALO_RADIUS is the circumscribed circle of the silhouette - half the
-     * diagonal of its 12.8 x 19 box - so the plateau clears the nose and the
-     * fins at every rotation.
+     * HALO_RADIUS is measured from that glow centre out to the furthest point
+     * of the sprite - the nose, since the glow centre now sits well behind it.
+     * Deriving it from the geometry rather than reusing the bounding-circle
+     * half-diagonal keeps it honest as the angle changes.
      */
     const CENTROID_Y = (spriteCentroid() + HOTSPOT_OFFSET / SIZE) * SIZE;
-    const HALO_RADIUS = Math.hypot(6.4, 9.5) * SIZE;
+    const HALO_RADIUS =
+      Math.max(Math.abs(-NOSE - spriteCentroid()), Math.hypot(6.4, TAIL - spriteCentroid())) *
+      SIZE;
 
     let last = performance.now();
     let frames = 0;
@@ -405,12 +409,12 @@ export default function RocketCursor(props: { size?: number; idleFlame?: number 
        * No sparks, no flame - just the path it flew through, fading out.
        */
       // record the TAIL position, not the pointer, so the ribbon emerges
-      // from the engine rather than from under the nose. The tail is
-      // TAIL behind the hotspot, which is now the body's middle.
+      // from the engine rather than from under the nose. The tail sits
+      // NOSE + TAIL behind the pointer, since the nose itself is the pointer.
       const backX = -Math.sin(angle);
       const backY = Math.cos(angle);
-      const tailX = cx + backX * TAIL * SIZE;
-      const tailY = cy + backY * TAIL * SIZE;
+      const tailX = cx + backX * (NOSE + TAIL) * SIZE;
+      const tailY = cy + backY * (NOSE + TAIL) * SIZE;
       trail.unshift({ x: tailX, y: tailY });
       if (trail.length > TRAIL_MAX) trail.length = TRAIL_MAX;
 
