@@ -22,3 +22,8 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# Markdown generated from Org-mode sources by integrations/orgmode.ts.
+# Ignore rules only apply to untracked files, so the posts already committed
+# as .md stay tracked and unaffected by this rule.
+src/content/blog/*.md
