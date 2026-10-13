@@ -22,16 +22,20 @@ import {
  *     unauthenticated endpoint that lists every reply to a status directly, so
  *     a very long thread can be truncated by the instance. Everything we do get
  *     is shown, hierarchically, not just the root's immediate replies.
- *   - Who favourited and who boosted are /favourited_and /reblogged_by, fetched
- *     only when a reader hovers the indicator.
- *   - Per-emoji reactions are not part of the Mastodon API. Akkoma and some
- *     forks expose `emoji_reactions` on the status object, so that slot reads it
- *     when present and simply disappears when it isn't.
+ *   - Who favourited and who boosted are /favourited_by and /reblogged_by,
+ *     fetched only when a reader hovers the indicator.
+ *   - Reactions carry no attribution anywhere. Iceshrimp/Sharkschema exposes
+ *     them as `reactions` on the status, Mastodon forks as `emoji_reactions`,
+ *     both shaped { name, count, me } - and neither has a public endpoint
+ *     naming who reacted (every candidate path 404s). So they render as chips
+ *     with their own counts, unlike likes and boosts which do have names.
  */
 
 interface Props {
   toot?: string;
 }
+
+type ReactorKind = 'fav' | 'boost' | 'react';
 
 interface Account {
   id: string;
@@ -53,8 +57,23 @@ interface Status {
   favourites_count: number;
   sensitive?: boolean;
   spoiler_text?: string;
-  emoji_reactions?: { name: string; count: number; me: boolean; url?: string; static_url?: string }[];
+  /**
+   * Iceshrimp / Sharkschema expose reactions under `reactions`, with `name`
+   * being the emoji character itself (or a `:shortcode:` when it is a custom
+   * emoji). Mastodon forks use `emoji_reactions` with the same idea but a
+   * different field name. Both are read; both are optional.
+   */
+  reactions?: Reaction[];
+  emoji_reactions?: Reaction[];
+  /** Custom emoji used by the content or reactions, keyed by shortcode. */
+  emojis?: { shortcode: string; url: string; static_url?: string }[];
   media_attachments?: { id: string; type: string; url: string; preview_url?: string; description?: string }[];
+}
+
+interface Reaction {
+  name: string;
+  count: number;
+  me: boolean;
 }
 
 const ALLOWED_TAGS = new Set([
@@ -150,7 +169,22 @@ function buildTree(rootId: string, flat: Status[]): Node {
 
 /* ------------------------------------------------------------- reactors --- */
 
-type ReactorKind = 'fav' | 'boost' | 'react';
+/**
+ * Every reaction on a status, in the order the instance gave them, regardless
+ * of which flavour of API it came from.
+ *
+ * The `me` flag is dropped: nothing in this UI acts on it, and keeping it would
+ * imply a control that lets the reader toggle their own reaction, which there
+ * is no way to do from a static site.
+ */
+function reactionsOf(s: Status): { name: string; count: number; url?: string }[] {
+  const raw = s.reactions ?? s.emoji_reactions ?? [];
+  return raw.map((r) => {
+    const shortcode = r.name.replace(/^:|:$/g, '');
+    const emoji = s.emojis?.find((e) => e.shortcode === shortcode);
+    return { name: r.name, count: r.count, url: emoji?.url };
+  });
+}
 
 /** Who performed an action, fetched on demand and cached for the session. */
 function Reactors(props: { origin: string; status: Status; kind: ReactorKind }) {
@@ -168,9 +202,9 @@ function Reactors(props: { origin: string; status: Status; kind: ReactorKind }) 
         if (!res.ok) throw new Error(String(res.status));
         setPeople((await res.json()) as Account[]);
       } else {
-        // Reactions are not in the Mastodon API, so there is nothing to fetch:
-        // the emoji and counts are already on the status object, and the API
-        // carries no attribution for them to show.
+        // Reactions are already on the status object and, unlike likes and
+        // boosts, no instance offers an endpoint naming who reacted. Nothing
+        // to fetch.
         setPeople([]);
       }
     } catch {
@@ -179,19 +213,34 @@ function Reactors(props: { origin: string; status: Status; kind: ReactorKind }) 
   };
 
   /*
-   * Reactions render as a row of emoji chips carrying their own counts. Mastodon
-   * core has no reactions at all, so for most instances this renders nothing
-   * and the slot disappears.
+   * Reactions.
+   *
+   * Rendered as a row of chips, one per distinct reaction, each carrying its
+   * own count - so the reader sees which reactions and how many, not a single
+   * generic "reactions" icon.
+   *
+   * There is deliberately no attribution here. Mastodon forks and Iceshrimp
+   * both expose reaction counts on the status object, but neither has a public
+   * endpoint listing who reacted (every candidate path 404s), so unlike likes
+   * and boosts there is nothing to fetch and no names to show. The title
+   * attribute names the reaction instead of inventing a tooltip.
    */
   if (props.kind === 'react') {
-    const reactions = props.status.emoji_reactions ?? [];
+    const reactions = reactionsOf(props.status);
     return (
       <Show when={reactions.length > 0}>
-        <span class="comments-emojis">
+        <span class="comments-reactions">
           <For each={reactions}>
             {(r) => (
-              <span class="comments-emoji" title={`${r.name} ×${r.count}`}>
-                {r.url ? <img src={r.url} alt={r.name} width="14" height="14" loading="lazy" /> : r.name}
+              <span
+                class="comments-reaction"
+                title={`${r.name} × ${r.count}`}
+              >
+                {r.url ? (
+                  <img src={r.url} alt={r.name} width="15" height="15" loading="lazy" />
+                ) : (
+                  r.name
+                )}
                 <span class="reactor-count">{r.count}</span>
               </span>
             )}

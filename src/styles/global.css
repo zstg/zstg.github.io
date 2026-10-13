@@ -1280,20 +1280,20 @@ body::-webkit-scrollbar {
   flex: none;
 }
 
-/* emoji reactions (forks that have them) */
-.comments-emojis {
+/* reactions: one chip per distinct emoji, each with its own count */
+.comments-reactions {
   display: flex;
   align-items: center;
   gap: 0.35rem;
 }
-.comments-emoji {
+.comments-reaction {
   display: inline-flex;
   align-items: center;
   gap: 0.2rem;
   font-size: 0.75rem;
   color: var(--color-muted);
 }
-.comments-emoji img {
+.comments-reaction img {
   width: 0.875rem;
   height: 0.875rem;
 }
