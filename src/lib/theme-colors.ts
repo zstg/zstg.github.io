@@ -31,32 +31,28 @@ function parseHexToHsl(hex: string): { r: number; g: number; b: number; a: numbe
   };
 }
 
-/** Resolve `--color-accent` to HSL + alpha, whatever format the theme uses. */
-export function readAccent(): AccentHSL {
-  const v = getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim();
-  const fallback: AccentHSL = { h: 144.7, s: 0.78, l: 0.68, a: 1 }; // Matrix #75eb70
-
-  const hex = parseHexToHsl(v);
-  if (hex) {
-    const r = hex.r / 255,
-      g = hex.g / 255,
-      b = hex.b / 255;
-    const max = Math.max(r, g, b),
-      min = Math.min(r, g, b);
-    const l = (max + min) / 2;
-    let h = 0,
-      s = 0;
-    if (max !== min) {
-      const d = max - min;
-      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-      if (max === r) h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
-      else if (max === g) h = ((b - r) / d + 2) / 6;
-      else h = ((r - g) / d + 4) / 6;
-    }
-    return { h: h * 360, s, l, a: hex.a };
+function rgbToHsl(r: number, g: number, b: number, a: number): AccentHSL {
+  const max = Math.max(r, g, b),
+    min = Math.min(r, g, b);
+  const l = (max + min) / 2;
+  let h = 0,
+    s = 0;
+  if (max !== min) {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    if (max === r) h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
+    else if (max === g) h = ((b - r) / d + 2) / 6;
+    else h = ((r - g) / d + 4) / 6;
   }
+  return { h: h * 360, s, l, a };
+}
 
-  const fn = v.match(/^(rgba?|hsla?)\(([^)]+)\)$/i);
+/** Resolve any CSS colour string to HSL + alpha, or `fallback` if unparseable. */
+function resolveColour(value: string, fallback: AccentHSL): AccentHSL {
+  const hex = parseHexToHsl(value);
+  if (hex) return rgbToHsl(hex.r / 255, hex.g / 255, hex.b / 255, hex.a);
+
+  const fn = value.match(/^(rgba?|hsla?)\(([^)]+)\)$/i);
   if (fn) {
     const parts = fn[2].split(/[\s,/]+/).filter(Boolean);
     if (fn[1].toLowerCase().startsWith('hsl')) {
@@ -67,24 +63,38 @@ export function readAccent(): AccentHSL {
         a: parts[3] != null ? parseFloat(parts[3]) : 1,
       };
     }
-    const r = parseFloat(parts[0]) / 255,
-      g = parseFloat(parts[1]) / 255,
-      b = parseFloat(parts[2]) / 255;
-    const max = Math.max(r, g, b),
-      min = Math.min(r, g, b);
-    const l = (max + min) / 2;
-    let h = 0,
-      s = 0;
-    if (max !== min) {
-      const d = max - min;
-      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-      if (max === r) h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
-      else if (max === g) h = ((b - r) / d + 2) / 6;
-      else h = ((r - g) / d + 4) / 6;
-    }
-    return { h: h * 360, s, l, a: parts[3] != null ? parseFloat(parts[3]) : 1 };
+    return rgbToHsl(
+      parseFloat(parts[0]) / 255,
+      parseFloat(parts[1]) / 255,
+      parseFloat(parts[2]) / 255,
+      parts[3] != null ? parseFloat(parts[3]) : 1
+    );
   }
   return fallback;
+}
+
+const ACCENT_FALLBACK: AccentHSL = { h: 144.7, s: 0.78, l: 0.68, a: 1 }; // Matrix #75eb70
+
+/** Resolve `--color-accent` to HSL + alpha, whatever format the theme uses. */
+export function readAccent(): AccentHSL {
+  return resolveColour(
+    getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim(),
+    ACCENT_FALLBACK
+  );
+}
+
+/**
+ * Resolve the rocket glow's ink colour.
+ *
+ * The halo takes its colour from the theme accent by default. Set
+ * `--glow-color` to any hex / rgb() / hsl() the parser understands to give the
+ * glow a colour of its own without changing the theme; leave it empty to
+ * follow the accent.
+ */
+export function readGlowColor(): AccentHSL {
+  const v = getComputedStyle(document.documentElement).getPropertyValue('--glow-color').trim();
+  if (!v) return readAccent();
+  return resolveColour(v, readAccent());
 }
 
 /** Resolve `--color-dark` to a 6-digit hex (the theme's own background). */

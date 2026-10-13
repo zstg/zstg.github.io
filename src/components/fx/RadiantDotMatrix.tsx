@@ -1,8 +1,44 @@
 import { onMount, onCleanup } from 'solid-js';
 import { subscribeFx, sizeCanvas } from '../../lib/fx-ticker';
-import { readAccent, onThemeChange } from '../../lib/theme-colors';
+import { readGlowColor, onThemeChange } from '../../lib/theme-colors';
 import { globeClearFraction, globeFeather, globeOffset } from '../../lib/globe';
 import { rocket } from '../../lib/rocket';
+
+/*
+ * Hand-adjustable glow settings, read from CSS so they can be retuned without
+ * a rebuild: --glow-offset-x / -y nudge the halo, --glow-radius sets how far
+ * out from the rocket it reaches.
+ *
+ * "Radius" is the outer edge of the halo, measured from the rocket's centre -
+ * so the gap between the sprite and the edge of the circle is roughly
+ * (radius - the sprite's own half-diagonal). The inner plateau still tracks
+ * the sprite's size, so shrinking this below the sprite's circumscribed radius
+ * leaves the corners of the rocket sitting outside the bright part.
+ *
+ * Cached rather than read per cell: getComputedStyle inside a draw loop is
+ * ruinous, and these only need to track edits.
+ */
+let glowCache = { at: -1e9, x: 0, y: 0, radius: 49 };
+
+function glowOffset() {
+  const now = performance.now();
+  if (now - glowCache.at < 150) return glowCache;
+  let x = 0;
+  let y = 0;
+  let radius = 49;
+  if (typeof getComputedStyle !== 'undefined') {
+    const cs = getComputedStyle(document.documentElement);
+    const num = (name: string, fallback: number) => {
+      const v = parseFloat(cs.getPropertyValue(name));
+      return Number.isFinite(v) ? v : fallback;
+    };
+    x = num('--glow-offset-x', 0);
+    y = num('--glow-offset-y', 0);
+    radius = num('--glow-radius', 49);
+  }
+  glowCache = { at: now, x, y, radius: Math.max(radius, 8) };
+  return glowCache;
+}
 
 /*
  * Radiant pixel field.
@@ -28,13 +64,41 @@ const BAYER = [
 
 const NOISE_SIZE = 128;
 const CELLS_PER_NOISE = 9;
-/** Cursor reach, in cells. Deliberately tight: the highlight should hug the
- *  rocket rather than flood a third of the screen. */
-const CURSOR_CELLS = 7;
 const BLOOM_LIFE = 0.9;
-/** How far ahead of the rocket the glow leads, in px. */
-const LEAD_PX = 26;
 
+/*
+ * Sine lookup for the per-cell twinkle.
+ *
+ * The twinkle needs sin(t + phase) for every cell, every frame - around 21,000
+ * transcendental calls at the default cell size. That is pure per-frame work
+ * for a value nobody can distinguish from a table: the argument is a smooth
+ * animation phase, not measured data. A 2048-entry table replaces the call with
+ * an add, a cast and a mask.
+ *
+ * (Not a frame-rate fix - an earlier measurement blaming this for the glow's
+ * cadence was reading the headless browser's 41fps rAF ceiling, not the app.)
+ */
+const SIN_N = 2048;
+const SIN_MASK = SIN_N - 1;
+const SIN_K = SIN_N / (Math.PI * 2);
+const SIN = new Float32Array(SIN_N);
+for (let i = 0; i < SIN_N; i++) SIN[i] = Math.sin((i / SIN_N) * Math.PI * 2);
+
+/** sin(x) via the table. `x` is any finite angle; results are in [-1, 1]. */
+function fsin(x: number): number {
+  return SIN[((x * SIN_K) | 0) & SIN_MASK];
+}
+
+/*
+ * The glow's radius is --glow-radius (see global.css), not a constant.
+ *
+ * The rocket is 12.8 x 19 sprite units at SIZE, so its half-diagonal - the
+ * furthest any pixel of it sits from the anchor, at the worst rotation - is
+ * about 11.5 * SIZE, or ~23px at the default size. The halo has to reach past
+ * that to stay a backlight rather than a dot the body escapes from. The
+ * bright plateau inside it is sized from the sprite's own radius at draw time,
+ * so it tracks --rocket-size automatically.
+ */
 
 function buildNoise(seed: number) {
   const size = NOISE_SIZE;
@@ -121,10 +185,9 @@ export default function RadiantDotMatrix(props: { cell?: number; offsetX?: numbe
 
     let W = 0,
       H = 0;
-    let dpr = 1;
-    let accent = readAccent();
+    let glowInk = readGlowColor();
     const offTheme = onThemeChange(() => {
-      accent = readAccent();
+      glowInk = readGlowColor();
     });
 
     const noise = buildNoise(0x75eb70);
@@ -139,7 +202,6 @@ export default function RadiantDotMatrix(props: { cell?: number; offsetX?: numbe
       const s = sizeCanvas(canvas, 2);
       W = s.W;
       H = s.H;
-      dpr = s.dpr;
       cols = Math.max(1, Math.ceil(W / CELL));
       rows = Math.max(1, Math.ceil(H / CELL));
       // Vertical density ramp: denser near the top, thinning downward, so
@@ -169,8 +231,6 @@ export default function RadiantDotMatrix(props: { cell?: number; offsetX?: numbe
     let strength = 0;
     let targetStrength = 0;
     let blooms: Bloom[] = [];
-    let prevX = -1e4;
-    let prevY = -1e4;
 
     const locate = (e: PointerEvent) => {
       const box = canvas.getBoundingClientRect();
@@ -200,29 +260,41 @@ export default function RadiantDotMatrix(props: { cell?: number; offsetX?: numbe
       targetStrength = rocket.visible ? 1 : 0;
       strength += (targetStrength - strength) * 0.3;
 
-      // lead the glow slightly along the rocket's direction of travel
-      const rx = rocket.x;
-      const ry = rocket.y;
-      let leadX = 0;
-      let leadY = 0;
-      const vx = rx - prevX;
-      const vy = ry - prevY;
-      const speed = Math.hypot(vx, vy);
-      if (speed > 0.4) {
-        const lead = Math.min(LEAD_PX, speed * 14);
-        leadX = (vx / speed) * lead;
-        leadY = (vy / speed) * lead;
-      }
-      prevX = rx;
-      prevY = ry;
-      const glowX = rx + leadX;
-      const glowY = ry + leadY;
+      /*
+       * The halo.
+       *
+       * A backlight: concentric with the rocket's centre of mass, every frame,
+       * at any speed.
+       *
+       * The position is read exactly as published - the sprite's own drawn
+       * position, advanced along its axis to the centroid, then nudged by
+       * --glow-offset-x / --glow-offset-y if a hand adjustment is needed.
+       * It is deliberately NOT predicted forward. An earlier version extrapolated it by velocity
+       * to hide the few-millisecond age of the sample, and that extrapolation
+       * was worth up to 44px during fast motion: the glow jumped ahead of the
+       * rocket instead of sitting behind it. The staleness it was hiding costs
+       * about 5px at the speeds involved, which is inside the plateau.
+       *
+       * The old lead offset also dragged the centre off the body; removing it
+       * is what made the lit region line up with the sprite.
+       */
+      // Hand-tuned glow settings, read once per frame (cached internally).
+      const glowCfg = glowOffset();
+      const rx = rocket.x + glowCfg.x;
+      const ry = rocket.y + glowCfg.y;
 
       blooms = (blooms as B[]).filter((b) => (now - b.born) / 1000 < BLOOM_LIFE) as B[];
 
       ctx.clearRect(0, 0, W, H);
 
-      const reach = CURSOR_CELLS * CELL;
+      const reach = glowCfg.radius;
+
+      // The halo holds full strength out to the sprite's circumscribed radius,
+      // then eases to nothing at `reach`. `inner` is clamped well short of
+      // `reach` so the plateau always has room to fade over, even if the
+      // rocket is set very large via --rocket-size.
+      const inner = Math.min(rocket.radius, reach * 0.7);
+      const span = Math.max(reach - inner, 1);
 
       // globe keep-out geometry, resolved once per frame
       const short = Math.min(W, H);
@@ -241,13 +313,18 @@ export default function RadiantDotMatrix(props: { cell?: number; offsetX?: numbe
         return { x: b.x, y: b.y, r, amp: Math.pow(1 - age, 1.7) };
       });
 
-      // Ink ramp derived from the accent: ember -> lit.
-      const dim = `hsl(${accent.h}, ${Math.round(accent.s * 100)}%, 26%, 1)`;
-      const mid = `hsl(${accent.h}, ${Math.round(accent.s * 100)}%, ${Math.round(
-        accent.l * 100
-      )}%, 1)`;
-      const lit = `hsl(${accent.h}, ${Math.round(accent.s * 100)}%, ${Math.round(
-        Math.min(0.88, accent.l + 0.14) * 100
+      /*
+       * Ink ramp: ember -> lit, derived from --glow-color (which falls back to
+       * the theme accent). The three steps are what make the halo read as
+       * depth rather than a flat disc, so a colour is only half the story -
+       * the lightness structure is what sells it.
+       */
+      const sat = `${Math.round(glowInk.s * 100)}%`;
+      const hue = `${Math.round(glowInk.h)}`;
+      const dim = `hsl(${hue}, ${sat}, 26%, 1)`;
+      const mid = `hsl(${hue}, ${sat}, ${Math.round(glowInk.l * 100)}%, 1)`;
+      const lit = `hsl(${hue}, ${sat}, ${Math.round(
+        Math.min(0.88, glowInk.l + 0.14) * 100
       )}%, 1)`;
 
       // Keep clear of the sphere (and the hero copy) in the middle.
@@ -275,20 +352,41 @@ export default function RadiantDotMatrix(props: { cell?: number; offsetX?: numbe
             0.4 * sample(noise, u * 0.55 - t * 0.08, v * 0.55 + t * 0.06);
           const twinkle =
             0.5 +
-            0.5 * Math.sin(t * 1.1 + jitter[(r * 37 + c * 11) & 4095] * 6.283);
+            0.5 * fsin(t * 1.1 + jitter[(r * 37 + c * 11) & 4095] * 6.283);
 
           let lum = ramp[r * cols + c] * (0.3 + 0.52 * base * base + 0.18 * twinkle) * 0.62;
 
-          // cursor glow: quadratic falloff, like the original
+          // cursor glow
           let glow = 0;
           if (strength > 0.01) {
-            const dx = cx - glowX;
-            const dy = cy - glowY;
+            const dx = cx - rx;
+            const dy = cy - ry;
             // sqrt rather than hypot: this runs for every cell, every frame.
             const dist = Math.sqrt(dx * dx + dy * dy);
             if (dist < reach) {
-              const falloff = 1 - dist / reach;
-              glow = falloff * falloff * strength;
+              /*
+               * A backlight, not a spotlight.
+               *
+               * The old profile peaked at the centre and fell off
+               * quadratically, so by the time it reached the edge of the
+               * sprite it was down to a few percent - faint exactly where it
+               * needed to read, and leaving the corners of the body sitting on
+               * the bare field. That is why the lit area never quite matched
+               * the rocket.
+               *
+               * Here the glow holds at full strength across the whole
+               * circumscribed radius and only then eases off to nothing at
+               * `reach`. The result is light spilling out from behind the
+               * entire silhouette, strongest where you can see it, ring for
+               * ring.
+               */
+              const t = (dist - inner) / span;
+              let f = 1;
+              if (t > 0) {
+                const u = t > 1 ? 1 : t;
+                f = 1 - u * u * (3 - 2 * u); // smoothstep, inverted
+              }
+              glow = f * strength;
               lum += glow * 0.6;
             }
           }
@@ -319,14 +417,37 @@ export default function RadiantDotMatrix(props: { cell?: number; offsetX?: numbe
           if (lum <= threshold) continue;
 
           const heat = Math.max(glow, wave);
-          const px = Math.round(x * dpr);
-          const py = Math.round(y * dpr);
-          const pw = Math.round((x + CELL) * dpr) - px;
-          const ph = Math.round((y + CELL) * dpr) - py;
+          /*
+           * Cell rectangle in CSS pixels.
+           *
+           * sizeCanvas() already applies ctx.setTransform(dpr, ...), so drawing
+           * coordinates are in CSS pixels and dpr must NOT be applied again.
+           * Multiplying by it here drew the whole field at dpr-squared scale:
+           * fine at dpr 1, and progressively zoomed and displaced at anything
+           * else - at 125% display scaling (devicePixelRatio 1.25, the Windows
+           * default at 1920x1080) the field sat 1.56x out of step with the
+           * rocket, which read as the glow refusing to follow the cursor.
+           */
+          const px = Math.round(x);
+          const py = Math.round(y);
+          const pw = Math.round(x + CELL) - px;
+          const ph = Math.round(y + CELL) - py;
           ctx.fillStyle = heat > 0.34 ? lit : heat > 0.1 ? mid : dim;
-          // Resting embers are background texture, not content, and the
-          // field must never compete with the copy over it.
-          ctx.globalAlpha = open * (heat > 0.1 ? 0.5 + heat * 0.35 : 0.3);
+          /*
+           * Resting embers are background texture, not content, and the field
+           * must never compete with the copy over it - so the field is scaled
+           * by `open`, the keep-out that keeps it off the particle sphere.
+           *
+           * The rocket's halo is NOT. `open` used to scale the combined alpha,
+           * which meant the halo was eaten on whichever side faced the sphere
+           * and read as a half-circle shoved off to one side of the rocket -
+           * badly so on the right of the viewport, where the sphere is always
+           * to the left. The halo belongs to the cursor, not to the
+           * background, so it is added after the mask and stays whole
+           * wherever the rocket goes.
+           */
+          const fieldAlpha = open * (wave > 0.1 ? 0.5 + wave * 0.35 : 0.3);
+          ctx.globalAlpha = Math.min(1, fieldAlpha + glow * 0.6);
           ctx.fillRect(px, py, pw, ph);
         }
       }

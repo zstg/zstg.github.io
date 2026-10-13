@@ -249,11 +249,41 @@ html[data-theme="custom"] {
    * viewport middle, which is where the sphere sits; nudging either offset
    * moves the hole without touching the sphere itself.
    */
-  --globe-clear-base: 0.3;
+  --globe-clear-base: 0.275;
   --globe-clear-growth: 0.5;
-  --globe-feather: 0.12;
-  --globe-offset-x: 0px;
-  --globe-offset-y: 0px;
+  --globe-feather: 0.50;
+  --globe-offset-x: -75px;
+  --globe-offset-y: -50px;
+
+  /*
+   * Hand-adjustable glow settings, in px.
+   *
+   *   --glow-offset-x/-y   nudge the halo. Positive x moves it right.
+   *   --glow-radius        how far out from the rocket's centre the halo
+   *                        reaches - the "leeway". The gap between the sprite
+   *                        and the edge of the circle is roughly
+   *                        (radius - half the sprite's diagonal), so 49px
+   *                        leaves a ring of about 26px around a default-sized
+   *                        rocket. Keep it above the sprite's own
+   *                        circumscribed radius (~23px at --rocket-size: 2) or
+   *                        the rocket's corners fall outside the bright part.
+   */
+  --glow-offset-x: 0px;
+  --glow-offset-y: 0px;
+  --glow-radius: 33px;
+
+  /*
+   * Colour of the glow around the rocket. Any hex / rgb() / hsl() is fine.
+   * Leave it empty to follow the theme accent; set it to give the halo a
+   * colour of its own without changing the theme. The halo is drawn as a
+   * lightness ramp built from this colour, so a mid-brightness value reads
+   * best - very dark values flatten the outer edge into the background.
+   */
+  --glow-color: ;
+  /* FIXME:
+   * This indirectly determines the colour of the blinking squares - pixels - not the sphere. A lighter
+   * variant of the same colour is used for the glow around the rocket. These colours must not be synchronized.
+   */
 
   /* Motion */
   --md-sys-motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);

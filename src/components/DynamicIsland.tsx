@@ -1,7 +1,7 @@
 import { createSignal, createEffect, onMount, onCleanup, Show, For } from 'solid-js';
 import { THEMES, loadStoredTheme, applyTheme, parseColor, toCss } from '../data/themes';
 import { syncM3Scheme } from '../lib/m3-scheme';
-import { BACKGROUNDS, loadBackground, saveBackground } from '../data/backgrounds';
+import { BACKGROUNDS, DEFAULT_BACKGROUND, loadBackground, saveBackground } from '../data/backgrounds';
 
 const SPECTRUM =
   'linear-gradient(to right, hsl(0 85% 60%), hsl(60 85% 60%), hsl(120 85% 60%), hsl(180 85% 60%), hsl(240 85% 60%), hsl(300 85% 60%), hsl(360 85% 60%))';
@@ -30,7 +30,15 @@ export default function DynamicIsland(props: { currentPath: string }) {
   const [hue, setHue] = createSignal(222);
   const [rgbaText, setRgbaText] = createSignal('#75eb70');
   const [rgbaValid, setRgbaValid] = createSignal(true);
-  const [background, setBackground] = createSignal(loadBackground());
+  /*
+   * Restored in onMount rather than read here: doing it during setup means the
+   * client's first render disagrees with the server markup, and hydration keeps
+   * the server's value - so the picker showed the default while the effect
+   * itself (which reads storage separately) picked the right one. The theme
+   * selector rests on the same rule. The cost is that the picker shows the
+   * default label for the first frame after hydration.
+   */
+  const [background, setBackground] = createSignal(DEFAULT_BACKGROUND);
 
   let root!: HTMLDivElement;
   let islandEl!: HTMLDivElement;
@@ -153,6 +161,7 @@ export default function DynamicIsland(props: { currentPath: string }) {
   }
 
   onMount(() => {
+    setBackground(loadBackground());
     const stored = loadStoredTheme();
     setCurrent(stored.theme);
     if (stored.customAccent) {

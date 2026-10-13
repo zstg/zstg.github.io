@@ -5,13 +5,84 @@ import { setRocket } from '../lib/rocket';
  * Rocket cursor.
  *
  * A rocket sprite that banks into the direction of travel, trailing an
- * accent-coloured flame and a fading position ribbon. The nose tip is the
- * hotspot, so clicks register exactly where the pointer is.
+ * accent-coloured flame and a fading position ribbon. Its hotspot is the
+ * middle of the body, so clicks register exactly where the pointer is.
  */
 
 interface Pt {
   x: number;
   y: number;
+}
+
+/* Sprite geometry, in drawn units. The nose is at -NOSE, the tail at +TAIL. */
+const NOSE = 11;
+const TAIL = 8;
+/** Where the flame's plume starts, in the same units. */
+const PLUME_BASE = 7;
+
+function quadPts(p0: number[], c: number[], p1: number[], n = 24): number[][] {
+  const out: number[][] = [];
+  for (let i = 1; i <= n; i++) {
+    const t = i / n;
+    const u = 1 - t;
+    out.push([
+      u * u * p0[0] + 2 * u * t * c[0] + t * t * p1[0],
+      u * u * p0[1] + 2 * u * t * c[1] + t * t * p1[1],
+    ]);
+  }
+  return out;
+}
+
+/** Signed-area centroid of a closed polygon: [area, centroidY]. */
+function polyCentroid(poly: number[][]): [number, number] {
+  let a = 0;
+  let cy = 0;
+  for (let i = 0; i < poly.length; i++) {
+    const [x0, y0] = poly[i];
+    const [x1, y1] = poly[(i + 1) % poly.length];
+    const cr = x0 * y1 - x1 * y0;
+    a += cr;
+    cy += (y0 + y1) * cr;
+  }
+  a /= 2;
+  return [Math.abs(a), cy / (6 * a)];
+}
+
+/**
+ * The rigid sprite's centre of mass along its own axis, in drawn sprite units.
+ * Every part is left/right symmetric, so the centroid's x is always 0 and this
+ * along-axis value is the whole story.
+ *
+ * The flame is deliberately excluded. It is exhaust, and it grows with thrust,
+ * so including it makes the centre walk backwards as the rocket accelerates -
+ * a glow that visibly trails the sprite during a fast move. The rigid centroid
+ * is a constant, so the halo stays pinned where the rocket's mass is.
+ */
+function spriteCentroid(): number {
+  const body: number[][] = [
+    [0, -NOSE],
+    ...quadPts([0, -NOSE], [5.2, -2], [4.4, 6]),
+    [-4.4, 6],
+    ...quadPts([-4.4, 6], [-5.2, -2], [0, -NOSE]),
+  ];
+  const finR: number[][] = [
+    [2.6, 2],
+    [6.4, 8],
+    [2.6, 7],
+  ];
+  const finL: number[][] = [
+    [-2.6, 2],
+    [-6.4, 8],
+    [-2.6, 7],
+  ];
+  let area = 0;
+  let moment = 0;
+  for (const poly of [body, finL, finR]) {
+    const [a, cy] = polyCentroid(poly);
+    area += a;
+    moment += a * cy;
+  }
+  return moment / area;
 }
 
 export default function RocketCursor(props: { size?: number; idleFlame?: number }) {
@@ -66,7 +137,7 @@ export default function RocketCursor(props: { size?: number; idleFlame?: number 
     let visible = false;
 
     const trail: Pt[] = [];
-    const TRAIL_MAX = 26;
+    const TRAIL_MAX = 25;
 
     // Accent colour, so the plume re-themes with the rest of the site.
     const readAccent = (): [number, number, number] => {
@@ -117,9 +188,25 @@ export default function RocketCursor(props: { size?: number; idleFlame?: number 
     // Immediate, explicit notification from the theme picker.
     window.addEventListener('wob:themechange', retheme);
 
-    // The nose tip is the hotspot: the sprite is drawn offset so its tip
-    // lands exactly on the pointer, making clicks register where you aim.
-    const NOSE_LEN = 11; // matches the body path's nose in local units
+    /*
+     * Hotspot.
+     *
+     * The sprite's nose is at local y = -NOSE and its tail at +TAIL, so its
+     * bounding box spans -NOSE..TAIL and its middle sits at (TAIL - NOSE) / 2.
+     * The draw call shifts the sprite by the negative of that, which lands the
+     * MIDDLE of the body on the pointer.
+     *
+     * This used to hang the nose off the pointer instead. That reads fine on
+     * its own, but it means the pointer is ~19px from the middle of the thing
+     * the user is aiming with: clicking "on the rocket" landed behind it, the
+     * dock handle could not be aimed at reliably, and the radiant glow sat off
+     * to one side of the body instead of around it.
+     *
+     * Note the negation: translating by (TAIL - NOSE) / 2 would shift the
+     * sprite the *wrong* way and leave the middle 3 units short of the
+     * pointer - a subtle 2px error that still reads as "slightly off".
+     */
+    const HOTSPOT_OFFSET = ((NOSE - TAIL) / 2) * SIZE;
 
     function onMove(e: PointerEvent) {
       tx = e.clientX;
@@ -172,7 +259,7 @@ export default function RocketCursor(props: { size?: number; idleFlame?: number 
       ctx.save();
       ctx.translate(cx, cy);
       ctx.rotate(angle);
-      ctx.translate(0, NOSE_LEN * SIZE); // push body down so nose lands on cursor
+      ctx.translate(0, HOTSPOT_OFFSET); // put the body's middle on the cursor
       const s = SIZE;
       const [fr, fg, fb] = flame;
 
@@ -182,16 +269,16 @@ export default function RocketCursor(props: { size?: number; idleFlame?: number 
       if (thrust > 0.02) {
         const flick = 0.72 + Math.random() * 0.4;
         const len = (7 + 10 * thrust) * flick * s;
-        const g = ctx.createLinearGradient(0, 7 * s, 0, (7 * s + len));
+        const g = ctx.createLinearGradient(0, PLUME_BASE * s, 0, (PLUME_BASE * s + len));
         g.addColorStop(0, `rgba(255,255,255,0.9)`);
         g.addColorStop(0.3, `rgba(${fr},${fg},${fb},0.75)`);
         g.addColorStop(0.7, `rgba(${fr},${fg},${fb},0.3)`);
         g.addColorStop(1, `rgba(${fr},${fg},${fb},0)`);
         ctx.fillStyle = g;
         ctx.beginPath();
-        ctx.moveTo(-3.8 * s, 7 * s);
-        ctx.quadraticCurveTo(-2 * s, (11 + len / s / 2) * s, 0, (7 * s + len));
-        ctx.quadraticCurveTo(2 * s, (11 + len / s / 2) * s, 3.8 * s, 7 * s);
+        ctx.moveTo(-3.8 * s, PLUME_BASE * s);
+        ctx.quadraticCurveTo(-2 * s, (11 + len / s / 2) * s, 0, (PLUME_BASE * s + len));
+        ctx.quadraticCurveTo(2 * s, (11 + len / s / 2) * s, 3.8 * s, PLUME_BASE * s);
         ctx.closePath();
         ctx.fill();
       }
@@ -218,10 +305,10 @@ export default function RocketCursor(props: { size?: number; idleFlame?: number 
       bg.addColorStop(1, '#8ea2cc');
       ctx.fillStyle = bg;
       ctx.beginPath();
-      ctx.moveTo(0, -11 * s);
+      ctx.moveTo(0, -NOSE * s);
       ctx.quadraticCurveTo(5.2 * s, -2 * s, 4.4 * s, 6 * s);
       ctx.lineTo(-4.4 * s, 6 * s);
-      ctx.quadraticCurveTo(-5.2 * s, -2 * s, 0, -11 * s);
+      ctx.quadraticCurveTo(-5.2 * s, -2 * s, 0, -NOSE * s);
       ctx.closePath();
       ctx.fill();
 
@@ -237,6 +324,31 @@ export default function RocketCursor(props: { size?: number; idleFlame?: number 
 
       ctx.restore();
     }
+
+    /*
+     * Where the halo goes, and how far it has to reach.
+     *
+     * The halo is anchored to the sprite's centre of mass, not to the hotspot.
+     * The body is a teardrop - most of its area is forward of the bounding-box
+     * middle - so that point sits ~3.9px behind the hotspot at the default
+     * size, and a halo centred on the hotspot rides ahead of the rocket. It
+     * reads as the glow not being *on* it.
+     *
+     * The flame is deliberately excluded from the centroid. It is exhaust, and
+     * it grows with thrust, so including it would make the centre walk
+     * backwards as the rocket accelerates - a halo that visibly trails the
+     * sprite during a fast move. The rigid centroid is a constant, measured
+     * once at mount.
+     *
+     * Local +y maps to world (-sin, cos) under the rotation applied above,
+     * which is what turns the along-axis offset into a screen position.
+     *
+     * HALO_RADIUS is the circumscribed circle of the silhouette - half the
+     * diagonal of its 12.8 x 19 box - so the plateau clears the nose and the
+     * fins at every rotation.
+     */
+    const CENTROID_Y = (spriteCentroid() + HOTSPOT_OFFSET / SIZE) * SIZE;
+    const HALO_RADIUS = Math.hypot(6.4, 9.5) * SIZE;
 
     let last = performance.now();
     let frames = 0;
@@ -274,19 +386,31 @@ export default function RocketCursor(props: { size?: number; idleFlame?: number 
 
       drawRocket();
 
-      // Background effects spot-light the rocket, not the raw cursor.
-      setRocket(cx, cy, tx, ty, visible);
+      /*
+       * The halo is anchored to the sprite's centre of mass, and published
+       * exactly where the sprite was drawn - no prediction, so nothing can fling
+       * it ahead of the rocket during a fast move.
+       */
+      setRocket(
+        cx - Math.sin(angle) * CENTROID_Y,
+        cy + Math.cos(angle) * CENTROID_Y,
+        tx,
+        ty,
+        visible,
+        HALO_RADIUS
+      );
 
       /*
        * Trail: a ribbon of recent positions drawn behind the rocket.
        * No sparks, no flame - just the path it flew through, fading out.
        */
       // record the TAIL position, not the pointer, so the ribbon emerges
-      // from the engine rather than from under the nose
+      // from the engine rather than from under the nose. The tail is
+      // TAIL behind the hotspot, which is now the body's middle.
       const backX = -Math.sin(angle);
       const backY = Math.cos(angle);
-      const tailX = cx + backX * (NOSE_LEN + 7) * SIZE;
-      const tailY = cy + backY * (NOSE_LEN + 7) * SIZE;
+      const tailX = cx + backX * TAIL * SIZE;
+      const tailY = cy + backY * TAIL * SIZE;
       trail.unshift({ x: tailX, y: tailY });
       if (trail.length > TRAIL_MAX) trail.length = TRAIL_MAX;
 
