@@ -3,15 +3,19 @@ import { getCollection, render, type CollectionEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import MastodonComments from '../../components/MastodonComments';
 import DockPager from '../../components/DockPager.astro';
+import { slugMap } from '../../lib/slug';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
   // Order once, by date, so "previous"/"next" mean previous/next in reading
   // order rather than whatever order the loader happened to return.
   const ordered = [...posts].sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+  // Flat, unique slugs: the source tree is nested (Linux/Arch/Arch-part1) but
+  // URLs are not (/blog/arch-part-1/).
+  const slugs = slugMap(ordered.map((p) => p.id));
 
   return ordered.map((post, i) => ({
-    params: { slug: post.id },
+    params: { slug: slugs.get(post.id) },
     props: {
       post,
       // Neighbours are resolved here, in getStaticPaths, because the page
@@ -51,9 +55,12 @@ const { Content } = await render(post);
       </div>
       <div class="flex flex-wrap gap-2 mt-3">
         {post.data.tags.map((tag) => (
-          <span class="text-xs px-2 py-0.5 rounded-full bg-accent/10 text-accent">
+          <a
+            href={`/tags/${encodeURIComponent(tag)}`}
+            class="text-xs px-2 py-0.5 rounded-full bg-accent/10 text-accent hover:bg-accent/25 transition-colors"
+          >
             {tag}
-          </span>
+          </a>
         ))}
       </div>
     </header>

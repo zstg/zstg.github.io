@@ -1,50 +1,137 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { slugMap } from '../../lib/slug';
 
+// Every post, wherever it lives in the source tree - the collection loads
+// recursively, so a post under Linux/Arch/ is listed here like any other.
 const posts = (await getCollection('blog')).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
 );
+const slugs = slugMap(posts.map((p) => p.id));
+
+/* Every tag on the site with its post count, for the filter row. */
+const counts = posts
+  .flatMap((p) => p.data.tags)
+  .reduce<Map<string, number>>((acc, t) => {
+    acc.set(t, (acc.get(t) ?? 0) + 1);
+    return acc;
+  }, new Map());
+const tags = [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+
+// The filter lives in the URL so it is shareable and survives a reload, but the
+// list is filtered client-side so nothing navigates.
+const initialTag = new URL(Astro.url).searchParams.get('tag') ?? '';
 ---
 
 <BaseLayout title="blog — zstg">
-  <section class="max-w-3xl mx-auto px-6 pt-24 pb-20 relative z-10">
-    <h1 class="text-3xl font-bold text-light mb-8">Blog</h1>
+  <section class="max-w-4xl mx-auto px-6 pt-24 pb-20 relative z-10">
+    <h1 class="text-3xl font-bold text-light">Blog</h1>
 
-    {posts.length === 0 && (
-      <p class="text-muted">No posts yet. Check back soon.</p>
-    )}
-
-    <div class="space-y-6">
-      {posts.map((post) => (
-        <a
-          href={`/blog/${post.id}`}
-          class="block glass-card border border-white/10 rounded-xl p-5 hover:border-accent/40 transition-all duration-300 group"
-        >
-          <div class="flex items-center gap-3 text-sm text-muted mb-2">
-            <time datetime={post.data.date.toISOString()}>
-              {post.data.date.toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric',
-              })}
-            </time>
-            {post.data.series && (
-              <span class="text-accent text-xs">series: {post.data.series}</span>
-            )}
-          </div>
-          <h2 class="text-light font-semibold text-lg group-hover:text-accent transition-colors">
-            {post.data.title}
-          </h2>
-          <div class="flex flex-wrap gap-2 mt-2">
-            {post.data.tags.map((tag) => (
-              <span class="text-xs px-2 py-0.5 rounded-full bg-accent/10 text-accent">
-                {tag}
-              </span>
+    <div data-blog-filter data-active-tag={initialTag}>
+      {
+        tags.length > 0 && (
+          <nav aria-label="Tags" class="flex flex-wrap gap-2 mt-4 mb-10">
+            <button
+              type="button"
+              data-tag=""
+              aria-pressed={initialTag === ''}
+              class="text-xs px-2.5 py-1 rounded-full border border-white/15 text-muted hover:border-accent/50 hover:text-accent transition-colors"
+            >
+              all
+            </button>
+            {tags.map(([tag, count]) => (
+              <button
+                type="button"
+                data-tag={tag}
+                aria-pressed={initialTag === tag}
+                class="text-xs px-2.5 py-1 rounded-full bg-accent/10 text-accent hover:bg-accent/25 transition-colors"
+              >
+                {tag} <span class="text-muted">{count}</span>
+              </button>
             ))}
-          </div>
-        </a>
-      ))}
+          </nav>
+        )
+      }
+
+      <p class="text-sm text-muted mb-5" data-filter-status aria-live="polite">
+        {initialTag === ''
+          ? `${posts.length} posts`
+          : `${posts.filter((p) => p.data.tags.includes(initialTag)).length} posts tagged ${initialTag}`}
+      </p>
+
+      {posts.length === 0 && <p class="text-muted">No posts yet. Check back soon.</p>}
+
+      <div class="space-y-6" data-post-list>
+        {posts.map((post) => (
+          <a
+            href={`/blog/${slugs.get(post.id)}`}
+            data-tags={post.data.tags.join(',')}
+            class="block glass-card border border-white/10 rounded-xl p-5 hover:border-accent/40 transition-all duration-300 group"
+          >
+            <div class="flex flex-wrap items-center gap-3 text-sm text-muted mb-2">
+              <time datetime={post.data.date.toISOString()}>
+                {post.data.date.toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric',
+                })}
+              </time>
+              {post.data.series && (
+                <span class="text-accent text-xs">series: {post.data.series}</span>
+              )}
+            </div>
+            <h2 class="text-light font-semibold text-lg group-hover:text-accent transition-colors">
+              {post.data.title}
+            </h2>
+            {post.data.description && (
+              <p class="text-sm text-muted mt-1.5 line-clamp-2">{post.data.description}</p>
+            )}
+          </a>
+        ))}
+      </div>
     </div>
   </section>
 </BaseLayout>
+
+<script>
+  /*
+   * Client-side tag filter.
+   *
+   * Clicking a tag narrows the list below it without navigating, and the choice
+   * is mirrored into ?tag= so a reload or a shared URL lands on the same view.
+   * A tag with no posts for the current selection is not in the list at all,
+   * since the row is the union of every post's tags.
+   */
+  const root = document.querySelector<HTMLElement>('[data-blog-filter]');
+  if (root) {
+    const buttons = [...root.querySelectorAll<HTMLButtonElement>('button[data-tag]')];
+    const cards = [...root.querySelectorAll<HTMLElement>('[data-tags]')];
+    const status = root.querySelector<HTMLElement>('[data-filter-status]');
+    const apply = (tag: string) => {
+      const wanted = tag.trim();
+      let shown = 0;
+      for (const card of cards) {
+        const tags = (card.dataset.tags ?? '').split(',').filter(Boolean);
+        const hit = wanted === '' || tags.includes(wanted);
+        card.hidden = !hit;
+        if (hit) shown++;
+      }
+      for (const b of buttons) b.setAttribute('aria-pressed', String((b.dataset.tag ?? '') === wanted));
+      if (status) {
+        status.textContent =
+          wanted === '' ? `${shown} posts` : `${shown} posts tagged ${wanted}`;
+      }
+      const url = new URL(window.location.href);
+      if (wanted) url.searchParams.set('tag', wanted);
+      else url.searchParams.delete('tag');
+      window.history.replaceState({}, '', url);
+    };
+
+    for (const b of buttons) {
+      b.addEventListener('click', () => apply(b.dataset.tag ?? ''));
+    }
+    // honour a ?tag= that arrived by shared link
+    apply(root.dataset.activeTag ?? '');
+  }
+</script>

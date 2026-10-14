@@ -2,9 +2,9 @@ import { createSignal, onMount, onCleanup } from 'solid-js';
 import ParallaxProjects from './ParallaxProjects';
 
 const doWhat = [
-  { icon: '⚡', title: 'Build', desc: 'Creating web applications and tools with modern technologies' },
-  { icon: '🔍', title: 'Learn', desc: 'Exploring new frameworks, languages, and paradigms' },
-  { icon: '💬', title: 'Share', desc: 'Writing about experiences and contributing to open source' },
+  { icon: '✌️❤️💛', title: '', desc: 'CS Grad @ USC' },
+  { icon: '', title: 'Programmer at heart', desc: 'I love exploring new frameworks, languages, and paradigms' },
+  { icon: '', title: 'FOSS Guy', desc: 'Avid user of, and loves contributing to, open source' },
 ];
 
 export default function Homepage() {
@@ -138,7 +138,7 @@ export default function Homepage() {
             zstg
           </h1>
           <p class="text-muted text-lg mt-3 italic text-center animate-[fade-in_1s_ease-out_0.3s_both]">
-            developer, builder, curious
+            Welcome to my little corner of the internet!
           </p>
           <div class="flex items-center gap-4 mt-8 text-base animate-[fade-in_1s_ease-out_0.6s_both] pointer-events-auto">
             <a href="/blog" class="btn">/blog</a>

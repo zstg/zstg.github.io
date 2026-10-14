@@ -8,12 +8,8 @@ interface Project {
 }
 
 const projects: Project[] = [
-  { title: 'Project Alpha', description: 'A placeholder project exploring modern web technologies.', tags: ['solidjs', 'web'], link: '#' },
-  { title: 'Project Beta', description: 'An experimental design system built with utility-first CSS.', tags: ['astro', 'css'], link: '#' },
-  { title: 'Project Gamma', description: 'A high-performance tool compiled to WebAssembly.', tags: ['rust', 'wasm'], link: '#' },
-  { title: 'Project Delta', description: 'A real-time collaboration platform with offline support.', tags: ['typescript', 'pwa'], link: '#' },
-  { title: 'Project Epsilon', description: 'An open-source CLI tool for developer productivity.', tags: ['go', 'cli'], link: '#' },
-  { title: 'Project Zeta', description: 'A distributed systems experiment with CRDTs.', tags: ['elixir', 'dist'], link: '#' },
+  { title: 'StratOS Linux', description: 'A WIP Linux meta-distro', tags: ['linux', 'operating-systems'], link: 'https://github.com/stratos-linux' },
+  { title: 'Nixpkgs maintainer', description: 'I maintain custom Nix packages and flakes', tags: ['Nix', 'nixos'], link: 'https://github.com/nixpkgs' },
 ];
 
 interface Props {

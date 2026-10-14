@@ -26,4 +26,12 @@ pnpm-debug.log*
 # Markdown generated from Org-mode sources by integrations/orgmode.ts.
 # Ignore rules only apply to untracked files, so the posts already committed
 # as .md stay tracked and unaffected by this rule.
-src/content/blog/*.md
+Screenshot-*.png
+
+# Markdown generated from Org-mode sources by integrations/orgmode.ts, at any
+# depth under BLOG_DIR (src/lib/paths.ts). Ignore rules only apply to untracked
+# files, so posts already committed as .md stay tracked and unaffected.
+src/content/**/*.md
+
+# Per-post image assets staged for the browser by integrations/orgmode.ts.
+public/blog/

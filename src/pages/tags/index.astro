@@ -1,0 +1,37 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { slugMap } from '../../lib/slug';
+
+const posts = (await getCollection('blog')).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+const slugs = slugMap(posts.map((p) => p.id));
+
+const counts = posts.flatMap((p) => p.data.tags).reduce<Map<string, number>>((acc, t) => {
+  acc.set(t, (acc.get(t) ?? 0) + 1);
+  return acc;
+}, new Map());
+const tags = [...counts.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+---
+
+<BaseLayout title="tags — zstg">
+  <section data-pagefind-ignore class="max-w-3xl mx-auto px-6 pt-24 pb-20 relative z-10">
+    <h1 class="text-3xl font-bold text-light mb-3">Tags</h1>
+    <p class="text-sm text-muted mb-8">Every tag used across the blog.</p>
+
+    <div class="flex flex-wrap gap-2">
+      {tags.map(([tag, count]) => (
+        <a
+          href={`/tags/${encodeURIComponent(tag)}`}
+          class="group flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/10 text-accent hover:bg-accent/25 transition-colors"
+        >
+          <span class="text-sm">{tag}</span>
+          <span class="text-xs text-muted group-hover:text-accent/70">{count}</span>
+        </a>
+      ))}
+    </div>
+
+    {tags.length === 0 && <p class="text-muted text-sm">No tags yet.</p>}
+  </section>
+</BaseLayout>
