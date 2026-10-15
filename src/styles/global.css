@@ -1,4 +1,12 @@
 @import "tailwindcss";
+/*
+ * The post body is marked up as `prose prose-invert`. Without this plugin those
+ * class names are inert and Tailwind's preflight resets headings to inherit the
+ * body's size and weight, so every heading rendered as plain text and a post
+ * came out as an undifferentiated wall of it - which is what "no newlines in the
+ * middle of a post" actually was.
+ */
+@plugin "@tailwindcss/typography";
 @import "./m3-presets.css";
 
 @font-face {
