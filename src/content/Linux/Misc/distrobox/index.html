@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en" style="font-size: 125%">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  
+  <meta name="author" content="">
+
+  
+  
+  <meta name="description" content="Join me as I dive into setting up Distrobox, the hassle-free way!">
+  
+
+  
+  <link rel="apple-touch-icon" sizes="180x180" href="http://localhost:1313//images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313//images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313//images/favicon-16x16.png">
+
+  
+  
+  <meta name="keywords" content='  emacs linux blog orgmode'>
+  
+
+  
+  
+
+  
+  
+
+  
+  <meta property="og:url" content="http://localhost:1313/posts/linux/misc/distrobox/">
+  <meta property="og:site_name" content="ZeStig&#39;s lair">
+  <meta property="og:title" content="Set up Distrobox the easy way">
+  <meta property="og:description" content="Join me as I dive into setting up Distrobox, the hassle-free way!">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-05-10T00:00:00+00:00">
+    <meta property="article:modified_time" content="2024-05-10T00:00:00+00:00">
+    <meta property="article:tag" content="Linux">
+    <meta property="article:tag" content="Docker">
+    <meta property="article:tag" content="Podman">
+    <meta property="article:tag" content="Distrobox">
+    <meta property="article:tag" content="Fedora">
+
+
+  
+  <link rel="canonical" href="http://localhost:1313/posts/linux/misc/distrobox/">
+
+  
+  
+  
+  <meta itemprop="name" content="Set up Distrobox the easy way">
+  <meta itemprop="description" content="Join me as I dive into setting up Distrobox, the hassle-free way!">
+  <meta itemprop="datePublished" content="2024-05-10T00:00:00+00:00">
+  <meta itemprop="dateModified" content="2024-05-10T00:00:00+00:00">
+  <meta itemprop="wordCount" content="884">
+  <meta itemprop="keywords" content=",">
+
+  
+  
+  
+    <link rel="stylesheet" href="/css/common.min.e562d763c6d0825495eb17de8b2c1d9800cf7c08db1c36accedf77a5fccfc4b9.css" integrity="sha256-5WLXY8bQglSV6xfeiywdmADPfAjbHDaszt93pfzPxLk=" crossorigin="anonymous">
+  
+
+  
+  
+    <link rel="stylesheet" href="/css/content.min.6c9ed0934a51a1ab8000e08ffe5936c990057489fed352ce34606a43c03bf7d3.css" integrity="sha256-bJ7Qk0pRoauAAOCP/lk2yZAFdIn&#43;01LONGBqQ8A799M=" crossorigin="anonymous">
+  
+
+  
+  
+  <title>Set up Distrobox the easy way - ZeStig&#39;s lair</title>
+  
+
+  
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Set up Distrobox the easy way">
+  <meta name="twitter:description" content="Join me as I dive into setting up Distrobox, the hassle-free way!">
+
+
+  
+
+
+  <link rel="stylesheet" href="/css/single.min.be779f459ad7e3aaf8afd0f80c6a61ca6c50993f5f18512532100ac6d93f0fa9.css" integrity="sha256-vnefRZrX46r4r9D4DGphymxQmT9fGFElMhAKxtk/D6k=" crossorigin="anonymous">
+
+
+  <link rel="stylesheet" href="/css/single.min.78a121b7d7a160420f9daab0ea13add66c37b9c44f27bba07b27207e2b0975d2.css" integrity="sha256-eKEht9ehYEIPnaqw6hOt1mw3ucRPJ7ugeycgfisJddI=" crossorigin="anonymous">
+
+
+</head>
+
+<body>
+  <div id="wrapper">
+    
+
+
+<header id="header">
+  <h1>
+    <a href="http://localhost:1313/">ZeStig</a>
+    <button id="dark-mode-toggle" class="dark-mode-toggle" aria-label="Toggle theme">
+        <svg width="2rem" height="2rem" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 496">
+        <path fill="currentColor" d="M8,256C8,393,119,504,256,504S504,393,504,256,393,8,256,8,8,119,8,256ZM256,440V72a184,184,0,0,1,0,368Z" transform="translate(-8 -8)"/>
+        </svg>
+    </button>
+  </h1>
+
+  <nav>
+    
+    <span class="nav-bar-item">
+      
+        <span class="icon">  <svg width="1em" height="1em" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+  <path d="M17,11H16a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm0,4H16a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2ZM11,9h6a1,1,0,0,0,0-2H11a1,1,0,0,0,0,2ZM21,3H7A1,1,0,0,0,6,4V7H3A1,1,0,0,0,2,8V18a3,3,0,0,0,3,3H18a4,4,0,0,0,4-4V4A1,1,0,0,0,21,3ZM6,18a1,1,0,0,1-2,0V9H6Zm14-1a2,2,0,0,1-2,2H7.82A3,3,0,0,0,8,18V5H20Zm-9-4h1a1,1,0,0,0,0-2H11a1,1,0,0,0,0,2Zm0,4h1a1,1,0,0,0,0-2H11a1,1,0,0,0,0,2Z"/></svg>
+  </span>
+      
+      <a class="link" href="/posts/">Blog</a>
+    </span>
+    
+    <span class="nav-bar-item">
+      
+        <span class="icon">  <svg width="1em" height="1em" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+  <path d="M2.88,16.88a3,3,0,0,0,0,4.24,3,3,0,0,0,4.24,0,3,3,0,0,0-4.24-4.24Zm2.83,2.83a1,1,0,0,1-1.42-1.42,1,1,0,0,1,1.42,0A1,1,0,0,1,5.71,19.71ZM5,12a1,1,0,0,0,0,2,5,5,0,0,1,5,5,1,1,0,0,0,2,0,7,7,0,0,0-7-7ZM5,8a1,1,0,0,0,0,2,9,9,0,0,1,9,9,1,1,0,0,0,2,0,11.08,11.08,0,0,0-3.22-7.78A11.08,11.08,0,0,0,5,8Zm10.61.39A15.11,15.11,0,0,0,5,4,1,1,0,0,0,5,6,13,13,0,0,1,18,19a1,1,0,0,0,2,0A15.11,15.11,0,0,0,15.61,8.39Z"/></svg>
+  </span>
+      
+      <a class="link" href="/index.xml">RSS</a>
+    </span>
+    
+    <span class="nav-bar-item">
+      
+        <span class="icon">  <svg width="1em" height="1em" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1">
+  <path d="M10.07031,20.50291a1.00008,1.00008,0,0,0-1.18115-.9834c-1.30908.24024-2.96191.27637-3.40137-.958a5.70754,5.70754,0,0,0-1.83691-2.415,1.20073,1.20073,0,0,1-.1665-.10938,1,1,0,0,0-.93067-.64551H2.54883a.99965.99965,0,0,0-1,.99512c-.00391.81543.811,1.33789,1.1416,1.51465a4.4408,4.4408,0,0,1,.92383,1.35937c.36426,1.02344,1.42285,2.57617,4.46582,2.376.001.03516.00195.06836.00244.09863l.00439.26758a1,1,0,0,0,2,0l-.00488-.31836C10.07715,21.4951,10.07031,21.22068,10.07031,20.50291Zm10.667-15.126c.03174-.125.063-.26367.09034-.41992a6.27792,6.27792,0,0,0-.40821-3.293,1.002,1.002,0,0,0-.61572-.58007c-.356-.12012-1.67041-.35645-4.18408,1.25a13.86918,13.86918,0,0,0-6.354,0C6.76221.751,5.45459.9658,5.10205,1.07908a.99744.99744,0,0,0-.63135.584,6.3003,6.3003,0,0,0-.40332,3.35644c.02442.12793.05078.2461.07813.35449A6.26928,6.26928,0,0,0,2.89014,9.20311a8.42168,8.42168,0,0,0,.04248.92187c.334,4.60254,3.334,5.98438,5.42431,6.459-.04345.125-.083.25878-.11816.40039a1.00023,1.00023,0,0,0,1.94238.47851,1.6784,1.6784,0,0,1,.46778-.87793.99947.99947,0,0,0-.5459-1.74512c-3.4541-.39453-4.95362-1.80175-5.1792-4.89843a6.61076,6.61076,0,0,1-.03369-.73828,4.25769,4.25769,0,0,1,.91943-2.71289,3.022,3.022,0,0,1,.1958-.23145.99988.99988,0,0,0,.188-1.02441,3.3876,3.3876,0,0,1-.15527-.55567A4.09356,4.09356,0,0,1,6.1167,3.06346a7.54263,7.54263,0,0,1,2.415,1.17968,1.00877,1.00877,0,0,0,.82764.13282,11.77716,11.77716,0,0,1,6.17285.001,1.00549,1.00549,0,0,0,.83056-.13769,7.572,7.572,0,0,1,2.40528-1.19043,4.03977,4.03977,0,0,1,.0874,1.57812,3.205,3.205,0,0,1-.16895.60743.9999.9999,0,0,0,.188,1.02441c.07715.08691.1543.18066.22363.26855A4.12186,4.12186,0,0,1,20,9.20311a7.03888,7.03888,0,0,1-.0376.77734c-.22021,3.05566-1.72558,4.46387-5.1958,4.85937a1,1,0,0,0-.54541,1.7461,1.63079,1.63079,0,0,1,.46631.9082,3.06079,3.06079,0,0,1,.09229.81934v2.334C14.77,21.2949,14.77,21.78025,14.77,22.00291a1,1,0,1,0,2,0c0-.2168,0-.69238.00977-1.33984V18.31346a4.8815,4.8815,0,0,0-.15479-1.31153,4.25638,4.25638,0,0,0-.11621-.416,6.51258,6.51258,0,0,0,5.44531-6.42383A8.69677,8.69677,0,0,0,22,9.20311,6.13062,6.13062,0,0,0,20.7373,5.37693Z"/></svg>
+  </span>
+      
+      <a class="link" href="https://github.com/zstg">GitHub</a>
+    </span>
+    
+    <span class="nav-bar-item">
+      
+        <span class="icon">  <svg width="1em" height="1em" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1">
+  <path d="M17,21.63H5a3,3,0,0,1-3-3v-8a1,1,0,0,0-2,0v8a5,5,0,0,0,5,5H17a1,1,0,0,0,0-2Zm4-18H7a3,3,0,0,0-3,3v10a3,3,0,0,0,3,3H21a3,3,0,0,0,3-3v-10A3,3,0,0,0,21,3.63Zm-.41,2-5.88,5.88a1,1,0,0,1-1.42,0L7.41,5.63Zm1.41,11a1,1,0,0,1-1,1H7a1,1,0,0,1-1-1V7l5.88,5.88a3,3,0,0,0,4.24,0L22,7Z"/></svg>
+  </span>
+      
+      <a class="link" href="/pages/contact/">Contact</a>
+    </span>
+    
+  </nav>
+</header>
+<hr class="head-rule"></hr>
+    
+<main id="main" class="post">
+  
+  <div class="post-heading">
+    <h1 class="post-title">Set up Distrobox the easy way</h1>
+    <div class="publish-metadata">
+      
+      <svg width="0.75em" height="0.75em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3 9H21M7 3V5M17 3V5M6 13H8M6 17H8M11 13H13M11 17H13M16 13H18M16 17H18M6.2 21H17.8C18.9201 21 19.4802 21 19.908 20.782C20.2843 20.5903 20.5903 20.2843 20.782 19.908C21 19.4802 21 18.9201 21 17.8V8.2C21 7.07989 21 6.51984 20.782 6.09202C20.5903 5.71569 20.2843 5.40973 19.908 5.21799C19.4802 5 18.9201 5 17.8 5H6.2C5.0799 5 4.51984 5 4.09202 5.21799C3.71569 5.40973 3.40973 5.71569 3.21799 6.09202C3 6.51984 3 7.07989 3 8.2V17.8C3 18.9201 3 19.4802 3.21799 19.908C3.40973 20.2843 3.71569 20.5903 4.09202 20.782C4.51984 21 5.07989 21 6.2 21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      10 May 2024
+      
+      
+        &nbsp;
+        <span>
+          <svg width="0.75em" height="0.75em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M15.4998 5.49994L18.3282 8.32837M3 20.9997L3.04745 20.6675C3.21536 19.4922 3.29932 18.9045 3.49029 18.3558C3.65975 17.8689 3.89124 17.4059 4.17906 16.9783C4.50341 16.4963 4.92319 16.0765 5.76274 15.237L17.4107 3.58896C18.1918 2.80791 19.4581 2.80791 20.2392 3.58896C21.0202 4.37001 21.0202 5.63634 20.2392 6.41739L8.37744 18.2791C7.61579 19.0408 7.23497 19.4216 6.8012 19.7244C6.41618 19.9932 6.00093 20.2159 5.56398 20.3879C5.07171 20.5817 4.54375 20.6882 3.48793 20.9012L3 20.9997Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          884 words
+        </span>
+      
+      
+      
+        
+      
+      
+        &nbsp;
+        <span>
+          <svg width="0.75em" height="0.75em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 7V12L14.5 13.5M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          ~5 mins
+        </span>
+      
+    </div>
+  </div>
+
+  
+  <div>
+    
+    <a class="link tag" href='http://localhost:1313/tags/linux'>#Linux</a>
+    
+    <a class="link tag" href='http://localhost:1313/tags/docker'>#Docker</a>
+    
+    <a class="link tag" href='http://localhost:1313/tags/podman'>#Podman</a>
+    
+    <a class="link tag" href='http://localhost:1313/tags/distrobox'>#Distrobox</a>
+    
+    <a class="link tag" href='http://localhost:1313/tags/fedora'>#Fedora</a>
+    
+    <br></br>
+  </div>
+  
+  
+  
+  <details>
+    <summary>
+      <b>Table of Contents</b>
+    </summary>
+    <div class="toc numbered-subtitles"><nav id="TableOfContents">
+<ul>
+<li><a href="#whats-the-deal-with-distrobox">What&#39;s the deal with Distrobox?</a>
+</li>
+<li><a href="#wrangling-with-podman">Wrangling with Podman</a>
+</li>
+<li><a href="#lets-get-cooking-installing-distrobox-and-podman">Let&#39;s get cooking: Installing <code class="verbatim">distrobox</code> and <code class="verbatim">podman</code></a>
+</li>
+<li><a href="#time-to-play-setting-up-containers">Time to play: setting Up Containers</a>
+</li>
+<li><a href="#fun-with-distrobox-interesting-use-cases">Fun with Distrobox: Interesting Use Cases</a>
+<ul>
+<li><a href="#headline-6">Setting up Cosmic on Fedora</a>
+</li>
+</ul>
+</li>
+</ul>
+</nav></div>
+  </details>
+  
+  
+  <article class="content numbered-subtitles">
+    
+    
+<p>
+Hey there, tech enthusiasts! Ready to embark on a journey into the world
+of Distrobox? Strap in as we explore the ins and outs of this nifty
+tool. But first things first…</p>
+<div id="outline-container-whats-the-deal-with-distrobox" class="outline-2">
+<h2 id="whats-the-deal-with-distrobox">
+What&#39;s the deal with Distrobox?
+</h2>
+<div id="outline-text-whats-the-deal-with-distrobox" class="outline-text-2">
+<p>Ever wished you could test out different Linux distributions without
+committing to full-blown installations? Well, Distrobox grants you that
+wish! It&#39;s like having a box full of distros ready to play with, without
+the hassle of setting up multiple virtual machines or partitioning your
+hard drive.</p>
+</div>
+</div>
+<div id="outline-container-wrangling-with-podman" class="outline-2">
+<h2 id="wrangling-with-podman">
+Wrangling with Podman
+</h2>
+<div id="outline-text-wrangling-with-podman" class="outline-text-2">
+<p>Now, you might wonder, &#34;What&#39;s Podman got to do with all this?&#34; Simply
+put, Podman is our trusty sidekick in this adventure. It helps us manage
+containers effortlessly, making our Distrobox experience smoother than a
+fresh jar of peanut butter.</p>
+</div>
+</div>
+<div id="outline-container-lets-get-cooking-installing-distrobox-and-podman" class="outline-2">
+<h2 id="lets-get-cooking-installing-distrobox-and-podman">
+Let&#39;s get cooking: Installing <code class="verbatim">distrobox</code> and <code class="verbatim">podman</code>
+</h2>
+<div id="outline-text-lets-get-cooking-installing-distrobox-and-podman" class="outline-text-2">
+<p>Enough chit-chat, let&#39;s roll up our sleeves and get down to business.
+Installing Distrobox and Podman is as easy as pie. Just fire up your
+terminal and follow along:</p>
+<div class="src src-sh">
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo apt-get install distrobox podman  <span class="c1"># For Debian/Ubuntu</span></span></span></code></pre></div>
+</div>
+<div class="src src-sh">
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo yum install distrobox podman      <span class="c1"># For CentOS/RHEL</span></span></span></code></pre></div>
+</div>
+<div class="src src-sh">
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo dnf install distrobox podman      <span class="c1"># For Fedora</span></span></span></code></pre></div>
+</div>
+<p>
+For other distros, check out the official documentation for installation
+instructions. Once that&#39;s done, you&#39;re all set to dive into the
+container wonderland!</p>
+<p>
+On <em>my</em> Arch install, I&#39;d do this a little differently via a shell
+script that I have:</p>
+<div class="src src-sh">
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="cp">#!/usr/bin/env zsh
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="k">if</span> <span class="o">[[</span> <span class="s2">&#34;</span><span class="nv">$1</span><span class="s2">&#34;</span> <span class="o">==</span> <span class="s2">&#34;clean&#34;</span> <span class="o">||</span> <span class="s2">&#34;</span><span class="nv">$1</span><span class="s2">&#34;</span> <span class="o">==</span> <span class="s2">&#34;cleanup&#34;</span> <span class="o">||</span> <span class="s2">&#34;</span><span class="nv">$1</span><span class="s2">&#34;</span> <span class="o">==</span> <span class="s2">&#34;--clean&#34;</span> <span class="o">||</span> <span class="s2">&#34;</span><span class="nv">$1</span><span class="s2">&#34;</span> <span class="o">==</span> <span class="s2">&#34;-c&#34;</span> <span class="o">||</span> <span class="s2">&#34;</span><span class="nv">$1</span><span class="s2">&#34;</span> <span class="o">==</span> <span class="s2">&#34;--cleanup&#34;</span> <span class="o">]]</span><span class="p">;</span> <span class="k">then</span>
+</span></span><span class="line"><span class="cl">  sudo rm -rf ~/.config/containers/ ~/.local/share/containers/ ~/.cache/containers/ ~/.Podman/ ~/.local/share/icons/distrobox /var/lib/containers /var/tmp/podman-static/1000/containers ~/.local/share/podman-static
+</span></span><span class="line"><span class="cl">  <span class="nb">echo</span> <span class="s2">&#34;Cleaned up container data&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">else</span>
+</span></span><span class="line"><span class="cl">  <span class="c1"># stuff is stored in ~/.config/containers and ~/.local/share/containers</span>
+</span></span><span class="line"><span class="cl">  mkdir -p ~/.Podman/bin/
+</span></span><span class="line"><span class="cl">  mkdir -p ~/.home/ <span class="c1"># the home directory</span>
+</span></span><span class="line"><span class="cl">  sudo chown -R stig:stig /home/stig/.home/ <span class="c1"># fix permission issues inside containers</span>
+</span></span><span class="line"><span class="cl">  <span class="c1"># Install distrobox and bundled podman</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1"># Distrobox</span>
+</span></span><span class="line"><span class="cl">  curl -s https://raw.githubusercontent.com/89luca89/distrobox/main/install <span class="p">|</span> sh -s -- --prefix ~/.Podman
+</span></span><span class="line"><span class="cl">  curl -s https://raw.githubusercontent.com/89luca89/distrobox/main/distrobox --output ~/.Podman/bin/distrobox
+</span></span><span class="line"><span class="cl">  <span class="c1"># Podman</span>
+</span></span><span class="line"><span class="cl">  <span class="c1"># curl -s https://raw.githubusercontent.com/89luca89/distrobox/main/extras/install-podman | sh -s -- --prefix ~/.Podman</span>
+</span></span><span class="line"><span class="cl">  curl -fsSL https://github.com/89luca89/podman-launcher/releases/latest/download/podman-launcher-amd64 -o ~/.Podman/bin/podman
+</span></span><span class="line"><span class="cl">  curl -fsSL https://github.com/89luca89/lilipod/releases/latest/download/lilipod-linux-amd64 -o ~/.Podman/bin/lilipod
+</span></span><span class="line"><span class="cl">  chmod +x ~/.Podman/bin/<span class="o">{</span>podman,lilipod<span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1"># use better Arch and Ubuntu images. These images are bigger, but don&#39;t take much time to build on using Distrobox</span>
+</span></span><span class="line"><span class="cl">  mkdir -p ~/.cache/containers/
+</span></span><span class="line"><span class="cl">  rm -rf ~/.cache/containers/**
+</span></span><span class="line"><span class="cl">  ln -sf ~/.dotfiles/containers/short-name-aliases.conf  ~/.cache/containers/
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl">  <span class="c1"># Podman-compose</span>
+</span></span><span class="line"><span class="cl">  sudo pacman -S python-dotenv --needed --noconfirm
+</span></span><span class="line"><span class="cl">  curl -o ~/.Podman/bin/podman-compose https://raw.githubusercontent.com/containers/podman-compose/main/podman_compose.py
+</span></span><span class="line"><span class="cl">  chmod +x ~/.Podman/bin/podman-compose
+</span></span><span class="line"><span class="cl">  <span class="c1"># Conmon</span>
+</span></span><span class="line"><span class="cl">  <span class="nb">export</span> <span class="nv">cwd</span><span class="o">=</span><span class="nv">$PWD</span>
+</span></span><span class="line"><span class="cl">  <span class="nb">cd</span> ~/.Podman/podman/bin/
+</span></span><span class="line"><span class="cl">  wget <span class="s2">&#34;https://github.com/containers/conmon/releases/download/2.1.7/conmon.amd64&#34;</span> -o <span class="s2">&#34;conmon&#34;</span>
+</span></span><span class="line"><span class="cl">  chmod +x ./conmon
+</span></span><span class="line"><span class="cl">  <span class="nb">cd</span> <span class="nv">$cwd</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1"># NOTE: `fuse-overlayfs` is required for rootful containers to work</span>
+</span></span><span class="line"><span class="cl">  sudo -E mkdir -p /etc/containers
+</span></span><span class="line"><span class="cl">  sudo -E cp -f ~/.dotfiles/misc/policy.json  /etc/containers/
+</span></span><span class="line"><span class="cl">  <span class="c1"># IGNORE THE cp ERROR</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1"># for GUI apps to work</span>
+</span></span><span class="line"><span class="cl">  xhost +si:localuser:<span class="nv">$USER</span> <span class="p">&amp;</span>&gt; /dev/null <span class="c1"># who needs this output</span>
+</span></span><span class="line"><span class="cl">  <span class="c1"># sudo ln -sf ~/.Podman/bin/** /usr/local/bin</span>
+</span></span><span class="line"><span class="cl">  <span class="nb">echo</span> <span class="s2">&#34;ADD &#39;export TERM=xterm-256color&#39; IN ~/.Podman/bin/* FOR DISTROBOX TO WORK CORRECTLY -&gt; ESP FOR THE DISTROBOX SCRIPT&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="k">fi</span></span></span></code></pre></div>
+</div>
+<p>
+Here are the contents of my <code class="verbatim">policy.json</code> file:</p>
+<div class="src src-json">
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;default&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;insecureAcceptAnything&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">],</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;transports&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;docker&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;docker.io/library/hello-world&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">                <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;reject&#34;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="p">],</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;registry.access.redhat.com&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">                <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="nt">&#34;keyType&#34;</span><span class="p">:</span> <span class="s2">&#34;GPGKeys&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                    <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;signedBy&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                    <span class="nt">&#34;keyData&#34;</span><span class="p">:</span> <span class="s2">&#34;VGhlIGZvbGxvd2luZyBwdWJsaWMga2V5IGNhbiBiZSB1c2VkIHRvIHZlcmlmeSBSUE0gcGFja2FnZXMgYnVpbHQgYW5kCnNpZ25lZCBieSBSZWQgSGF0LCBJbmMuICBUaGlzIGtleSBpcyB1c2VkIGZvciBwYWNrYWdlcyBpbiBSZWQgSGF0CnByb2R1Y3RzIHNoaXBwZWQgYWZ0ZXIgTm92ZW1iZXIgMjAwOSwgYW5kIGZvciBhbGwgdXBkYXRlcyB0byB0aG9zZQpwcm9kdWN0cy4KClF1ZXN0aW9ucyBhYm91dCB0aGlzIGtleSBzaG91bGQgYmUgc2VudCB0byBzZWN1cml0eUByZWRoYXQuY29tLgoKcHViICA0MDk2Ui9GRDQzMUQ1MSAyMDA5LTEwLTIyIFJlZCBIYXQsIEluYy4gKHJlbGVhc2Uga2V5IDIpIDxzZWN1cml0eUByZWRoYXQuY29tPgoKLS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tClZlcnNpb246IEdudVBHIHYxLjIuNiAoR05VL0xpbnV4KQoKbVFJTkJFcmdTVHNCRUFDaDJBNGIwTzl0K3Z6QzlWclZ0TDFBS3ZVV2k5T1BDamt2UjdYZDhEdEp4ZWVNWjVlRgowSHR6SUc1OHFEUnlid1VlODlGWnByQjFmZnVVS3pkRStIY0wzRmJOV1NTT1hWalpJZXJzZFh5SDNOdm5MTExGCjBETlJCMml4M2JYRzlSaC9SWHBGc054RHAyQ0VNZFV2YllDekU3OUsxRW5VVFZoMUwwT2YwMjNGdFBTWlhYMGMKdTdQYjVESTVsWDVZZW9YTzZSb29kcklHWUpzVkJRV25yV3c0eE5UY29uVWZOUGswRUdadEVuenZIMnp5UG9KaApYR0YrTmN1OVh3YmFsbllkZTEwT0N2U1dBWjV6VENwb0xNVHZRaldwYkNkV1hKekNtNkcrL2h4OXVwa2U1NDZICjVJanRZbTRkVElWVG5jM3d2RGlPRGdCS1J6T2w5ckVPQ0lnT3VHdER4UnhjUWtqckMreHZnNVZrcW43dkJVeVcKOXBIZWRPVStQb0YzREdPTStkcXYrZU5LQnZoOVlGOXVnRkFRQmtjRzd2aVpndkdFTUdHVXB6TmdON1huUzFnagovRFBvOW1aRVNPWW5LY2V2ZTJ0SUM4N3AyaHFqcnhPSHVJN2ZrWlllTkljQW9hODNyQmx0RlhhQkRZaFdBS1MxClBjWFMxLzdKelAwa3k3ZDBMNlhidS9JZjVrcVdRcEt3VUluWHR5U1JrdXJhVmZ1SzNCcGErWDFYZWNXaTI0SlkKSFZ0bE5YMDI1eHgxZXdWekdOQ1RsV24xc2tRTjJPT29RVFY0QzgvcUZwVFc2RFRXWXVyZDQrZkUwT0pGSlpRRgpidWhmWFl3bVJsVk9nTjVpNzdOVElKWkpRZllGajM4Yy9JdjV2WkJQb2tPNm1mZnJPVHYzTUhXVmdRQVJBUUFCCnRETlNaV1FnU0dGMExDQkpibU11SUNoeVpXeGxZWE5sSUd0bGVTQXlLU0E4YzJWamRYSnBkSGxBY21Wa2FHRjAKTG1OdmJUNkpBallFRXdFQ0FDQUZBa3JnU1RzQ0d3TUdDd2tJQndNQ0JCVUNDQU1FRmdJREFRSWVBUUlYZ0FBSwpDUkFabmkrUi9VTWRVV3pwRC85czVTRlIvWkYzeWpZNVZMVUZMTVhJS1V6dE5OM29jNDVmeUxkVEkzK1VDbEtDCjJ0RXJ1ellqcU5IaHFBRVhhMnNOMWZNcnN1S2VjNjFMbDJOZnZKamtMS0R2Z1ZJaDdrTTdhc2xOWVZPUDZCVGYKQy9KSjcvdWZ6M1VabXlWaUgvV0RsK0FZZGdrM0pxQ0lPNXc1cnlyQzlJeUJ6WXYybTBIcVliV2ZwaFkzdUh3NQp1bjNuZExKY3U4K0JHUDVGK09OUUVHbCtEUkg1OElsOUpwM0h3YlJhN2R2a1BnRWhmRlIrMWhJK0J0dGEyQzdFCjAvMk5LekN4Wnc3THgzUEJSY1U5MllLeWFFaWhmeS9hUUtaQ0F1eWZLaU12c216cys0cG9JWDdJOU5RQ0pweUUKSUdmSU5vWjdWeHFId1JuL2Q1bXcyTVpUSmpielNmK1VtOVlKeUEwaUVFeUQ2cWpyaVdRUmJ1eHBRWG1sQUpiaAo4b2taNGdiVkZ2MUY4TXpLKzRSOFZ2V0owWHhndGlrU283MmZIandoYTdNQWpxRm5PcTZlbzZmRUMvNzVnM05MCkdodDVWZHBHdUhrMHZiZEVOSE1DOHdTOTllNXFYR05EdWVkM2hsVGF2RE1sRUFIbDM0cTJIOW5ha1RHUkY1S2kKSlVmTmgzRFZSR2hnOGNNSXRpMjFuamlSaDdneUZJMk9jY0FUWTdiQlNyNzlKaHVOd2VsSHV4THJDRnBZN1YyNQpPRmt0bDE1alpKYU14dVFCcVlkQmdTYXkyRzBVNkQxKzdWc1d1ZnB6ZC9BYngxL2Mzb2k5WmFKdlcyMmtBZ2dxCmR6ZEEyN1VVWWpXdng0Mnc5bWVuSndoLzBqZVFjVGVjSVVkMGQwckZjdy9jMXB2Z01NbC9RNzN5ektnS1l3PT0KPXpiSEUKLS0tLS1FTkQgUEdQIFBVQkxJQyBLRVkgQkxPQ0stLS0tLQpUaGUgZm9sbG93aW5nIHB1YmxpYyBrZXkgY2FuIGJlIHVzZWQgdG8gdmVyaWZ5IFJQTSBwYWNrYWdlcyBidWlsdCBhbmQKc2lnbmVkIGJ5IFJlZCBIYXQsIEluYy4gIFRoaXMga2V5IGlzIGEgc3VwcG9ydGluZyAoYXV4aWxpYXJ5KSBrZXkgZm9yClJlZCBIYXQgcHJvZHVjdHMgc2hpcHBlZCBhZnRlciBOb3ZlbWJlciAyMDA2IGFuZCBmb3IgYWxsIHVwZGF0ZXMgdG8KdGhvc2UgcHJvZHVjdHMuCgpRdWVzdGlvbnMgYWJvdXQgdGhpcyBrZXkgc2hvdWxkIGJlIHNlbnQgdG8gc2VjdXJpdHlAcmVkaGF0LmNvbS4KCi0tLS0tQkVHSU4gUEdQIFBVQkxJQyBLRVkgQkxPQ0stLS0tLQpWZXJzaW9uOiBHbnVQRyB2MS4yLjYgKEdOVS9MaW51eCkKCm1RR2lCRVZ3REdrUkJBQ3dQaFpJcHZrakk4d1Y5c0ZURG9xeVBMeDF1YjhTZC93K1l1STVPdm00OW12dkVRVlQKVkxnOEZnRTVKbFNUNTlBYnNMRHlWdFJhOUN4SXZONXN5QlZyV1dXdEh0RG5ueWxGQmNxRy9BNkozYkk0RTkvQQpVdFNMNVp4YmF2MCt1dFA2ZjN3T3B4UXJ4YytXSURWZ3B1cmRCS0FRM2Rzb2JHQnF5cGVYNkZYWjV3Q2dvdTZDCnlacEdJQnFvc0phRFdMek5lT2ZiLzcwRC8xdGhMa1F5aFczSko2Y0hDWUpITmZCU2h2YkxXQmY2UzIzMW1nbXUKTXlNbHQ4S21pcGM5Yncrc2FhQWtTa1ZzUS9aYmZqcldCN2U1a2JNcnVLTFZySCtuR2hhbWxIWVVHeUFQdHNQZwpVai9OVVNqNUJtckNzT2tNcG40M25nVExzc0U5TUxoU1BqMm5JSEdGdjlCK2lWTHZvbURkd25hQlJnUTFhSzh6Cno2TUFBLzQwNnlmNXlWSi9NbFRXczEvNjhWd0Rob3NjOUJ0VTFWNUlFME5YZ1pVQWZCSnp6ZlZ6ektRcTZ6SjIKZVpzTUxocjk2d2JzVzEzelVadDFpbmcrdWx3aDJlZTRtZXVKcTZoLzk3MUpzcEZZL1hCaGNmcTRxQ05xVmpzcQpTWm5Xb0dkQ082SjhDeFBJZW1EMklVSHpqb3l5ZUVqM1JWeWR1cDZwY1daQW1oemtLclF6VW1Wa0lFaGhkQ3dnClNXNWpMaUFvWVhWNGFXeHBZWEo1SUd0bGVTa2dQSE5sWTNWeWFYUjVRSEpsWkdoaGRDNWpiMjAraUY0RUV4RUMKQUI0RkFrVndER2tDR3dNR0N3a0lCd01DQXhVQ0F3TVdBZ0VDSGdFQ0Y0QUFDZ2tRUldpY2lDK21XT0MxclFDZwpvb05MQ0ZPek5QY3ZoZDlaYThDODAxSG1uc1lBbmlDdzN5enJDcXRqWW54RER4bHVmSDBGVlR3WAo9ZC9ibQotLS0tLUVORCBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tCg==&#34;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div>
+</div>
+<p>
+And here&#39;s my <code class="verbatim">short-name-aliases.conf</code>:</p>
+<div class="src src-ini">
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ini" data-lang="ini"><span class="line"><span class="cl"><span class="c1"># COPY THIS FILE OVER TO ~/.cache/containers</span>
+</span></span><span class="line"><span class="cl"><span class="c1">## not .config/containers</span>
+</span></span><span class="line"><span class="cl"><span class="k">[aliases]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="na">&#34;fedora&#34;</span><span class="o">=</span><span class="s">&#34;registry.fedoraproject.org/fedora-toolbox:40&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># &#34;fedora&#34;=&#34;quay.io/toolbx-images/fedora-toolbox&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="na">&#34;ubuntu&#34;</span><span class="o">=</span><span class="s">&#34;quay.io/toolbx/ubuntu-toolbox&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="na">&#34;archlinux&#34;</span><span class="o">=</span><span class="s">&#34;quay.io/toolbx/arch-toolbox&#34;</span></span></span></code></pre></div>
+</div>
+</div>
+</div>
+<div id="outline-container-time-to-play-setting-up-containers" class="outline-2">
+<h2 id="time-to-play-setting-up-containers">
+Time to play: setting Up Containers
+</h2>
+<div id="outline-text-time-to-play-setting-up-containers" class="outline-text-2">
+<p>Creating your first Distrobox container is a breeze. Just pick your
+favorite distro and let Podman work its magic:</p>
+<div class="src src-sh">
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">distrobox create -i arch -n ArchBTW -I -H ~/.home</span></span></code></pre></div>
+</div>
+<p>
+Note that Fedora - and some other distros such as Gentoo - may need
+additional setup:</p>
+<div class="src src-sh">
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">distrobox create -i fedora:rawhide -n fedora -H ~/.home -I --additional-packages <span class="s2">&#34;systemd&#34;</span></span></span></code></pre></div>
+</div>
+<ul>
+<li>I&#39;ve used <code class="verbatim">-H ~/.home</code> because I&#39;m setting a custom home directory. I
+wanna keep my home clean!</li>
+<li><code class="verbatim">-I</code> isolates the <code class="verbatim">init</code> system. <code class="verbatim">systemd</code> works inside the container.</li>
+</ul>
+<p>Replace <code class="verbatim">arch</code> with your desired distro image, and voila! You&#39;re now
+inside your cozy little container, ready to tinker to your heart&#39;s
+content. Of course, you&#39;re not limited to these images. &gt; I&#39;ve chosen
+these images specifically because they take lesser time to set up on
+distrobox - more software - such as the X server - preinstalled.</p>
+</div>
+</div>
+<div id="outline-container-fun-with-distrobox-interesting-use-cases" class="outline-2">
+<h2 id="fun-with-distrobox-interesting-use-cases">
+Fun with Distrobox: Interesting Use Cases
+</h2>
+<div id="outline-text-fun-with-distrobox-interesting-use-cases" class="outline-text-2">
+<p>Now that you&#39;re armed with Distrobox and Podman, the possibilities are
+endless! From testing software compatibility across different distros to
+creating lightweight development environments, let your imagination run
+wild.</p>
+<p>
+Heck, I&#39;ve even managed to get a full-fledged desktop - <a href="https://github.com/pop-os/cosmic-epoch">COSMIC</a> - working on my setup. I used a Fedora container for this purpose - the <a href="https://copr.fedorainfracloud.org/coprs/ryanabx/cosmic-epoch/">COPR package</a>.</p>
+<div id="outline-container-headline-6" class="outline-3">
+<h3 id="headline-6">
+Setting up Cosmic on Fedora
+</h3>
+<div id="outline-text-headline-6" class="outline-text-3">
+<figure>
+<img src="Distrobox.png" alt="Distrobox.png" title="Distrobox.png" /><figcaption>
+Distrobox setup
+</figcaption>
+</figure>
+<p>
+<strong>You can always check the podman output via</strong>
+<code class="verbatim">podman logs -f &lt;container name&gt;</code> - <code class="verbatim">podman logs -f Feds</code> <strong>in my case.</strong>
+<img src="podman-log.png" alt="podman-log.png" title="podman-log.png" /></p>
+<ul>
+<li>Create a Fedora distrobox container via:</li>
+</ul>
+<p><div class="src src-inline src-fish">
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fish" data-lang="fish"><span class="line"><span class="cl"><span class="nf">distrobox</span> create <span class="na">-i</span> fedora <span class="na">-n</span> Feds <span class="na">-I</span> <span class="na">-H</span> ~/.home/Feds <span class="na">--additional-packages</span> <span class="s2">&#34;systemd&#34;</span></span></span></code></pre></div>
+</div></p>
+<p>
+Enter the container via <code class="verbatim">distrobox enter Feds</code> (replace with the name of
+your container). - Run this in the container to install the desktop
+(note that this is a third-party repository):</p>
+<div class="src src-sh">
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">sudo dnf copr <span class="nb">enable</span> ryanabx/cosmic-epoch
+</span></span><span class="line"><span class="cl">sudo dnf install cosmic-desktop</span></span></code></pre></div>
+</div>
+<p>
+Because I&#39;m launching the desktop via a TTY, I need to run:
+<div class="src src-inline src-fish">
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fish" data-lang="fish"><span class="line"><span class="cl"><span class="nv">DISPLAY</span><span class="o">=</span>:<span class="m">1</span> <span class="nf">dbus-launch</span> cosmic-session</span></span></code></pre></div>
+</div>
+I&#39;d installed the <code class="verbatim">dbus-x11</code>
+package on Fedora for this. I&#39;m quite pleased with the output:</p>
+<figure>
+<img src="Fedora.jpeg" alt="Fedora.jpeg" title="Fedora.jpeg" /><figcaption>
+Fedora running COSMIC via Distrobox
+</figcaption>
+</figure>
+<p>
+That&#39;s all for now, folks! Hope you enjoyed this dive into the world of
+Distrobox. Until next time, happy containerizing! 🐳🎉</p>
+</div>
+</div>
+</div>
+</div>
+
+    
+  </article>
+
+  <button onclick="topFunction()" id="back-to-top" title="Go to top">Back to Top</button>
+
+  
+
+<div id="sharingbuttons">
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+</div>
+  <div class="paginator">
+    
+    <a class="link" href="http://localhost:1313/posts/blog/setupblogpart2/" title="Setup a simple blog using GitHub Pages and Astro">← prev</a>
+    
+    
+    <a class="link" href="http://localhost:1313/posts/linux/arch/arch-part3/" title="Configuring BTRFS on Arch">next →</a>
+    
+  </div>
+  <div class="comment">
+    
+    
+    
+    <script src="https://giscus.app/client.js"
+        data-repo="zstg/zstg.github.io"
+        data-repo-id="R_kgDOOl3Ceg"
+        data-category="[ENTER CATEGORY NAME HERE]"
+        data-category-id="[ENTER CATEGORY ID HERE]"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="catppuccin_macchiato"
+        data-lang="en"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  </div>
+  
+  
+</main>
+
+    <footer id="footer">
+  <div>
+    <span>Made with <a href="https://gohugo.io" target="_blank">
+<img src="/images/icons/hugo.svg" alt="Hugo" width="45px" height="12px"class="hugo-svg">
+</a> and <a href="https://www.gnu.org/software/emacs/" target="_blank">
+<img src="/images/icons/emacs-alt.svg" width="20px" height="20px" alt="Emacs" class="emacs-svg"></a>
+<div class="webring" style="margin-top: 20px; font-size: 0.9em; color: #769ff0;">
+    <a href="https://nixwebr.ing/bricked" title="Previous site" style="text-decoration: none; color: #61afef;">⟵ Prev</a>
+    &nbsp;|&nbsp;
+    <a href="https://nixwebr.ing" target="_blank" style="text-decoration: none; color: #769ff0; font-weight: 500;">
+      Nix Webring
+    </a>
+    &nbsp;|&nbsp;
+    <a href="https://nixwebr.ing/jappie" target="_blank" title="Next site" style="text-decoration: none; color: #61afef;">Next ⟶</a>
+</div>    
+</span>
+  </div>
+  <div>
+    <span>Copyright © 2025 </span>
+  </div>
+</footer>
+
+  </div>
+
+  
+  <script src='http://localhost:1313/js/script.js' defer></script>
+
+  
+  
+  <link media="screen" rel="stylesheet" href="http://localhost:1313/css/styles.css" />
+  
+  <link media="screen" rel="stylesheet" href="http://localhost:1313/css/syntax.css" />
+  
+
+  
+  
+
+  
+  
+
+</body>
+
+</html>
