@@ -8,7 +8,10 @@ import orgmode from './integrations/orgmode';
 // https://astro.build/config
 export default defineConfig({
   integrations: [solidJs(), orgmode()],
-
+  
+  site: 'https://zstg.is-a.dev',
+  output: 'static',
+  
   vite: {
     plugins: [tailwindcss()]
   }
