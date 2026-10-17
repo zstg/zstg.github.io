@@ -27,7 +27,25 @@ const {
     <link rel="preload" href="/fonts/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/Thunderman.ttf" as="font" type="font/ttf" crossorigin />
     <ClientRouter />
-    <script is:inline>
+    <!--
+      Restore the stored theme onto <html> before the first paint, and again at
+      the start of every client-side navigation (data-astro-rerun).
+
+      Both are needed. Astro's swap calls swapRootAttributes(), which *removes
+      every attribute* from the live <html> and copies the incoming document's -
+      and that document is server-rendered, so it carries no data-theme and no
+      inline custom-accent variables. Astro also refuses to re-run an inline
+      script it has already run unless the script opts in. Without both of
+      these the theme was restored exactly once, on the first full load: every
+      page reached by a client-side navigation came up on the :root defaults
+      (and, for a custom accent, lost its colour entirely) while the picker
+      still showed the theme that had been chosen.
+
+      src/lib/theme-boot.ts re-asserts both preferences on Astro's navigation
+      events as a backstop, so the theme does not depend on this one attribute
+      continuing to behave as documented.
+    -->
+    <script is:inline data-astro-rerun>
       try {
         var s = JSON.parse(localStorage.getItem('wob-theme-v1') || '{"theme":"matrix"}');
         var el = document.documentElement;
@@ -48,6 +66,15 @@ const {
           el.style.setProperty('--color-on-accent', (lum > 0.42 && a > 0.35) ? '#0a0a12' : '#f2f6ff');
         }
       } catch (e) { document.documentElement.dataset.theme = 'matrix'; }
+    </script>
+    <!--
+      Bundled, so it runs once per full load and stays registered for the whole
+      session: it re-asserts the stored theme and background around every
+      client-side navigation, which is what keeps a single choice applying to
+      every page. See src/lib/theme-boot.ts.
+    -->
+    <script>
+      import '../lib/theme-boot';
     </script>
   </head>
   <body class="min-h-screen relative">

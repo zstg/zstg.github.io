@@ -70,7 +70,21 @@ let applied: string[] = [];
  * preset would leave the buttons wearing the old custom palette.
  */
 export function syncM3Scheme(el: HTMLElement = document.documentElement): void {
-  const isPreset = !!el.dataset.theme && el.dataset.theme !== 'custom';
+  /*
+   * Only an explicit `custom` gets a generated palette.
+   *
+   * The test used to be "is there any data-theme, and is it not custom", which
+   * treated a *missing* attribute as custom. That is not a harmless default:
+   * Astro's ClientRouter strips every attribute off <html> during a swap
+   * (swapRootAttributes), so mid-session there are moments when no data-theme
+   * exists at all. With the old test that window painted a full M3 palette
+   * seeded from whatever the :root fallback accent happened to be - and those
+   * inline properties outrank the preset stylesheets, so the page ended up
+   * wearing a palette that matched neither the chosen theme nor the default.
+   * Missing attribute => fall back to the stylesheets, which is what a preset
+   * needs anyway.
+   */
+  const isPreset = el.dataset.theme !== 'custom';
 
   if (isPreset) {
     if (applied.length) {
@@ -88,8 +102,20 @@ export function syncM3Scheme(el: HTMLElement = document.documentElement): void {
 
   const isDark = rootIsDark(el);
   const signature = `${accent}|${isDark}`;
-  if (signature === last) return;
+  /*
+   * The cache records "this scheme was computed once", not "this scheme is on
+   * the element". Those are not the same thing across a ClientRouter
+   * navigation: the swap strips <html>'s inline style, taking the generated
+   * properties with it, while this module keeps its state. Trusting `last` on
+   * the next page therefore skipped the rewrite and left the custom accent
+   * wearing the *default* palette until a full reload. So confirm one of the
+   * properties we wrote is still there before believing the cache.
+   */
+  if (signature === last && applied.some((prop) => el.style.getPropertyValue(prop))) return;
   last = signature;
+  // A partial application would leave the previous scheme's leftovers behind
+  for (const prop of applied) el.style.removeProperty(prop);
+  applied = [];
 
   const { hue, chroma, tone } = hctFromInt(argb);
   const scheme = schemeColors({
